@@ -1,0 +1,204 @@
+/**
+
+\page Publications Publications
+
+\section PubTechnical Technical papers
+
+<b>Composite biasing in Monte Carlo radiative transfer</b><br>
+M. Baes, K. D. Gordon, T. Lunttila, et al., A&A, 590:A55 (2016)<br>
+<a href="http://adsabs.harvard.edu/abs/2016A%26A...590A..55B">[ADS]</a>
+<a href="../publications/technical/012.pdf">[PDF]</a>
+
+<b>SKIRT: The design of a suite of input models for Monte Carlo radiative transfer simulations</b><br>
+M. Baes and P. Camps, A&A, 12:33–44 (2015)<br>
+<a href="http://adsabs.harvard.edu/abs/2015A%26C....12...33B">[ADS]</a>
+<a href="../publications/technical/011.pdf">[PDF]</a>
+
+<b>Benchmarking the calculation of stochastic heating and emissivity of dust grains in the context of radiative transfer simulations</b><br>
+P. Camps, K. Misselt, S. Bianchi, et al., A&A, 580:A87 (2015)<br>
+<a href="http://adsabs.harvard.edu/abs/2015A%26A...580A..87C">[ADS]</a>
+<a href="../publications/technical/010.pdf">[PDF]</a>
+
+<b>SKIRT: an advanced dust radiative transfer code with a user-friendly architecture</b><br>
+Camps P., Baes M., Astronomy & Computing, 9, 20 (2015) <br>
+<a href="http://adsabs.harvard.edu/abs/2015A%26C.....9...20C">[ADS]</a>
+<a href="../publications/technical/009.pdf">[PDF]</a>
+
+<b>Hierarchical octree and k-d tree grids for 3D radiative transfer simulations</b><br>
+Saftly W., Baes M., Camps P., A&A, 561, A77 (2014) <br>
+<a href="http://adsabs.harvard.edu/abs/2014A%26A...561A..77S">[ADS]</a>
+<a href="../publications/technical/008.pdf">[PDF]</a>
+
+<b>Using 3D Voronoi grids in radiative transfer simulations</b><br>
+Camps P., Baes M., Saftly W., A&A, 560, A35 (2013) <br>
+<a href="http://adsabs.harvard.edu/abs/2013A%26A...560A..35C">[ADS]</a>
+<a href="../publications/technical/007.pdf">[PDF]</a>
+
+<b>Three-dimensional dust radiative transfer</b><br>
+Steinacker J., Baes M., Gordon K. D., ARA&A, 51, 63 (2013) <br>
+<a href="http://adsabs.harvard.edu/abs/2013ARA%26A..51...63S">[ADS]</a>
+<a href="../publications/technical/006.pdf">[PDF]</a>
+
+<b>Using hierarchical octrees in Monte Carlo radiative transfer simulations</b><br>
+Saftly W., Camps P., Baes M., et al., A&A, 554, A10 (2013) <br>
+<a href="http://adsabs.harvard.edu/abs/2013A%26A...554A..10S">[ADS]</a>
+<a href="../publications/technical/005.pdf">[PDF]</a>
+
+<b>FitSKIRT: genetic algorithms to automatically fit dusty galaxies with a Monte Carlo radiative transfer code</b><br>
+De Geyter G., Baes M., Fritz J., Camps P., A&A, 550, A74 (2013) <br>
+<a href="http://adsabs.harvard.edu//abs/2013A%26A...550A..74D">[ADS]</a>
+<a href="../publications/technical/004.pdf">[PDF]</a>
+
+<b>Efficient three-dimensional NLTE dust radiative transfer with SKIRT</b><br>
+Baes M., Verstappen J., De Looze I., et al., ApJS, 196, 22 (2011) <br>
+<a href="http://adsabs.harvard.edu//abs/2011ApJS..196...22B">[ADS]</a>
+<a href="../publications/technical/003.pdf">[PDF]</a>
+
+<b>Smart detectors for Monte Carlo radiative transfer</b><br>
+Baes M., MNRAS, 391, 617 (2008) <br>
+<a href="http://adsabs.harvard.edu//abs/2008MNRAS.391..617B">[ADS]</a>
+<a href="../publications/technical/002.pdf">[PDF]</a>
+
+<b>Radiative equilibrium in Monte Carlo radiative transfer using frequency distribution adjustment</b><br>
+Baes M., Stamatellos D., Davies J. I., et al., NewA, 10, 523 (2005) <br>
+<a href="http://adsabs.harvard.edu//abs/2005NewA...10..523B">[ADS]</a>
+<a href="../publications/technical/001.pdf">[PDF]</a>
+
+<b>Radiative transfer in disc galaxies – III. The observed kinematics of dusty disc galaxies</b><br>
+Baes M., Davies J. I., Dejonghe H., et al., MNRAS, 343, 1081 (2003) <br>
+<a href="http://adsabs.harvard.edu//abs/2003MNRAS.343.1081B">[ADS]</a>
+<a href="../publications/technical/000.pdf">[PDF]</a>
+
+\section PubApplications Applications
+
+<b>Far-infrared and dust properties of present-day galaxies in the EAGLE simulations</b><br>
+P. Camps, J. W. Trayford, M. Baes, et al., MNRAS, 462, 1057-1075 (2016)<br>
+<a href="http://adsabs.harvard.edu/abs/2016MNRAS.462.1057C">[ADS]</a>
+<a href="../publications/applications/025.pdf">[PDF]</a>
+
+<b>HERschel Observations of Edge-on Spirals (HEROES). III. Dust energy balance study of IC 2531</b><br>
+A. V. Mosenkov, F. Allaert, M. Baes, et al., A&A, 592:A71 (2016)<br>
+<a href="http://adsabs.harvard.edu/abs/2016A%26A...592A..71M">[ADS]</a>
+<a href="../publications/applications/024.pdf">[PDF]</a>
+
+<b>The dust covering factor in active galactic nuclei</b><br>
+M. Stalevski, C. Ricci, Y. Ueda, et al., MNRAS, 458, 2288-2302 (2016)<br>
+<a href="http://adsabs.harvard.edu/abs/2016MNRAS.458.2288S">[ADS]</a>
+<a href="../publications/applications/023.pdf">[PDF]</a>
+
+<b>Pinwheels in the sky, with dust: 3D modeling of the Wolf-Rayet 98a environment</b><br>
+T. Hendrix, R. Keppens, A. J. van Marle, et al., MNRAS, 460, 3975–3991 (2016)<br>
+<a href="http://adsabs.harvard.edu/abs/2016MNRAS.460.3975H">[ADS]</a>
+<a href="../publications/applications/022.pdf">[PDF]</a>
+
+<b>The EAGLE simulations of galaxy formation: Public release of halo and galaxy catalogues</b><br>
+S. McAlpine, J. C. Helly, M. Schaller, et al., A&A, 15:72–89 (2016)<br>
+<a href="http://adsabs.harvard.edu/abs/2016A%26C....15...72M">[ADS]</a>
+<a href="../publications/applications/021.pdf">[PDF]</a>
+
+<b>Dust energy balance study of two edge-on spiral galaxies in the Herschel-ATLAS survey</b><br>
+G. De Geyter, M. Baes, I. De Looze, et al., MNRAS, 451: 1728–1739 (2015)<br>
+<a href="http://adsabs.harvard.edu/abs/2015MNRAS.451.1728D">[ADS]</a>
+<a href="../publications/applications/020.pdf">[PDF]</a>
+
+<b>Non-conservative evolution in Algols: where is the matter?</b><br>
+R. Deschamps, K. Braun, A. Jorissen, et al., A&A, 577:A55 (2015)<br>
+<a href="http://adsabs.harvard.edu/abs/2015A%26A...577A..55D">[ADS]</a>
+<a href="../publications/applications/019.pdf">[PDF]</a>
+
+<b>Large and small-scale structures and the dust energy balance problem in spiral galaxies</b><br>
+W. Saftly, M. Baes, G. De Geyter, et al., A&A, 576:A31 (2015)<br>
+<a href="http://adsabs.harvard.edu/abs/2015A%26A...576A..31S">[ADS]</a>
+<a href="../publications/applications/018.pdf">[PDF]</a>
+
+<b>Modelling ripples in Orion with coupled dust dynamics and radiative transfer</b><br>
+T. Hendrix, R. Keppens, and P. Camps, A&A, 575:A110 (2015)<br>
+<a href="http://adsabs.harvard.edu/abs/2015A%26A...575A.110H">[ADS]</a>
+<a href="../publications/applications/017.pdf">[PDF]</a>
+
+<b>The EAGLE project: simulating the evolution and assembly of galaxies and their environments</b><br>
+Schaye J., Crain R. A., Bower R. G., et al., MNRAS, 446, 521 (2015) <br>
+<a href="http://adsabs.harvard.edu//abs/2015MNRAS.446..521S">[ADS]</a>
+<a href="../publications/applications/016.pdf">[PDF]</a>
+
+<b>High-resolution, 3D radiative transfer modeling : I. The grand-design spiral galaxy M51</b><br>
+De Looze I., Fritz J., Baes M., et al., A&A, 571, A69 (2014) <br>
+<a href="http://adsabs.harvard.edu//abs/2014A%26A...571A..69D">[ADS]</a>
+<a href="../publications/applications/015.pdf">[PDF]</a>
+
+<b>The distribution of interstellar dust in CALIFA edge-on galaxies via oligochromatic radiative transfer fitting</b><br>
+De Geyter G., Baes M., Camps P., et al., MNRAS, 441, 869 (2014) <br>
+<a href="http://adsabs.harvard.edu//abs/2014MNRAS.441..869D">[ADS]</a>
+<a href="../publications/applications/014.pdf">[PDF]</a>
+
+<b>The dust energy balance in the edge-on spiral galaxy NGC4565</b><br>
+De Looze I., Baes M., Bendo G. J., et al., MNRAS, 427, 2797 (2012) <br>
+<a href="http://adsabs.harvard.edu//abs/2012MNRAS.427.2797D">[ADS]</a>
+<a href="../publications/applications/013.pdf">[PDF]</a>
+
+<b>Gravitational microlensing of active galactic nuclei dusty tori</b><br>
+Stalevski M., Jovanović P., Popović L. Č., Baes M., MNRAS, 425, 1576 (2012) <br>
+<a href="http://adsabs.harvard.edu//abs/2012MNRAS.425.1576S">[ADS]</a>
+<a href="../publications/applications/012.pdf">[PDF]</a>
+
+<b>3D radiative transfer modeling of the dusty tori round active galactic nuclei as a clumpy two-phase medium</b><br>
+Stalevski M., Fritz J., Baes M., et al., MNRAS, 420, 2756 (2012) <br>
+<a href="http://adsabs.harvard.edu//abs/2012MNRAS.420.2756S">[ADS]</a>
+<a href="../publications/applications/011.pdf">[PDF]</a>
+
+<b>Photocentric variability of quasars caused by variations in their inner structure: consequences for Gaia measurements</b><br>
+Popović L. Č., Jovanović P., Stalevski M., et al., A&A, 538, A107 (2012) <br>
+<a href="http://adsabs.harvard.edu//abs/2012A%26A...538A.107P">[ADS]</a>
+<a href="../publications/applications/010.pdf">[PDF]</a>
+
+<b>Panchromatic radiative transfer modeling of stars and dust in the Sombrero galaxy</b><br>
+De Looze I., Baes M., Fritz J., Verstappen J., MNRAS, 419, 895 (2012) <br>
+<a href="http://adsabs.harvard.edu//abs/2012MNRAS.419..895D">[ADS]</a>
+<a href="../publications/applications/009.pdf">[PDF]</a>
+
+<b>SKIRTOR - database of modelled AGN dusty torus SEDs</b><br>
+Stalevski M., BlgAJ, 18, 3 (2012) <br>
+<a href="http://adsabs.harvard.edu//abs/2012BlgAJ..18c...3S">[ADS]</a>
+<a href="../publications/applications/008.pdf">[PDF]</a>
+
+<b>AGN dusty tori as a clumpy two-phase medium: the 10 µm silicate feature</b><br>
+Stalevski M., Fritz J., Baes M., et al., BaltA, 20, 490 (2011) <br>
+<a href="http://adsabs.harvard.edu/abs/2011BaltA..20..490S">[ADS]</a>
+<a href="../publications/applications/007.pdf">[PDF]</a>
+
+<b>The Herschel Virgo Cluster Survey: VII. Dust in cluster dwarf elliptical galaxies</b><br>
+De Looze I., Baes M., Zibetti S., et al., A&A, 518, L54 (2010) <br>
+<a href="http://adsabs.harvard.edu//abs/2010A%26A...518L..54D">[ADS]</a>
+<a href="../publications/applications/006.pdf">[PDF]</a>
+
+<b>The Herschel Virgo Cluster Survey: VI. The far-infrared view of M87</b><br>
+Baes M., Clemens M., Xilouris E. M., et al., A&A, 518, L53 (2010) <br>
+<a href="http://adsabs.harvard.edu//abs/2010A%26A...518L..53B">[ADS]</a>
+<a href="../publications/applications/005.pdf">[PDF]</a>
+
+<b>The dust morphology of the elliptical galaxy M86 with SPIRE</b><br>
+Gomez H. L., Baes M., Cortese L., et al., A&A, 518, L45 (2010) <br>
+<a href="http://adsabs.harvard.edu/abs/2010A%26A...518L..45G">[ADS]</a>
+<a href="../publications/applications/004.pdf">[PDF]</a>
+
+<b>The Herschel-ATLAS: The dust energy balance in the edge-on spiral galaxy UGC 4754</b><br>
+Baes M., Fritz J., Gadotti D. A., et al., A&A, 518, L39 (2010) <br>
+<a href="http://adsabs.harvard.edu/abs/2010A%26A...518L..39B">[ADS]</a>
+<a href="../publications/applications/003.pdf">[PDF]</a>
+
+<b>Radiative transfer in disc galaxies – IV. The effect of dust attenuation on structural bulge and disc parameters</b><br>
+Gadotti D. A., Baes M., Falony S., MNRAS, 403, 2053 (2010) <br>
+<a href="http://adsabs.harvard.edu//abs/2010MNRAS.403.2053G">[ADS]</a>
+<a href="../publications/applications/002.pdf">[PDF]</a>
+
+<b>3D dust radiative transfer simulations in the inhomogeneous circumstellar medium</b><br>
+Vidal E., Baes M., BaltA, 16, 101 (2007) <br>
+<a href="http://adsabs.harvard.edu//abs/2007BaltA..16..101V">[ADS]</a>
+<a href="../publications/applications/001.pdf">[PDF]</a>
+
+<b>Efficient dust radiative transfer in a circumstellar disk environment</b><br>
+Baes M., Vidal E., Van Winckel H., et al., BaltA, 16, 92 (2007) <br>
+<a href="http://adsabs.harvard.edu//abs/2007BaltA..16...92B">[ADS]</a>
+<a href="../publications/applications/000.pdf">[PDF]</a>
+
+*/
