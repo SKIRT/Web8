@@ -6,14 +6,17 @@
 #
 # Instructions:
 #   - use on Mac OS X only
+#   - SKIRT8 and PTS repos should be checked out next to the SKIRT8website repo
 #   - run this script with "git" as default directory
 #
 
 # Generate html documentation in a temporary folder next to the git folder
 /Applications/Doxygen.app/Contents/Resources/doxygen root/doxygen/root.doxygen
+/Applications/Doxygen.app/Contents/Resources/doxygen skirt/doxygen/skirt.doxygen
 
 # Copy the 'mouse over' SKIRT logo
 cp root/images/SkirtLogoSmall-home.png ../html/root/SkirtLogoSmall-home.png
+cp root/images/SkirtLogoSmall-home.png ../html/skirt/SkirtLogoSmall-home.png
 
 # Copy the downloadable data files and publications
 rsync -hrt ../extras/downloads/ ../html/downloads/

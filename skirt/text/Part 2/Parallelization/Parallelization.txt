@@ -1,0 +1,21 @@
+/**
+
+\page Parallelization Parallelization
+
+The following section introduces general parallel computing concepts:
+
+- \subpage ParallelComputing
+
+The following section introduces the message passing interface (MPI) used to implement multi-processing
+in <tt>SKIRT</tt>:
+
+- \subpage ParallelizationMPI
+
+The following sections discuss how parallelization is implemented in <tt>SKIRT</tt>.
+If you are not familiar with general parallel computing concepts, it is recommended to first read the introduction
+on \subpage ParallelComputing.
+
+- \subpage ParallelizationThreads_skirt
+- \subpage ParallelizationMPI_skirt
+
+*/

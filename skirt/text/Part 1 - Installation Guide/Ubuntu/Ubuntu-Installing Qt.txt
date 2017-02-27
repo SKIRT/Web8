@@ -1,0 +1,35 @@
+/**
+
+\page InstallUbuntuQt Installing the Qt development environment
+
+<tt>SKIRT</tt> is based on the Qt development environment. In addition to run-time libraries and build tools, Qt offers
+a convenient integrated code editor called Qt Creator. All of these components can be installed on Ubuntu with
+a single installer.
+
+<i>Step-by-step instructions:</i>
+
+<b>Download the Qt installer</b>
+
+ - Go to the <a href="http://www.qt.io/download-open-source/">Qt download page</a> and click 'Download Now'. 
+
+<b>Run the installer</b>
+
+ - Before you can run the file, you should make it executable by opening a Terminal window and typing the following commands (replace x.x.x by the appriopriate version number):
+
+       cd [ENTER]
+       cd Downloads [ENTER]
+       chmod +rx qt-unified-linux-x64-x.x.x-online.run [ENTER]
+       ./qt-unified-linux-x64-x.x.x-online.run [ENTER]
+
+ - Follow the instructions to initiate the installation. You can skip creating a Qt Account unless you want to. You will also be asked to choose the installation folder for Qt, but it is best to keep this at the default value. When you enter the "Select Components" screen, unfold the item that is marked as the Qt version that is to be installed. In the list that appears, uncheck all items except "gcc 64-bit".
+ 
+ - When the installation is finished, don't launch Qt Creator just yet (uncheck the box at the end).
+ 
+<b>Add Qt Creator to the launcher</b>
+
+ - Locate the Qt installation folder. If you followed the steps above, it should be called "Qt5.4.0" and be located in your home directory.
+ - In the Qt directory, navigate to Tools > QtCreator > bin.
+ - Double-click on the executable "qtcreator". The Qt Creator window will pop up.
+ - In the launcher, right-click on the Qt icon and select "Lock to Launcher" to maintain a shortcut to Qt Creator.
+ 
+*/
