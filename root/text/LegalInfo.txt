@@ -23,35 +23,19 @@ This program includes source code from the following third-party libraries:
  - <b>GAlib</b> described in Wall (1996, PhD thesis);
    see <http://lancet.mit.edu/ga/GAlib.html>.
 
-Please refer to the original licensing conditions for each of these third party
-software libraries.
+Please refer to the original licensing conditions for each of these third party software libraries.
 
 \section LegalCit Citations
 
-If you use (portions of) this program in your work, please cite one or more of the following papers.
-
-<b><tt>SKIRT:</tt></b>
-
- - <a href ="http://adsabs.harvard.edu/abs/2015A%26C.....9...20C">Camps & Baes (2015, Astronomy and Computing, 9, 20)</a>: <tt>SKIRT</tt>: An advanced
-   dust radiative transfer code with a user-friendly architecture.
- - <a href="http://adsabs.harvard.edu/abs/2011ApJS..196...22B">Baes et al. (2011, ApJS, 196, 22)</a>:
-   Efficient Three-dimensional NLTE Dust Radiative Transfer with <tt>SKIRT</tt>.
- - <a href="http://adsabs.harvard.edu/abs/2003MNRAS.343.1081B">Baes et al. (2003, MNRAS, 343, 1081–1094)</a>:
-   Radiative transfer in disc galaxies - The observed kinematics of dusty disc galaxies.
-
-<b><tt>FitSKIRT:</tt></b>
-
- - <a href="http://adsabs.harvard.edu/abs/2014MNRAS.441..869D">De Geyter et al. (2014, MNRAS, 441, 869–885)</a>:
-   The distribution of interstellar dust in CALIFA edge-on galaxies via oligochromatic radiative transfer fitting.
- - <a href="http://adsabs.harvard.edu/abs/2013A%26A...550A..74D">De Geyter et al. (2013, A&A, 550, A74)</a>:
-   <tt>FitSKIRT</tt> - genetic algorithms to automatically fit dusty galaxies with a Monte Carlo radiative transfer code.
+If you use (portions of) this program in your work, please cite one or more of the relevant papers listed in the
+\ref Publications section of this web site.
 
 \section LegalCon Contact
 
-We invite you to use <tt>SKIRT</tt> and <tt>FitSKIRT</tt> under the terms described above. We're also open to cooperation on selected
+We invite you to use this program under the terms described above. We're also open to cooperation on selected
 projects. You can reach us via:
 
- - <a href = "http://users.ugent.be/~mbaes">Prof. Maarten Baes</a>, Astronomical Observatory, Ghent University
- - <a href = "http://users.ugent.be/~pcamps">Peter Camps</a>, PhD student and <tt>SKIRT</tt> developer, Astronomical Observatory, Ghent University
+ - <a href = "http://users.ugent.be/~mbaes">Prof. Dr. Maarten Baes</a>, Astronomical Observatory, Ghent University
+ - <a href = "http://users.ugent.be/~pcamps">Dr. Peter Camps</a>, Astronomical Observatory, Ghent University
 
 */

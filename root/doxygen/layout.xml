@@ -6,6 +6,7 @@
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="user" url="../skirt/index.html" title="SKIRT"/>
     <tab type="user" url="../pts/index.html" title="PTS"/>
+    <tab type="user" url="../tutorials/index.html" title="Tutorials"/>
     <tab type="user" url="@ref Downloads" title="Downloads"/>
     <tab type="user" url="@ref Contributors" title="Contributors"/>
     <tab type="user" url="@ref Publications" title="Publications"/>

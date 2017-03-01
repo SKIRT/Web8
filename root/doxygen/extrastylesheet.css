@@ -59,3 +59,8 @@ code, tt
     font-family: Consolas, 'Courier New', courier, Courier, monospace;
     font-size: 0.9rem;
 }
+
+a.el
+{
+    font-weight: normal;
+}

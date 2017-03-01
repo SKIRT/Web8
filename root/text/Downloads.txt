@@ -12,16 +12,19 @@ To download a file, right-click or option-click the filename and choose "Save As
 
 \section DownloadsData Data files used in the tutorials
 
-<b><tt>SKIRT</tt> tutorial:</b>
+<b><tt>SKIRT</tt> tutorials:</b>
 
  - <a href="../downloads/eagle_stars.dat">eagle_stars.dat</a>: Star particles from EAGLE SPH simulation
  - <a href="../downloads/eagle_gas.dat">eagle_gas.dat</a>: Gas particles from EAGLE SPH simulation
  - <a href="../downloads/kh_amr.dat">kh_amr.dat</a>: Kelvin-Helmholtz instability in MPI-AMRVAC output format
 
-<b><tt>FitSKIRT</tt> tutorial:</b>
+<b><tt>FitSKIRT</tt> tutorials:</b>
 
  - <a href="../downloads/match_WCS.tar.gz">match_WCS.tar.gz</a>: Matching WCS with IDL and montage
  - <a href="../downloads/tutorial_NGC4013.tar.gz">tutorial_NGC4013.tar.gz</a>: Input for the NGC4013 tutorial
  - <a href="../downloads/tutorial_NGC4013_complete.tar.gz">tutorial_NGC4013_complete.tar.gz</a>: Intermediate and final results for the NGC4013 tutorial
+
+<b><tt>PTS</tt> tutorials:</b>
+
 
 */

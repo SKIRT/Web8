@@ -7,13 +7,14 @@
 The people listed in this section have contributed substantially to SKIRT and/or PTS (the Python toolkit for SKIRT),
 where "substantially" is loosely defined as more than 1000 lines of C++ code, Python code, and/or documentation.
 
-- Maarten Baes conceived of SKIRT and wrote the first several versions of the code. Nowadays he determines
-  the strategic direction and supervises all further development. Once in a while, he contributes some nice new feature
-  himself.
+- <a href = "http://users.ugent.be/~mbaes">Maarten Baes</a> conceived of SKIRT and wrote the first several versions of
+  the code. Nowadays he determines the strategic direction and supervises all further development. Once in a while, he
+  contributes some nice new feature himself.
 
-- Peter Camps overhauled the SKIRT code some years ago, readying the class design for further expansion.
-  He is currently the main SKIRT developer and the chief software design architect, acting as a gatekeeper for all
-  new code contributions. Peter also initiated the PTS effort and helps Maarten with the strategy decisions.
+- <a href = "http://users.ugent.be/~pcamps">Peter Camps</a> overhauled the SKIRT code, readying the class design for
+  further expansion. He is currently the main SKIRT developer and the chief software design architect, acting as a
+  gatekeeper for all new code contributions. Peter also initiated the PTS effort and helps Maarten with the strategy
+  decisions.
 
 - Gert De Geyter developed FitSKIRT and contributed ideas and code segments to SKIRT and PTS.
 
