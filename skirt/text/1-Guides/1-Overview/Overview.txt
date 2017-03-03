@@ -1,0 +1,107 @@
+/**
+
+\page ProjectOverview SKIRT Project Overview
+
+\section ProviewComp Components
+
+The <tt>SKIRT</tt> project includes four important components, described in the following subsections.
+
+\subsection ProviewCompSkirt SKIRT
+
+The key component of the project is, obviously, the <tt>SKIRT</tt> program, which allows simulating continuum radiation
+transfer in dusty astrophysical systems. <tt>SKIRT</tt> employs the Monte Carlo technique to emulate the relevant
+physical processes including scattering, absorption and emission by the dust. The code features a wealth of built-in
+models and mechanisms. Specifically, it:
+
+ - Handles any 3D geometry without limitation.
+ - Includes many built-in components to specify the distribution of stars and dust.
+ - Allows importing the results of a hydrodynamic simulation in various SPH, AMR, or Voronoi formats.
+ - Offers full treatment of multiple anisotropic scattering, absorption and (re-)emission by interstellar dust.
+ - Computes the temperature distribution of the dust and the thermal dust re-emission self-consistently.
+ - Handles any combination of dust mixtures, each with their own spatial distributions, and calculates
+   the temperature of different grain size bins individually.
+ - Takes into account the stochastic heating of small grains in non-equilibrium conditions.
+ - Supports polarization of radiation by spherical dust grains.
+ - Includes a suite of instruments mimicking astronomical instrumentation such as imaging and 3D spectroscopic devices.
+ - Operates efficiently in both memory consumption and CPU time.
+ - Is heavily parallelized, supporting any combination of multiple threads (shared memory) and multiple processes
+   (distributed memory), including a data parallelization mode that substantially reduces memory requirements.
+ - Allows specifying simulation parameters in an interactive console Q&A session, by straigthforward editing
+   of XML-based parameter files, or through a graphical user interface (see \ref ProviewCompMakeUp below).
+
+\subsection ProviewCompFitSkirt FitSKIRT
+
+The <tt>FitSKIRT</tt> program utilizes the core <tt>SKIRT</tt> code (exposed as a library) to automatically fit a 3D
+model to observed images of a dusty astrophysical object. <tt>FitSKIRT</tt> matches the output frames of <tt>SKIRT</tt>
+radiative transfer simulations to the observed images, searching the model parameter space through a genetic algorithm.
+For each new individual constructed by the genetic procedure, <tt>FitSKIRT</tt> performs a <tt>SKIRT</tt> simulation
+using the parameters defined by the individual's genes. The resulting simulated images are compared with the observed
+target images, and the result is fed back into the genetic algorithm as the quality measure for the individual.
+
+<tt>FitSKIRT</tt> searches the parameter space of a model for optimal values of:
+
+  - An arbitrary number of model parameters of any type, intrinsic (scale lengths, flattening parameters, optical
+    depth, ...) and/or observer-related (inclination, position angle, ...).
+  - The luminosities of an arbitrary number of radiation source components (bulge, disk, ...) at an arbitrary number
+    of wavelengths, given an observed total flux image of the target at each of those wavelengths.
+
+<tt>FitSKIRT</tt> assumes that the flux output is linear as a function of the input luminosities. This assumption
+is justified when modeling dust extinction (absorption and scattering), however it no longer holds for dust emission.
+As a result, <tt>FitSKIRT</tt> only supports wavelengths in the UV, optical, and NIR ranges.
+
+\subsection ProviewCompMakeUp MakeUp
+
+Both <tt>SKIRT</tt> and <tt>FitSKIRT</tt> are pure command-line programs. The configuration for a particular simulation
+or fitting session is fully defined by means of a parameter file in XML text format. These parameter files can be
+created and edited in the following ways:
+
+ - A new parameter file can be created through a user-friendly Q&A session in a terminal window, driven by the
+   corresponding command-line program. Because there are no external depencies, this method works in all circumstances.
+ - Advanced users can open a parameter file in any text editor and make changes. Because the XML format is largely
+   self-documenting, it is straigthforward to adjust, say, the value of a scaling length, or to add a second instrument
+   with a new viewing angle.
+ - If the <tt>MakeUp</tt> utility can be and has been built (see \ref ProviewDepend), a parameter file can be created,
+   or an existing parameter file can be adjusted, using the graphical wizard-like interface offered by this utility.
+
+The <tt>MakeUp</tt> utility is built as a separate program, so it does not need to run on the same computer as the
+<tt>SKIRT</tt> and <tt>FitSKIRT</tt> programs. The consecutive wizard panes follow the same pattern as the Q&A session
+driven by the command-line programs, with the important benefit of a graphical user interface. One key advantage of the
+graphical wizard is the ability to navigate backward in the Q&A sequence. This allows verifying and/or adjusting the
+user's response to one of the preceding questions.
+
+\subsection ProviewCompSmile SMILE
+
+The SMILE subproject implements the mechanisms for handling configuration files in <tt>SKIRT</tt>,
+<tt>FitSKIRT</tt>, and <tt>MakeUp</tt>. The code in this subproject is designed as a generic framework that can be
+used ouside of the <tt>SKIRT</tt> project as well. As a user of the <tt>SKIRT</tt> project, you don't need to be
+concerned with SMILE, and you can safely skip the remainder of this section.
+
+SMILE stands for "Simple Metadata Interactive Language Editing". SMILE is a metadata language that can represent
+configuration files for software programs or other simple datasets. A SMILE dataset can be stored as a text file using
+a subset of the standard XML format, which makes it easy to create, modify and use electronically. In addition, the
+SMILE XML format is fairly accessable for direct viewing and editing by a moderately advanced user.
+
+The SMILE project includes utilities for creating and editing SMILE datasets. At the most basic level, a command-line
+tool offers a text-based question and answer session for creating a SMILE file of a particular type, given a SMILE
+schema file. More advanced utilities offer a Wizard-style graphical user interface. Furthermore, the SMILE project
+includes a C++ library that allows establishing a direct correspondence between C++ classes and objects in a client
+application on the one hand, and SMILE datasets on the other hand.
+
+\section ProviewDepend System requirements and dependencies
+
+The <tt>SKIRT</tt> project should compile and run on any recent version of Unix, Mac OS X, and Microsoft Windows. The
+code is written in C++14, which is supported by all recent C++ compilers. The project uses the \c CMake build system,
+which is widely available.
+
+The <tt>SKIRT</tt> and <tt>FitSKIRT</tt> command-line programs can be built without any further dependencies. The
+<tt>MakeUp</tt> utility uses the Qt development environment to implement its graphical user interface, so you need to
+install a recent version of the Qt framework to build this utility.
+
+Furthermore, there are some optional dependencies. For example, to enable the multi-processing capabilities of
+<tt>SKIRT</tt> and <tt>FitSKIRT</tt>, the host system must provide an implementation of the standard Message Passing
+Interface (MPI). On a side note, the use of multiple parallel threads within a single process is supported without
+extra dependencies.
+
+For further details on these requirements and dependencies, refer to the \ref InstallReq in the installation guide.
+
+*/

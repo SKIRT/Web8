@@ -1,0 +1,182 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 7.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[      5127,        172]
+NotebookOptionsPosition[      4493,        147]
+NotebookOutlinePosition[      4833,        162]
+CellTagsIndexPosition[      4790,        159]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"AU", "=", 
+   RowBox[{"1.49597871", " ", 
+    SuperscriptBox["10", "11"]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Msun", "=", 
+   RowBox[{"1.9891", " ", 
+    SuperscriptBox["10", "30"]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Rmax0", "=", 
+   RowBox[{"400", "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zmin0", "=", 
+   RowBox[{
+    RowBox[{"-", "90"}], "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zmax0", "=", 
+   RowBox[{"230", "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Rho]0", "=", 
+   RowBox[{"1", " ", 
+    SuperscriptBox["10", 
+     RowBox[{"-", "18"}]]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Rmax1", "=", 
+   RowBox[{"400", "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zmin1", "=", 
+   RowBox[{
+    RowBox[{"-", "230"}], "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zmax1", "=", 
+   RowBox[{
+    RowBox[{"-", "220"}], "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Rho]1", "=", 
+   RowBox[{"1", " ", 
+    SuperscriptBox["10", 
+     RowBox[{"-", "15"}]]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Rmax2", "=", 
+   RowBox[{"100", "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zmin2", "=", 
+   RowBox[{
+    RowBox[{"-", "80"}], "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"zmax2", "=", 
+   RowBox[{
+    RowBox[{"-", "70"}], "AU"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[Rho]2", "=", 
+   RowBox[{"1", " ", 
+    SuperscriptBox["10", 
+     RowBox[{"-", "12"}]]}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.6165743647565804`*^9, 3.616574492950327*^9}, {
+  3.6165745337650957`*^9, 3.616574600429932*^9}, {3.616574653913426*^9, 
+  3.616574664029035*^9}, {3.6166046277106457`*^9, 3.6166046522478437`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"M0", "=", 
+   RowBox[{"\[Rho]0", " ", "\[Pi]", " ", 
+    SuperscriptBox["Rmax0", "2"], 
+    RowBox[{"(", 
+     RowBox[{"zmax0", "-", "zmin0"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"M1", "=", 
+   RowBox[{"\[Rho]1", " ", "\[Pi]", " ", 
+    SuperscriptBox["Rmax1", "2"], 
+    RowBox[{"(", 
+     RowBox[{"zmax1", "-", "zmin1"}], ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"M2", "=", 
+   RowBox[{"\[Rho]2", " ", "\[Pi]", " ", 
+    SuperscriptBox["Rmax2", "2"], 
+    RowBox[{"(", 
+     RowBox[{"zmax2", "-", "zmin2"}], ")"}]}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.616574607331347*^9, 3.6165746454996557`*^9}, {
+  3.616574677573238*^9, 3.616574719267548*^9}, {3.616604661722734*^9, 
+  3.6166046742531633`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"M", "=", 
+  RowBox[{"M0", "+", "M1", "+", "M2"}]}]], "Input",
+ CellChangeTimes->{{3.616588454314348*^9, 3.616588468796173*^9}, {
+  3.616604686239214*^9, 3.61660469199926*^9}}],
+
+Cell[BoxData["1.0691499533157716`*^27"], "Output",
+ CellChangeTimes->{3.616588469250683*^9, 3.616589287386859*^9, 
+  3.61660469242029*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ FractionBox["M", "Msun"], "\[IndentingNewLine]", 
+ FractionBox["\[Rho]0", 
+  RowBox[{"Msun", " ", 
+   SuperscriptBox["AU", 
+    RowBox[{"-", "3"}]]}]], "\[IndentingNewLine]", 
+ FractionBox["\[Rho]1", 
+  RowBox[{"Msun", " ", 
+   SuperscriptBox["AU", 
+    RowBox[{"-", "3"}]]}]], "\[IndentingNewLine]", 
+ FractionBox["\[Rho]2", 
+  RowBox[{"Msun", " ", 
+   SuperscriptBox["AU", 
+    RowBox[{"-", "3"}]]}]]}], "Input",
+ CellChangeTimes->{{3.616604705717773*^9, 3.616604749119514*^9}}],
+
+Cell[BoxData["0.0005375043755043846`"], "Output",
+ CellChangeTimes->{3.616604749688107*^9}],
+
+Cell[BoxData["1.6831375978846312`*^-15"], "Output",
+ CellChangeTimes->{3.616604749689262*^9}],
+
+Cell[BoxData["1.6831375978846313`*^-12"], "Output",
+ CellChangeTimes->{3.616604749690823*^9}],
+
+Cell[BoxData["1.683137597884631`*^-9"], "Output",
+ CellChangeTimes->{3.616604749714437*^9}]
+}, Open  ]]
+},
+WindowSize->{640, 686},
+WindowMargins->{{Automatic, -89}, {Automatic, 0}},
+FrontEndVersion->"7.0 for Mac OS X x86 (32-bit) (February 18, 2009)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[545, 20, 1861, 58, 241, "Input"],
+Cell[2409, 80, 790, 21, 67, "Input"],
+Cell[CellGroupData[{
+Cell[3224, 105, 199, 4, 27, InheritFromParent],
+Cell[3426, 111, 138, 2, 30, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3601, 118, 496, 14, 162, "Input"],
+Cell[4100, 134, 91, 1, 27, "Output"],
+Cell[4194, 137, 93, 1, 30, "Output"],
+Cell[4290, 140, 93, 1, 30, "Output"],
+Cell[4386, 143, 91, 1, 30, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

@@ -1,0 +1,112 @@
+/*//////////////////////////////////////////////////////////////////
+////   SMILE - Simple Metadata Interactive Language Editing     ////
+////       © Astronomical Observatory, Ghent University         ////
+///////////////////////////////////////////////////////////////// */
+
+/**
+
+\page SmileInstallationGuide Installation Guide
+
+\section SmileInstallIntro Introduction
+
+This chapter describes how to install the SMILE project on your computer.
+
+The source code for the SMILE project is available from GitHub. The SMILE project is written in standard C++14 and uses
+the CMake build system. All platform-specific code resides in a single class (the System class), which has been
+implemented for the mainstream operating systems. The standard (non-optional) components of the SMILE project are
+implemented without any external dependencies. The optional SmileDesk desktop utility uses the widely available
+cross-platform Qt libraries to implement its graphical user interface (GUI). Thus, it should be possible to build and
+run the standard components of the SMILE project on virtually any modern system with little effort, and the optional
+GUI components with only slightly more effort.
+
+The current version of the SMILE project has been tested with the following systems, in 64-bit mode:
+
+- Mac OS X 10.11.6 (El Capitan) using Apple Clang v8.0.0 and CMake v3.5.1
+- Ubuntu 15.10 using g++ v5.2.1 and CMake v3.2.2
+- Windows 10 using Microsoft Visual Studio 2015 v14 and CMake v3.5.1
+
+The optional GUI SmileDesk desktop utility has been tested with Qt Desktop v5.7.0.
+The documentation has been generated with Doxygen v1.8.12 on Mac OS X.
+
+\section SmileInstallTools Installing the development tools
+
+\subsection SmileInstallToolsMac Mac OS X
+
+- Install Xcode from the Apple App Store, and launch Xcode at least once. This will install the command line tools,
+including clang++ and git.
+- Install CMake for Mac OS X downloaded from https://cmake.org/download/ .
+- In CMake, use the Unix code generator.
+- Build using CMake and make on the command line.
+- You can use Xcode or any other editor for editing source code.
+
+\subsection SmileInstallToolsUbuntu Ubuntu
+
+- Perform:
+\verbatim
+sudo apt-get update
+sudo apt-get install git
+sudo apt-get install cmake
+sudo apt-get install g++
+\endverbatim
+- In CMake, use the Unix code generator.
+- You can use any text editor for editing source code.
+
+\subsection InstallToolsWindows Windows
+
+- Download Visual Studio Community from https://www.visualstudio.com . Select a custom install to
+include Visual C++ and the git/github GUI clients.
+- Install CMake for Windows downloaded from https://cmake.org/download/ .
+- In CMake, use the Visual Studio Win64 code generator.
+- Use Visual Studio to build the project and to edit source code.
+
+\subsection SmileInstallToolsQt Installing the Qt development environment
+
+Download Qt from https://www.qt.io and install Qt Creator and the latest version of the Desktop software development
+kit. You don't need any of the optional modules.
+
+\note For Qt to work properly on Ubuntu, you need to install extra system libraries as follows:
+
+\verbatim
+sudo apt-get install libgl1-mesa-dev
+\endverbatim
+
+\subsection SmileInstallToolsDoxygen Installing the documentation generator
+
+Download the most recent Doxygen installer from http://www.doxygen.org and install in the default location.
+
+\section InstallProject Installing the SMILE project
+
+\subsection InstallProjectCmd Using command-line tools on Mac OS X and Ubuntu
+
+Perform the following commands to install and build the standard components of the SMILE project in the
+\c ~/SMILE directory:
+
+\verbatim
+cd ~/SMILE
+git clone XXXX.git git    [GitHub URL to be provided]
+mkdir release
+cd release
+cmake ../git
+make
+\endverbatim
+
+\subsection SmileInstallProjectWin Using CMake and Microsoft Visual Studio on Windows
+
+To install and build the standard components of the SMILE project on Windows (without Qt creator)
+  - use the GitHub GUI client to clone the SMILE source code repository
+  - use the CMake GUI application to generate a Visual Studio solution:
+    - set the source path to the repository (e.g. ~/SMILE/git)
+    - set the build path to the repository (e.g. ~/SMILE/build)
+    - select the generator "Visual Studio 14 2015 Win64"
+    - press "Configure" and then "Generate"
+  - open the generated solution file "SMILE.sln" in the build directory with Microsoft Visual Studio
+  - press the "Build Solution" button or menu item in Visual Studio
+
+\subsection SmileInstallProjectQt Using Qt Creator on any system
+
+If you have Qt Creator installed, perhaps because you want to build the optional SmileDesk utility, there is no need to
+work directly with CMake. Recent versions of Qt Creator (v4.1 and above) have great built-in support for CMake.
+Open the top-level \c CMakeLists.txt file in the project directory with Qt Creator to get started. You can configure
+the BUILD_SMILE_DESK flag (to build the optional SmileDesk component) in the Qt Creator Projects panel.
+
+*/

@@ -35,8 +35,7 @@ Among other things, <tt>SKIRT</tt>:
    the temperature of different grain size bins individually.
  - Takes into account the stochastic heating of small grains in non-equilibrium conditions.
  - Supports polarization of radiation by spherical dust grains.
- - Includes a suite of instruments mimicking real astronomical
-   instrumentation such as imaging and 3D spectroscopic devices.
+ - Includes a suite of instruments mimicking astronomical instrumentation such as imaging and 3D spectroscopic devices.
  - Operates efficiently in both memory consumption and CPU time.
  - Is heavily parallelized, supporting any combination of multiple threads (shared memory) and multiple processes
    (distributed memory), including a data parallelization mode that substantially reduces memory requirements.
@@ -44,9 +43,9 @@ Among other things, <tt>SKIRT</tt>:
    of XML-based parameter files, or through a graphical user interface.
 
 The <tt>SKIRT</tt> project source tree includes <tt>FitSKIRT</tt>, an extension of the <tt>SKIRT</tt> code that
-automatically fits a 3D model to observed images of a dusty galaxy. <tt>FitSKIRT</tt> matches the output frames of
-<tt>SKIRT</tt> radiative transfer simulations to the observed images, searching the model parameter space through a
-genetic algorithm. For each new individual constructed by the genetic procedure, <tt>FitSKIRT</tt> performs a
+automatically fits a 3D model to observed images of a dusty astrophysical object. <tt>FitSKIRT</tt> matches the output
+frames of <tt>SKIRT</tt> radiative transfer simulations to the observed images, searching the model parameter space
+through a genetic algorithm. For each new individual constructed by the genetic procedure, <tt>FitSKIRT</tt> performs a
 <tt>SKIRT</tt> simulation using the parameters defined by the individual's genes. The resulting simulated images are
 compared with the observed target images, and the result is fed back into the genetic algorithm as the quality measure
 for the individual.
@@ -81,6 +80,6 @@ This web site offers the documentation for the <tt>SKIRT</tt> and <tt>PTS</tt> p
  - \ref Publications
  - \ref LegalInfo
 
-You can also access these pages by clicking on the corresponding button in the navigation bar at the top of this page.
+You can also access these pages by selecting the corresponding tab in the navigation bar at the top of this page.
 
 */

@@ -1,0 +1,43 @@
+/**
+
+\mainpage SKIRT documentation index
+
+To jump to the home page from any point in this web site, click the <tt>SKIRT</tt> logo above the navigation bar at the
+top of the page.
+
+The <tt>SKIRT</tt> documentation is structured as follows:
+
+<b> Part I: Guides -- overall guidance and tutorials. </b>
+
+  - The \ref ProjectOverview describes the various components of the <tt>SKIRT</tt> project.
+  - The \ref InstallationGuide provides installation instructions for the <tt>SKIRT</tt> project.
+  - The <a href="../tutorials/index.html">Tutorials</a> introduce <tt>SKIRT</tt> and/or <tt>FitSKIRT</tt>
+    through a number of detailed usage examples; highly recommended for new users.
+  - The \ref UserGuide offers additional, more structured information on the various components in the <tt>SKIRT</tt>
+    project.
+  - The \ref DeveloperGuide offers guidelines on how to extend or adjust the <tt>SKIRT</tt> code.
+
+<b> Part II: Concepts -- conceptual or in-depth information on selected topics. </b>
+
+  - \ref Parallelization explains how <tt>SKIRT</tt> supports parallel computing.
+  - \ref DustProp describes how <tt>SKIRT</tt> deals with optical and calorimetric dust properties.
+  - \ref Hydro presents <tt>SKIRT</tt>'s capabilities for working with the results of hydrodynamical simulations.
+  - \ref SpatialGrids introduces the spatial grids used for discretizing the dusty medium in <tt>SKIRT</tt>.
+  - \ref Polarization describes the implementation of polarized radiation transfer in <tt>SKIRT</tt>.
+  - \ref PerInstr provides details on <tt>SKIRT</tt>'s perspective instrument, used mostly for making movies.
+  - \ref Cfitsio introduces the library included with <tt>SKIRT</tt> to read and write FITS files.
+  - \ref VoroPlusPlus introduces the library included with <tt>SKIRT</tt> to construct Voronoi tesselations.
+  - \ref GAlib introduces the library included with <tt>FitSKIRT</tt> to search the model parameter space.
+
+<b> Part III: Reference -- documentation on every class, namespace and function. </b>
+
+The reference documentation can be accessed by selecting one of the corresponding tabs in the navigation bar at the top
+of the page:
+
+  - \em Namespaces: a list of the namespaces in the <tt>SKIRT</tt> project.
+    The "Namespace Members" subtab lists all functions defined in namespaces.
+  - \em Classes: a list of all the classes in the <tt>SKIRT</tt> project.
+    The "Class Hierarchy" subtab offers inheritance diagrams for all classes in the project, and
+    the "Class Members" subtab lists all member functions defined in classes.
+
+*/

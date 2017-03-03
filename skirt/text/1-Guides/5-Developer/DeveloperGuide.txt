@@ -1,0 +1,26 @@
+/**
+
+\page DeveloperGuide Developer Guide
+
+This guide offers guidelines on how to extend or adjust the code in the <tt>SKIRT</tt> project.
+
+The <tt>SKIRT</tt> proje3ct code will never be finished. Fundamental changes and additions will probably be developed
+by the core <tt>SKIRT</tt> team at the Ghent University. Other changes, such as introducing a new spectral energy
+distribution for the sources or a new function describing the geometrical distribution of the dust, can easily be
+contributed by any heavy-duty <tt>SKIRT</tt> user. In fact, when you plan to use <tt>SKIRT</tt> for a particular
+radiative transfer problem, chances are that you will want to adapt or extend it to suit your needs.
+
+You should start learning about <tt>SKIRT</tt> development by performing the development-related tutorials offered
+as part of the <a href="../tutorials/index.html">Tutorials</a> section on this web site.
+
+This developer guide includes the following topics with further guidance and reference material:
+
+- <a href="../tutorials/index.html">Tutorials</a>
+- \ref DevProjectStruct
+- \ref DevSmileProject
+- \ref DevCreateSimItems
+- \ref DevCoding
+- \ref DevGit
+- \ref DevBuildDocs
+
+*/

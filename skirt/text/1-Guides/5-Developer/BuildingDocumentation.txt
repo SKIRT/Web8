@@ -1,0 +1,45 @@
+/**
+
+\page DevBuildDocs Building the documentation
+
+\section DevBuildRefDocs Reference documentation
+
+The reference documentation for the \c SKIRT project is generated from the C++ header files using the freely available
+utility Doxygen. For information on how to install this utility, refer to \ref InstallMacDoxygen.
+
+When you add or adjust code, it is important to provide proper documentation in the header file, in Doxygen format. To
+verify that everything looks as intended, especially when including formulas in mathematical notation, you should build
+the HTML documentation and open the resulting page(s) in a web browser.
+
+The \c git project directory contains a shell script for building the documentation. The script is designed for use on
+Mac OS X and will need to be adjusted for use on other systems. For example, the absolute path to the Doxygen
+executable will need to be updated, and the html.doxygen parameter file may need some tweaking as well.
+
+Before invoking the script for the first time, you may need to make it executable as follows:
+
+\verbatim
+cd ~/SKIRT/git
+chmod +rx makeHTML.sh
+\endverbatim
+
+To build the HTML reference documentation, enter:
+
+\verbatim
+cd ~/SKIRT/git
+./makeHTML.sh
+\endverbatim
+
+The resulting HTML files are placed in the \c html directory next to (i.e. at the same level as) the \c git directory.
+As usual, the file \c index.html provides the starting point for browsing.
+
+When you run the script for the first time, Doxygen creates the \c html directory and it contents from scratch. This
+takes a long time. If you run the script again after you modified the source code (or the extra documentation files),
+Doxygen only processes the changes so it completes a lot faster.
+
+\section DevBuildExtraDocs Additional documentation
+
+The source files for the additional documentation on the \c SKIRT web site, including the tutorials and the
+installation, user and developer guides, are not part of the \c SKIRT project source tree. This documentation is
+maintained, built and published by the core \c SKIRT team.
+
+*/
