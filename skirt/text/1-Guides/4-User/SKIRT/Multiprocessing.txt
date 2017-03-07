@@ -1,0 +1,217 @@
+/**
+
+\page UserSkirtMPI Using SKIRT with multiple processes
+
+Refer to the concept note on \ref Parallelization for an introduction to multi-threading and multi-processing in
+general, and for details on the implementation of parallelization in \c SKIRT specifically.
+
+\section UserSkirtMpiBuild Building SKIRT with MPI
+
+Multi-threading is enabled in \c SKIRT by default because it does not involve any external dependencies. To enable
+\c SKIRT's multi-processing capabilities, however, an implementation of the Message Passing Interface (MPI) must be
+installed on the host system, and the appropriate build-time option must be turned on before compiling and linking
+\c SKIRT. Refer to the \ref InstallationGuide for further instructions.
+
+\note In previous versions, \c SKIRT was automatically built with MPI if an MPI installation was found on the host
+system. This is no longer the case; you need to explicitly change a build option for MPI to be used.
+
+
+\section UserSkirtMpiRun Running SKIRT with MPI
+
+Performing a <tt>SKIRT</tt> simulation in multi-processing mode is straightforward. You will make use of the \c mpirun
+command,  which seems to be universal to all MPI implementations, although the precise syntax and semantics of the
+command line arguments may differ somewhat between systems. The \c mpirun command essentially launches the requested
+number of copies of the specified program, each in its own process. For example, you can launch \f$N\f$ parallel
+<tt>SKIRT</tt> processes with the following command:
+
+    $ mpirun -n N skirt [skirt-command-line-arguments]
+
+The usual \c skirt command with its command line arguments is thus placed after the <tt>mpirun -n N</tt> command. For
+example, a <tt>SKIRT</tt> simulation with 10 processes and 1 thread per process is started by entering:
+
+    $ mpirun -n 10 skirt -t 1 galaxy.ski
+
+Note that the number of threads does not have to be one; you can use any combination of the number of processes and the
+number of threads, as explained below in \ref UserSkirtMpiWhenHybrid. The output of the above command is the same as
+for the regular \c skirt command. You will be informed of the number of parallel processes in use as illustrated here:
+
+    Welcome to SKIRT v__
+    Constructing a simulation from ski file 'galaxy.ski'...
+    Starting simulation galaxy with 10 processes in task parallelization mode...
+    Starting setup...
+    __
+
+\note The \c mpirun command 'works' regardless of whether the program being launched is MPI-enabled. If you launched a
+<tt>SKIRT</tt> simulation with the <tt>mpirun -n N</tt> command, and the <tt>SKIRT</tt> message log does \em not state
+"with N processes", this means that <tt>SKIRT</tt> was not properly built with MPI. In that case, using \c mpirun is
+useless, as you will have \f$N\f$ identical instances of <tt>SKIRT</tt>, each performing the same simulation and trying
+to overwrite the same output files.
+
+Although photon shooting is fully parallelized, most of the tasks performed during the setup phase of a <tt>SKIRT</tt>
+simulation cannot be distributed across multiple processes. During most of setup, all processes execute the same
+algorithm and do not cooperate to speed up the calculation. In fact, most setup tasks are restricted to a single thread
+per process (even if those tasks would use multiple threads when there is only one process). This implementation
+restriction is caused by the need to construct a dust grid that is identical for all processes. As a result, there will
+often be no speedup in the setup phase compared to a single-threaded single-process run of <tt>SKIRT</tt>, regardless
+of the number of processes and threads per process being used.
+
+\section UserSkirtMpiModes Parallelization modes
+
+By default, when launched with multiple processes (and assuming it was built with MPI enabled), \c SKIRT uses \em task
+parallelization mode. In this mode, a full copy of all simulation data and results is present in each process. \c SKIRT
+can also be passed the \c '-d' command line option. This activates \em data parallelization mode, which can drastically
+reduce memory requirements by letting each process handle different wavelengths. When this option is used, it is
+advisable to keep the number of processes small relative to the number of wavelengths (say by a factor of 10) to avoid
+load balancing issues. To see the effect on the memory usage per process, run skirt with the \c '-m' (show memory) and
+\c '-v' (verbose) options, for example
+
+    # Without -d
+    $ mpirun -n 4 skirt -t 1 -m -v galaxy.ski
+    ... setup ...
+    [P001] (0.119 GB) Starting the stellar emission phase...
+
+    # With -d
+    $ mpirun -n 4 skirt -t 1 -m -v -d galaxy.ski
+    ... setup ...
+    [P001] (0.0461 GB) Starting the stellar emission phase...
+
+The -v option (verbose) lets every process individually output messages to the console, while the -m option (memory)
+includes the current memory usage of a process in front of each log message.
+
+The table below offers an overview of the different \c SKIRT parallelization modes, together with their advantages and
+some rules of thumb for choosing a mode. When using one of the hybrid modes, try to find the ideal combination of
+processes and threads, as this is often system dependent.
+
+<table>
+<tr>
+    <th>Mode
+    <th>Properties
+    <th>Use
+<tr>
+    <td>
+        Multithreading only \n
+        <tt> skirt -t T </tt>
+    <td>
+        <ul>
+            <li>No MPI installation needed
+            <li>Scales badly for \f$>8\f$ threads
+        </ul>
+    <td>
+        <ul>
+            <li>For small jobs
+            <li>When MPI is not available
+            <li>For systems with \f$\leq 8\f$ cores
+        </ul>
+<tr>
+    <td>
+        Hybrid task-based \n
+        <tt> mpirun -n N skirt -t T </tt>
+    <td>
+        <ul>
+            <li>Best load balancing for large \c N
+            <li>Memory usage multiplied by \c N
+        </ul>
+    <td>
+        <ul>
+            <li>For jobs with many photon packages
+            <li>Also works for a small number of wavelengths
+        </ul>
+<tr>
+    <td>
+        Hybrid data-parallel \n
+        <tt> mpirun -n N skirt -t T -d </tt>
+    <td>
+        <ul>
+            <li>Reduced memory usage per process
+            <li>Bad load balancing when \c N becomes too large
+        </ul>
+    <td>
+        <ul>
+            <li>Use when running into memory problems with the method above
+            <li>Keep \c N smaller than \f$10\times N_\text{wavelengths}\f$
+</table>
+
+Although the above hints generally reflect good practice, in some cases the data parallelization mode can be used for
+other reasons. An example is when memory limitations prevent a user from running the code using the ideal combination
+of \c N and \c T. It is in that case a reasonable choice to activate data parallelization, so that \c N can be
+increased and \c T decreased, at the cost of some load balancing. On the other hand, even when there are no memory
+issues and with the same hybridisation scheme, data-parallel mode is often faster. So it might be worth testing if the
+\c '-d' option improves performance on your system for your specific simulation.
+
+\note Because of implementation restrictions, it is not possible to use data parallization mode with ski files
+including a \c Dim1DustLib or \c Dim2DustLib. If you want to use data parallelization, change the library type to
+\c AllCellsDustLib. Also, data parallelization mode is not allowed when the number of processes is larger than the
+number of wavelengths.
+
+
+\section UserSkirtMpiWhen When to use MPI
+
+The remainder of this document goes into more depth about assessing whether multi-threaded, multi-processing, or hybrid
+parallelization works best for your simulations. For background information on the performance behavior of parallel
+programs in general, refer to the concept note on \ref ParallelPerformance.
+
+\subsection UserSkirtMpiWhenComparison Comparison of multi-threading and multi-processing
+
+The essence of multi-threaded parallelization is that the code executed by the different processors uses the same
+memory locations. The threads share the entire process state, with all variables and functions. Multiple threads
+may attempt to read from and write to the same memory location at the same time, which may lead to <em>race
+conditions</em> and unpredictable behavior. There are mechanisms to avoid these problems, but the fact remains that,
+with a large number of threads, performance goes down because all threads are competing for a common resource.
+
+With multi-processing, the execution of parallel code is performed by multiple, independent processes, each with their
+own memory addresses and process state. This avoids the performance issues from which multi-threading suffers. On the
+other hand, this kind of parallelization requires the implementation of explicit calls to a Message Passing Interface
+(MPI) at any point where communication is needed between processes. If implemented efficiently with a minimal amount of
+communication, though, multi-processing can scale much better for large number of processors then multi-threading.
+Also, multi-processing codes are perfectly suited for running on multi-processor systems with a distributed memory
+architecture (sometimes called \em supercomputers).
+
+\subsection UserSkirtMpiWhenHybrid Hybrid parallelization of SKIRT
+
+In practice a combination of both kinds (<em>hybrid</em> parallelization) is often useful. On modern distributed memory
+systems, each computing node consists of multiple processors sharing the same memory. This hybrid model of
+parallelization in the case of <tt>SKIRT</tt> is illustrated in the following figure:
+
+\image html hybridskirt.png
+
+<tt>SKIRT</tt> uses MPI to implement multi-processing. Within each MPI process, standard C++ capabilities are used to
+create a multi-threading environment.
+
+During photon shooting, the basic unit of parallelization in <tt>SKIRT</tt> is a chunk. A chunk is a certain number of
+photon packages of the same wavelength. Such a chunk is always simulated by a single thread. The total number of chunks
+is determined by the number of wavelengths in the simulation and the number of photon packages desired per wavelength.
+The parallelization of the oligochromatic and panchromatic simulations is designed in the same way: the \f$N_C \times
+N_{\lambda}\f$ chunks are distributed over the different threads, for different wavelengths at a time. The first chunks
+of each wavelength are handed out first. Whenever a thread has finished its work, it picks out a chunk of the
+wavelength that is next in line. When multiple processes are used, each process will divide its chunks over its threads
+in the same way, after it has been decided which chunks the process will simulate. For more details about the
+implementation, see \ref ParallelizationMPI_skirt.
+
+\subsection UserSkirtMpiWhenMemory Memory considerations
+
+Each MPI process includes a copy of the entire program, thus in task parallelization mode, \c SKIRT launched with
+\f$N\f$ parallel processes requires \f$N\f$ times as much memory as a single-process \c SKIRT invocation with \f$n\f$
+parallel threads. That alone can be a reason for choosing a multithreaded (or hybrid) approach for <tt>SKIRT</tt> when
+the model size is too large (many wavelengths and/or a fine dust grid).
+
+A process always resides on a single computing node, and stays there for the rest of its lifetime. A node typically
+contains multiple processors, each with multiple cores, and can therefore host multiple processes. Processes can (and
+have to) communicate through MPI, regardless of whether they reside on the same processor, the same node or on
+different nodes. Assuming that running more than one thread on a single processor core is pointless, a node with
+\f$N\f$ processor cores in total can host at most \f$P\f$ processes with \f$N⁄P\f$ threads each. On the other hand, a
+node with physical memory size \f$M\f$ can host no more than \f$P\f$ processes with a memory requirement of \f$M/P\f$
+each.
+
+There will often be a certain combination of processes and threads that provides the best performance on a certain
+computing system, depending on the system architecture. Because of the memory limits stated above, however, there might
+be cases where the ideal value for the number of processes \f$P\f$ cannot be used. To help alleviate this problem, \c
+SKIRT offers a data parallelization mode, where each process stores only a subset of the largest data structures in the
+simulation. This can reduce the memory usage down to about \f$1/P\f$ per process (in the limit of large \f$P\f$). As
+long as the parallelized data forms the main contribution to the memory consumption, the total memory usage will barely
+increase with the number of processes.
+
+In addition to offering a performance gain, data parallelization allows simulating larger models, e.g. with many
+wavelengths and dust cells. Indeed, when using a constant number of processes on each node, data parallelization will
+cause the memory usage per node to decrease as the number of processes (and hence the number of nodes) increases.
+
+*/

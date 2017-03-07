@@ -1,6 +1,6 @@
 /**
 
-\page ParallelComputing Parallel computing
+\page ParallelComputing %Parallel computing
 
 \section ParallelComputing_Introduction Introduction
 

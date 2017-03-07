@@ -1,0 +1,59 @@
+/**
+
+\page UserMakeUpGuide Using MakeUp
+
+\section UserMakeUpIntro Introduction
+
+As mentioned in the \ref ProjectOverview, the \c SKIRT project includes an optional utility called \c MakeUp.
+If the \c MakeUp utility has been built (see the \ref InstallationGuide), a \c SKIRT or \c FitSKIRT
+parameter file can be created or edited using the graphical wizard-like interface offered by this utility.
+
+The <tt>MakeUp</tt> utility is built as a separate program, so it does not need to run on the same computer as the
+<tt>SKIRT</tt> and <tt>FitSKIRT</tt> programs. The consecutive wizard panes follow the same pattern as the Q&A session
+driven by the command-line programs, with important benefits offered by the graphical user interface:
+
+- You have the possibility of modifying existing \em ski or \em fski files, without having to open them in a text
+  editor and manually changing values. Sometimes changing a certain parameter requires other additional parameters to
+  be set or others to be deleted from the parameter file, which is not easily done by hand. The <tt>MakeUp</tt>
+  interface will automatically adapt its questions after you change such a parameter.
+- With <tt>MakeUp</tt>, you can go back to the preceding wizard panes. With the command line Q&A session, when you
+  enter an incorrect value, you either have to abort the session and start over, or you have to remember to change the
+  value once the parameter file had been created. And when you select a parameter value that influences the course of
+  the session (e.g. you add the wrong type of geometry), you have no other choice than to start over.
+- When adding components to a list (instruments, geometries, stellar or dust components), you get a visualization of
+  the components already added. You also have the option to edit any component in the list, or to remove one.
+- <tt>MakeUp</tt> provides context-sensitive help on the items and properties being configured through built-in links
+  to the \c SKIRT web site.
+
+\section UserMakeUpUsing Using MakeUp
+
+Once the \c SKIRT project has been built with the appropriate build options (see the \ref InstallationGuide), the
+executable for <tt>MakeUp</tt> can be found in a directory called <tt>~/SKIRT/release/MakeUp/main</tt>. On some
+platforms, such as Mac OS X, you can double-click the application icon to launch \c MakeUp. On other platforms, it has
+to be launched from the command line (but there are no command line options).
+
+When \c MakeUp is launched, the following window appears:
+
+\image html MakeUp1.png
+
+In this window, <tt>MakeUp</tt> offers the possibility of creating new parameters files for both <tt>SKIRT</tt> and
+<tt>FitSKIRT</tt> and of editing existing ones. Selecting one of the different options and pressing "Continue" will
+bring you into a wizard session that follows the same pattern as the command line interface invoked by typing
+<tt>skirt</tt> or <tt>fitskirt</tt> in a Terminal window. For example, while adding a exponential disk as a stellar
+component, the wizard pane may look like this:
+
+\image html MakeUp2.png
+
+In the configuration pane for a particular property, there are two noteworthy user-assistance features:
+
+- When you right-click on the text describing a property or option, \c MakeUp displays a context-sensitive popup menu
+  with a list of help options. Selecting one of these options opens the corresponding online \c SKIRT documentation
+  in your default web browser.
+- The lower left corner of the <tt>MakeUp</tt> window shows the name and "path" of the property being configured
+  as it would appear in a \em ski file. This can help an advanced user locate the property in ski files
+  for manual editing.
+
+At the end of the session, a final wizard pane asks the user to save the new or adjusted configuration in a
+parameter file on disk.
+
+*/

@@ -1,0 +1,189 @@
+/**
+
+\page UserFitSkirtUsage Using FitSKIRT
+
+\section UserFitSkirtUsageIntroduction Introduction
+
+As described in the \ref ProjectOverview, the <tt>FitSKIRT</tt> program optimizes the parameters of a 3D radiative
+transfer model so that the flux output of the model at one or more wavelengths optimally fits the observed images of a
+dusty astrophysical object. <tt>FitSKIRT</tt> searches the model parameter space through a genetic algorithm. For each
+new individual constructed by the genetic procedure, <tt>FitSKIRT</tt> performs a <tt>SKIRT</tt> simulation using the
+parameters defined by the individual's genes. The resulting simulated images are compared with the observed target
+images, and the result is fed back into the genetic algorithm as the quality measure for the individual. Because
+<tt>FitSKIRT</tt> assumes that the flux output is linear as a function of the input luminosities, it only supports
+wavelengths in the UV, optical, and NIR ranges.
+
+Similar to <tt>SKIRT</tt>, <tt>FitSKIRT</tt> is exposed to the user as a command line program to be executed in a
+Terminal window. The program expects a parameter file to be specified on the command-line to define the options for a
+particular fitting procedure. This parameter file has the filename extension ".fski" as a shorthand for
+<tt>FitSKIRT</tt>. The fski file includes a reference to a .ski file that defines the <tt>SKIRT</tt> radiative transfer
+model to be used in the fitting procedure. Note that the <tt>SKIRT</tt> code is built into <tt>FitSKIRT</tt>, so there
+is just a single executable.
+
+
+\section UserFitSkirtUsageModel Preparing the model
+
+As a first step, the observed images of the target object (i.e. the object to which a model will be fitted) must be
+properly prepared for use with <tt>FitSKIRT</tt>. This procedure is presented in the corresponding tutorial offered
+at this web site (see <a href="../tutorials/index.html">Tutorials</a>).
+
+The next step consists of creating a ski file for the <tt>SKIRT</tt> model that will be fitted to the target object.
+This can done through a <tt>SKIRT</tt> Q&A session, via the \c MakeUp graphical wizard, or by manually adjusting an
+existing ski file. See \ref UserSkirtCmdLineInter, \ref UserSkirtParamFile, and \ref UserMakeUpGuide for more
+information. The ski file must comply with a number of <tt>FitSKIRT</tt>-specific restrictions and rules:
+
+- The simulation must be oligochromatic, with a number of wavelengths (and wavelength values) that match the number of
+  observed images available for the target object (and the effective wavelemngths for the corresponding bands).
+- The units and flux output style of the simulation must match the units used in the target images.
+- The luminosities for each stellar component and for each wavelength are best all set to the same value. The optimal
+  luminosities reported by <tt>FitSKIRT</tt> are given in units (i.e. multiples) of these input luminosities. Having
+  a mixture of units (although possible) would be very confusing.
+- The simulation must include a single instrument of type MultiFrameInstrument, with a number of frames that matches
+  the number of wavelengths, and with pixel sizes that exactly match the pixel sizes of the corresponding target images.
+- The \em writeStellarComps flag of the MultiFrameInstrument must be set to true.
+- All other \em writeXXX flags in the ski file, including the \em writeTotal flag of the MultiFrameInstrument, should
+  be turned off for performance reasons (the information is not used and would be generated thousands of times).
+- The properties that will serve as fitting parameters should be given default values that allow to test the model
+  through a manual \c SKIRT simulation; these default values will be replaced by the actual parameter values in a
+  subsequent step as explained below.
+
+Once the \em ski file has been created, it has to be adjusted manually in a text editor to indicate the fitting
+parameters in the simulation. For example, to specify that the scale length for one of the geometries is a parameter,
+the following replacement would be appropriate:
+
+\verbatim
+    scaleLength="4400 pc"       -->      scaleLength="[stellar_length: 4400 pc]"
+\endverbatim
+
+The square brackets mark the position of a variable parameter while the string before the colon is the parameter's
+label. <tt>SKIRT</tt> will use the default value after the colon (and ignore everything else). <tt>FitSKIRT</tt>,
+however, will replace the default value by an appropriate value for the fitting parameter with the specified label.
+This value will correspond to the genes of the "individual" (or the point in the parameter space) being evaluated.
+In case the same parameter value should be substituted in multiple places, the corresponding label may be used more
+than once. For example, the same spatial offset may need to be applied to both stellar and dust components.
+
+Note that the input luminosities of the stellar components in the model are automatically treated as implicit fitting
+parameters, so these should not be specified as explicit fitting parameters using the square bracket syntax.
+
+
+\section UserFitSkirtUsageScheme Preparing the fitting scheme
+
+The next important step is to create the parameter file defining the fitting scheme, i.e. an fski file.
+This can done through a <tt>FitSKIRT</tt> Q&A session (start <tt>FitSKIRT</tt> without any command line arguents),
+or via the \c MakeUp graphical wizard (see \ref UserMakeUpGuide).
+
+A fitting scheme specifies options in the following areas:
+
+ - units
+ - the ski file defining the model
+ - the parameter space (i.e. the fitting parameters)
+ - the observed target images used as reference
+ - optimization algorithm settings
+
+The units and flux output style specified in the fski file must be identical to those used in the ski file. For
+implementation reasons it is not possible to automatcially extract this information from the ski file while the
+fski file is being constructed. However, <tt>FitSKIRT</tt> verifies this requirement at run time.
+
+For each of the fitting parameters used in the model ski file, the fski file must include a "parameter range". Specify
+the parameter label with the exact same spelling as in the ski file, and select one of the supported physical quantity
+types for the parameter (Dimensionless, Length, Distance, Mass, %Position angle). Then enter the lower and upper
+boundaries for the parameter, using units appropriate for the selected physical quantity type.
+
+For each of the wavelengths used in the model ski file, or equivalently for each of the observed target images being
+fitted, the fski file must include a "reference image". Specify the name of or relative path to the reference image.
+
+Before comparing a synthetic model output image to the observed reference image, <tt>FitSKIRT</tt> convolves the
+synthetic image with an appropriate kernel mimicking the point-spread function (PSF) of the instrument. In the fski
+file, select the built-in Gaussian kernel or a custom convolution kernel defined in a FITS image. For the Gaussian
+kernel, enter the FWHM of the PSF corresponding to the image (i.e. wavelength). The size of the convolution frame
+should usually be set to around 6 sigma in width. Making it much larger could significantly slow down the code.
+
+\note When using large custom convolution kernels, it is highly recommended to build <tt>FitSKIRT</tt> with the
+optional (and externally installed) fast-fourier transform library to speed up the calculations. See the \ref
+InstallationGuide.
+
+For each reference image, specify a list of the lower and upper boundaries for the luminosities of each stellar
+component. These boundaries are expressed as dimensionless multiples of the input luminosities specified in the ski
+file. It is important not to set the luminosity ranges too wide as this could slow down the fitting procedure.
+
+The final step consists of specifying the genetic algorithm settings (see \ref UserFitSkirtUsageTuning below for more
+information).
+
+\section UserFitSkirtUsageRunning Running FitSKIRT
+
+Assuming an fski file called "myfit.fski", the fitting process can be started on a single processing core by entering:
+
+\verbatim
+fitskirt myfit
+\endverbatim
+
+<tt>FitSKIRT</tt> outputs information about the consecutive best fits, including:
+ - A summary line with the current optimal parameter and luminosity values to the file
+   <tt>myfit_best_simulations.dat</tt>.
+ - The best-fitting (convolved) synthetic images for each wavelength,
+   called <tt>myfit_best_\<serial-number\>_\<wavelength-index\>.fits</tt>
+ - The corresponding residuals (i.e. the relative difference with the target image on a pixel by pixel basis),
+   called <tt>myfit_residual_<serial-number>_<wavelength-index>.fits</tt>
+
+Because of the probabilistic nature of the genetic search algorithm, it is good practice to perform multiple
+<tt>FitSKIRT</tt> runs for the same fitting scheme, and add the "best fit" from each run to an ensemble representing
+the final result. In addition to providing improved "mean values", this method also allows estimating the error on the
+optimal parameter values.
+
+<tt>FitSKIRT</tt> supports the following command line arguments:
+
+\verbatim
+fitskirt [-k] [-i <dirpath>] [-o <dirpath>]
+         [-s <simulations>] [-t <threads>]
+         {<filepath>}*
+\endverbatim
+
+The first three options affect where FitSKIRT and the SKIRT simulations executed by FitSKIRT look for input files and
+place output files. The -k option causes the input/output paths to be relative to the fski file being processed, rather
+than to the current directory. The -i option specifies the absolute or relative path for input files. The -o option
+specifies the absolute or relative path for output files.
+
+The following two options affect the parallelization of SKIRT simulations executed by FitSKIRT. The -s option specifies
+the number of SKIRT simulations to be executed in parallel (within a single process). The -t option specifies the
+number of parallel threads for each SKIRT simulation. For both options, the default value is one.
+
+Finally, each \<filepath\> argument specifies the relative or absolute file path for a single fski file, with or
+without the .fski extension. If there are multiple file paths, the specified fski files are processed one after the
+other (i.e. serialized).
+
+Except for testing purposes, <tt>FitSKIRT</tt> is best executed in multi-processing mode. This requires the
+<tt>SKIRT</tt> project to be built with MPI enabled. For more information, see \ref UserSkirtMPI and \ref
+UserFitSkirtHPC.
+
+
+\section UserFitSkirtUsageTuning Fine-tuning
+
+The most obvious place to speed up the fitting process is the ski file. As this is the most time consuming part of a
+<tt>FitSKIRT</tt> run, it is important to make fast, yet reliable simulations. An important trade-off is the number of
+photon packages. A lower amount of photon packages will result in less accurate and noisier frames but the simulation
+will run faster. You should visually test which number gives an appropriate result, keeping in mind that convolution
+also helps to smoothen the noise.
+
+Additionally, it is important to carefully choose any dust related parameters. Fits including a dust component run
+significantly longer so first of all consider how relevant this is for your case. If including the dust component is
+necessary, the choice of your dust grid and the resolution should be a balance between precision and speed. There is no
+clear general rule so it is best to first run some smaller test cases (maybe some extreme case) in order to avoid
+unnecessary oversampling of your dust grid.
+
+While there is no straightforward rule to find the ideal parameter values a general rule of thumb is something of the
+order of 20*(number of fitting parameters) as the number of individuals and about half that as number of generations.
+Notice that the individuals will always be spread uniformly over your parameter space in the first generation (so not
+Gaussian around the center of your boundaries).
+
+The mutation probability can be set a bit higher (up to 10%) if there are only a few fitting parameters. As it is
+applied to each parameter, the number of new values per generation is simply the mutation probability times the
+parameters of the individuals times the population size. For 8 or more free parameters it is advised not to set it too
+high as you would mutate almost every individual and, consequently, hinder your global optimisation process. In case of
+a mutation, the new value is determined randomly out of a Gaussian distribution centered around the original value. As
+a result this parameter partially controls how well you have explored your optimum locally in the end.
+
+The crossover rate determines the percentage of individuals that is kept every generation. The standard value, 0.65,
+results in eliminating about one third of the worst individuals every generation. This value should not be set too low,
+to avoid narrowing down to one region too fast and ending up in a local optimum.
+
+*/

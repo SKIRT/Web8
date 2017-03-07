@@ -1,47 +1,75 @@
 /**
 
-\page FS_HPC Running FitSKIRT on the VSC infrastructure
+\page UserFitSkirtHPC Running FitSKIRT on the VSC infrastructure
 
-This section will briefly explain how to setup a <tt>FitSKIRT</tt> run on the infrastructure of <a href="https://vscentrum.be/en">VSC</a>, 
-short for "Vlaams Supercomputer centrum" (Flemish Supercomputer Center). Below you can
-find an example of a script used to run <tt>FitSKIRT</tt>. We will first discuss the actual content of the script (the lines not
-starting with a hashtag). Before you can run the code, make sure <tt>SKIRT</tt> is compiled using the correct modules, also
-listed in the script below. Make sure to set the absolute path to your directories and run the code using mympirun
-instead of the regular mpirun command. It is important to add the -s 1 and -t 1 flags in order to run every parallel
-process on one processor. This proved to be the fastest option as a lot of simulation overhead is also parallelised in
-this way.
+This section presents a brief example of how to use <tt>FitSKIRT</tt> on the infrastructure of the Flemish
+Supercomputer Center (<a href="https://vscentrum.be/en">Vlaams Supercomputer Centrum</a> or VSC). To begin with, it is
+important to build the \c SKIRT project with MPI (see the \ref InstallationGuide), so that multi-processing is enabled.
+In a nutshell:
 
-The choice of the HPC settings depends heavily on your simulation. Notice you should ask what you need but preferably
-not much more. The walltime for this run is set to 40 hours but can be set up to 48 hours. In case you know your job
-will only run about 10 hours it is safer to lower your walltime accordingly.
+\verbatim
+$ module load CMake
+$ cd SKIRT/git
+$ ./configSKIRT.sh BUILD_FIT_SKIRT=ON BUILD_WITH_MPI=ON
+$ ./makeSKIRT.sh
+\endverbatim
 
-Another important choice to be made is the number of requested nodes. As <tt>FitSKIRT</tt> can create a parallel process for each
-individual in the population, the number of requested processors should not exceed that number. Try to request an amount
-of nodes that suits your simulation. For example, in the case below, a population size of 200 individuals was used.
-Therefore the ideal number of nodes in this case is 200 divided by the number of processors per node (in this case 16)
-rounded up giving us 13 nodes. As a result every processor will handle 1 individual every generation. However, as
-requesting a lot of nodes is often more difficult, another approach is to let every processor handle 2 or 3 or ... A
-bad choice in this case would be to take 12 nodes as one iteration of all processor would only evaluate 192 while the
-remaining 8 would have to be handled in a second iteration. This means that there is hardly any increase in speed going
-from 9 to 12 nodes. (Please notice that in your script the last two lines should be 1 line. They were only split here to
-match in the documentation guideline.)
+Here is an example job script that could be used to run <tt>FitSKIRT</tt>, once it has been successfully built:
 
 \verbatim
 #!/bin/sh
 #
-#PBS -N Fitskirt7_1
-#PBS -o output_1.txt
-#PBS -e error_1.txt
+#PBS -N name
+#PBS -o output.txt
+#PBS -e error.txt
 #PBS -l walltime=40:00:00
-#PBS -l nodes=13:ppn=16
+#PBS -l nodes=4:ppn=16
 #PBS -m be
 
-module load jobs
-module load GCC/4.8.3
-module load ictce/7.1.2
-cd /user/home/gent/vsc405/vsc40553/SKIRT7/run_fitskirt/test1/
-mympirun /user/home/gent/vsc405/vsc40553/SKIRT7/release/FitSKIRTmain/fitskirt -s 1 -t 1 
--o /user/home/gent/vsc405/vsc40553/SKIRT7/run_fitskirt/test1/fit1 ranges.fski
+# load the MPI implementation used when building FitSKIRT
+module load iimpi vsc-mympirun
+
+# use the scratch space as a working directory
+cd $VSC_SCRATCH/run_fitskirt/myfit
+
+# the -h 16 option runs 16 processes per node
+mympirun -h 16 $HOME/SKIRT/release/FitSKIRT/main/fitskirt -o $VSC_SCRATCH/run_fitskirt/myfit/run1 myfit.fski
 \endverbatim
+
+Load the relevant modules to provide the MPI implementation used when building the \c SKIRT project. Specify absolute
+paths to the appropriate directories and run \c FitSKIRT using \c mympirun, a local customized version of the standard
+\c mpirun command. It is best to leave the -s and -t options at their default values of 1, and use the \c mympirun -h
+option to specify a number of processes per node that matches the number of cores. This way each SKIRT simulation runs
+on a single thread in a single process. This turns out to be the optimal parallelization strategy when \c FitSKIRT is
+running in multi-processing mode.
+
+The optimal values of the job scheduling settings (specified with the \#PBS options at the start of the job script) are
+more difficult to determine. Preferably, the requested wall time is set to a value that is not much longer than the
+expected running time, because the job scheduling algorithm favors shorter jobs. However this running time is hard to
+predict, unless you have performed a number of similar fitting schemes on the same computer infrastructure.
+
+Another important choice to be made is the number of requested nodes. As indicated above, it is best to match the
+number of processes per node to the number of available cores per node. <tt>FitSKIRT</tt> can utilize at most one
+parallel process for each individual in the genetic algorithm population that needs to be evaluated. For the first
+generation, all individuals in the population must be evaluated. For subsequent generations, however, the individuals
+that are inherited from the previous generation do not need to be evaluated. This number is guided by the crossover
+probability, and is thus unfortunately not deterministic.
+
+Denoting the number of cores per node as \f$N_\text{core}\f$, the genetic algorithm population size as
+\f$N_\text{pop}\f$, and the crossover probability as \f$p_\text{cross}\f$, we can say that:
+ - It makes no sense to allocate more than \f$\text{ceil}(N_\text{pop}/N_\text{core})\f$ nodes to the job.
+ - During all but the first generation, it would seem to be more resource efficient to allocate only
+   \f$\text{ceil}((1-p_\text{cross})N_\text{pop}/N_\text{core})\f$ nodes.
+ - However, due to the probabilistic nature of the number of individuals to be evaluated, the latter strategy could
+   backfire. If the number of processes is 'just' insufficient to handle all individuals in parallel, the remaining few
+   individuals are handled in a subsequent, second batch, during which all of the other processes are idle.
+
+There are generally two ways to handle these issues:
+ - Allocate a "large" number of nodes as indicated in the above analysis, and live with the resulting inefficiencies.
+ - Allocate a "small" number of nodes, say 3 or 4 times less than indicated in the above analysis, substantially
+   improving the load balancing between processes, while at the same time increasing the wall time needed for the job.
+
+The latter strategy might be the best option as long as the running time stays under the strict wall time limit imposed
+by the VSC scheduling system.
 
 */

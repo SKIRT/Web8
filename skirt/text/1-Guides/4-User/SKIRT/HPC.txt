@@ -1,8 +1,0 @@
-/**
-
-\page UserHPC Running SKIRT on the VSC infrastructure
-
-Empty page.
- 
- */
- 

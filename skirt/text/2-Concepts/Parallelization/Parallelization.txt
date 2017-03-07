@@ -2,9 +2,10 @@
 
 \page Parallelization Parallelization
 
-The following section introduces general parallel computing concepts:
+The following sections introduce general parallel computing concepts:
 
 - \subpage ParallelComputing
+- \subpage ParallelPerformance
 
 The following section introduces the message passing interface (MPI) used to implement multi-processing
 in <tt>SKIRT</tt>:

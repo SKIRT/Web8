@@ -188,7 +188,7 @@ Multiple run-time simulation hierarchies can co-exist and are independent of eac
 global data, except when accessing truly global resources (such as the console) which are protected by
 appropriate locking mechanisms.
 
-The contents of a ski file mimics the corresponding run-time simulation hierarchy (see \ref UserSKIStruct) with
+The contents of a ski file mimics the corresponding run-time simulation hierarchy (see \ref UserSkirtParamStruct) with
 the exception of the Parallel, FilePaths and Log (Console) objects, which are configured by the code in the
 <tt>SKIRT/main</tt> module as determined by the command line arguments.
 
