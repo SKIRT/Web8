@@ -89,6 +89,8 @@ abbreviations for physical quantities (don't forget the space between the number
  - mass surface density: <tt>kg/m2, Msun/AU2, Msun/pc2</tt>
  - mass volume density: <tt>kg/m3, g/cm3, Msun/AU3, Msun/pc3</tt>
  - opacity: <tt>m2/kg</tt>
+ - time: <tt>s, yr, Myr, Gyr</tt>
+ - temperature: <tt>K</tt>
  - energy: <tt>J</tt>
  - pressure: <tt>Pa, K/m3</tt>
  - bolometric luminosity: <tt>W, Lsun</tt>
@@ -99,7 +101,6 @@ abbreviations for physical quantities (don't forget the space between the number
  - neutral surface brightness (\f$\lambda f_\lambda = \nu f_\nu\f$): <tt>W/m2/sr, W/m2/arcsec2</tt>
  - wavelength surface brightness (\f$f_\lambda\f$): <tt>W/m3/sr, W/m2/micron/sr, W/m2/micron/arcsec2</tt>
  - frequency surface brightness (\f$f_\nu\f$): <tt>W/m2/Hz/sr, W/m2/Hz/arcsec2, Jy/sr, Jy/arcsec2, MJy/sr, MJy/arcsec2</tt>
- - temperature: <tt>K</tt>
  - angular size: <tt>rad, deg, arcsec</tt>
  - positioning angle: <tt>rad, deg</tt>
  - solid angle: <tt>sr, arcsec2</tt>
