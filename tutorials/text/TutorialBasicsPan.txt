@@ -1,0 +1,433 @@
+/**
+
+\page TutorialBasicsPan Panchromatic simulation of a dust torus with SKIRT
+
+\image html TutorialBasicsPan.png
+
+In this tutorial you will use <tt>SKIRT</tt> to produce the spectral energy distribution (see illustration) and a full
+data cube for a dust torus surrounding a central stellar source. You will create a \em ski file containing the
+appropriate simulation parameters, perform the simulation, and review and interpret the simulation results.
+
+\section TutorialBasicsPanPre Getting ready
+
+This tutorial assumes that you have completed the introductory <tt>SKIRT</tt> tutorial titled "Monochromatic simulation
+of a dusty disk galaxy", or that you have otherwise acquired the working knowlegde introduced there. At the very least,
+before starting this tutorial, you should have installed the <tt>SKIRT</tt> code, some means to plot column text files
+(preferably <tt>PTS</tt>), and a FITS file viewer (preferably DS9).
+
+\section TutorialBasicsPanSki Creating the ski file
+
+In a Terminal window, with an appropriate current directory, start <tt>SKIRT</tt> without any command line arguments.
+SKIRT responds with a welcome message and starts an interactive session in the terminal window, during which it
+will prompt you for all the information describing a particular simulation:
+
+\verbatim
+   Welcome to SKIRT v___
+   Interactively constructing a simulation...
+ ? Enter the name of the ski file to be created: PanTorus
+\endverbatim
+
+The first question is for the filename of the \em ski file. For this tutorial, enter "PanTorus".
+
+\section TutorialBasicsPanSim Type of simulation
+
+\verbatim
+   Possible choices for the simulation:
+      1. An oligochromatic Monte Carlo simulation
+      2. A panchromatic Monte Carlo simulation
+ ? Enter one of these numbers [1,2] (1): 2
+\endverbatim
+
+In this tutorial the goal is to produce a spectral energy distribution (%SED) and an integral field data cube including
+infrared wavelengths and thus the effects of thermal emission by the dust. Calculating the dust temperature requires
+integrating over a range of wavelengths, so, by definition this requires a panchromatic simulation.
+
+Leave the seed for the random generator to its default value (not shown).
+
+\section TutorialBasicsPanUni Units
+
+\verbatim
+   Possible choices for the units system:
+      1. SI units
+      2. Stellar units (length in AU, distance in pc)
+      3. Extragalactic units (length in pc, distance in Mpc)
+ ? Enter one of these numbers [1,3] (3): 2
+   Possible choices for the output style for flux density and surface brightness:
+      1. Neutral: lambda F_lambda = nu F_nu
+      2. Wavelength: F_lambda
+      3. Frequency: F_nu
+ ? Enter one of these numbers [1,3] (1): 3
+\endverbatim
+
+You will be setting up a dust torus surrounding a stellar source, so it is most convenient to use stellar units with
+sizes expressed in astronomical units. Select the frequency output style, expressing integrated fluxes in Jy and
+surface densities in MJy/sr.
+
+\section TutorialBasicsPanInst Instrument system
+
+\verbatim
+   ...
+   Possible choices for item #1 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+      3. A basic instrument that outputs the total flux as data cube and as SED
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 3
+ ? Enter the name for this instrument: i00
+ ? Enter the distance to the system [0 pc,.. pc]: 100
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg):
+ ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the total field of view in the horizontal direction [0 AU,.. AU]: 80
+ ? Enter the number of pixels in the horizontal direction [1,10000] (250): 800
+ ? Enter the center of the frame in the horizontal direction [-.. AU,.. AU] (0 AU):
+ ? Enter the total field of view in the vertical direction [0 AU,.. AU]: 80
+ ? Enter the number of pixels in the vertical direction [1,10000] (250): 800
+ ? Enter the center of the frame in the vertical direction [-.. AU,.. AU] (0 AU):
+   Possible choices for item #2 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+      3. A basic instrument that outputs the total flux as data cube and as SED
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 3
+ ? Enter the name for this instrument: i90
+ ? Enter the distance to the system [0 pc,.. pc]: 100
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
+   ... [remaining questions: same answers as for first instrument]
+   ...
+\endverbatim
+
+For this tutorial, the intention is to create both an %SED and an integral field data cube for each line of sight under
+study, i.e. a face-on view and an edge-on view. Therefore, you need to include two instruments of the default type
+"that outputs the total flux as data cube and as SED". For the first instrument, specify an inclination of 0 degrees
+and a corresponding name, such as "i00" or "faceon". For the second instrument, specify an inclination of 90 degrees
+and a name such as "i90" or "edgeon". The azimuth angle is irrelevant because the simulated model will be axisymmetric,
+and the position angle (which rotates the instrument frame in its own plane) is best left at zero. For both
+instruments, specify a distance of 100 pc, and a field of view of 80 AU and 800 pixels in both directions, centered on
+the origin. When asked for a third instrument, enter zero to terminate the list.
+
+\section TutorialBasicsPanPhot Photon packages
+
+\verbatim
+ ? Enter the number of photon packages per wavelength [0,1e15] (1e6): 5e5
+\endverbatim
+
+The run time of a panchromatic <tt>SKIRT</tt> simulation is roughly proportional to the product of the number of photon
+packages and the number of wavelengths. To limit the run time for this tutorial, set the number of photon packages to
+\f$5\times10^5\f$. This number is sufficient to produce a reasonable %SED for the simple 2D tutorial model, but the
+frames in the data cube will still be quite noisy.
+
+\section TutorialBasicsPanWave Wavelength grid
+
+\verbatim
+   Possible choices for the wavelength grid:
+      1. A logarithmic wavelength grid
+      2. A nested logarithmic wavelength grid
+      3. A wavelength grid read from a file
+ ? Enter one of these numbers [1,3] (1): 2
+ ? Do you want to output a data file listing the wavelength grid points? [yes/no] (no):
+ ? Enter the shortest wavelength of the low-resolution grid [0.0001 micron,1e6 micron]: 0.25
+ ? Enter the longest wavelength of the low-resolution grid [0.0001 micron,1e6 micron]: 250
+ ? Enter the number of grid points in the low-resolution grid [3,2000000000] (25): 20
+ ? Enter the shortest wavelength of the high-resolution subgrid [0.0001 micron,1e6 micron]: 5
+ ? Enter the longest wavelength of the high-resolution subgrid [0.0001 micron,1e6 micron]: 25
+ ? Enter the number of grid points in the high-resolution subgrid [3,2000000000] (25): 20
+\endverbatim
+
+<tt>SKIRT</tt> works with a fixed wavelength grid, i.e. a list of \f$N_\lambda\f$ wavelengths.
+There are three possibilities: a simple logarithmic grid, a logarithmic grid with a nested
+logarithmic subgrid, and a wavelength grid loaded from a file. Here are some guidelines for an
+appropriate choice of the wavelength grid:
+ - The coverage of your wavelength grid should be appropriate to the radiative transfer problem.
+   Typically radiation is absorbed at UV and optical wavelengths and re-emitted at far-infrared and submillimeter
+   wavelengths. So your wavelength grid should typically range from the UV to the submm range,
+   i.e. from about 0.1 to 1000 \f$\mu\f$m.
+ - On the other hand, don't make your wavelength coverage too large. In order to make a meaningul simulation,
+   <tt>SKIRT</tt> must know the spectral properties of the emitters (the stars) and the optical properties of the dust
+   at all wavelengths considered. Usually, you should not include wavelengths shorter than 0.01 \f$\mu\f$m or
+   longer than a few thousand \f$\mu\f$m.
+ - You should include a number of wavelength grid points that ensures sufficient resolution and precision.
+   On the other hand, the simulation run time is roughly proportional
+   to the number of grid points in the wavelength grid. A typical setup uses about 20 grid points for every
+   order in wavelength. If you want much more resolution in a certain wavelength range, for example because
+   you are studying a spectral region in detail, you can use the nested logarithmic grid.
+ - Whatever you decide to do, always make sure that the wavelength grid includes the V band, since the central
+   wavelength of the V band is where the optical properties of the dust are normalized. If 0.550 \f$\mu\f$m
+   is not covered by your wavelength grid, <tt>SKIRT</tt> will terminate.
+
+For this tutorial, choose a nested logarithmic wavelength grid ranging from 0.25 to 250 \f$\mu\f$m, with a finer
+subgrid in the range from 5 to 25 \f$\mu\f$m. This range is sufficiently wide for the tutorial model (as you will be
+able to verify from the results). The finer subgrid in the infrared is necessary to properly resolve the dust emission
+features in that range. Specify a number of 25 grid points in each range. The points of the courser grid that happen to
+lie inside the finer grid range are automatically removed, so the total number of grid points will be smaller than 50.
+
+\section TutorialBasicsPanStel Stellar system
+
+\verbatim
+   ...
+   Possible choices for item #1 in the stellar components list:
+      1. A stellar component with a built-in geometry (in an panchromatic simulation)
+         ...
+ ? Enter one of these numbers [1,4] (1):
+   Possible choices for the geometry of the spatial stellar distribution:
+      1. A point source geometry
+      ...
+ ? Enter one of these numbers [1,42] (1):
+\endverbatim
+
+The stellar source for this tutorial is modeled by a point source in the origin. Select a stellar component with
+built-in geometry, and a point source geometry (the default choice in both cases).
+
+\verbatim
+   Possible choices for the spectral energy distribution for the stellar component:
+      1. A black body SED
+      2. The SED of the Sun
+      3. A Pegase galaxy SED
+         ...
+ ? Enter one of these numbers [1,10] (1): 2
+   Possible choices for the type of normalization for the stellar component:
+      1. Stellar component normalization through the bolometric luminosity
+      ...
+ ? Enter one of these numbers [1,3] (1):
+ ? Enter the bolometric luminosity for this component, in solar units [0,..]: 1
+   ...
+\endverbatim
+
+In addition to the spatial distribution of the source (which is trivial in this case), you need to provide its emission
+spectrum and luminosity. <tt>SKIRT</tt> offers several built-in options for this purpose, and allows loading a custom
+%SED from a file. For this tutorial, specify the solar emission spectrum normalized to the bolometric luminosity of the
+sun. When asked for a second stellar component, enter zero to terminate the list.
+
+\section TutorialBasicsPanDust Dust system
+
+\verbatim
+   Possible choices for the dust system:
+      1. A dust system for use with panchromatic simulations
+ ? Enter one of these numbers or zero to select none [0,1] (1):
+   Possible choices for the dust distribution:
+      1. A dust distribution composed of various dust components
+         ...
+ ? Enter one of these numbers [1,5] (1):
+\endverbatim
+
+For a panchromatic simulation, the only applicable type of dust system is the panchromatic dust system, which supports
+thermal dust emission in addition to absorption and scattering. The dust system is optional, so you need to explicitly
+select it. The dust distribution in this tutorial is composed of a single built-in component describing a torus. So you
+need to select the "component" dust distribution type.
+
+\verbatim
+   ...
+   Possible choices for item #1 in the dust components list:
+   Possible choices for the geometry of the dust component:
+      1. A point source geometry
+         ...
+     14. A torus geometry
+         ...
+ ? Enter one of these numbers [1,42] (9): 14
+ ? Enter the radial powerlaw exponent p of the torus [0,..]: 0
+ ? Enter the polar index q of the torus [0,..]: 0
+ ? Enter the half opening angle of the torus [0 deg,90 deg]: 10
+ ? Enter the minimum radius of the torus [0 AU,.. AU]: 0.5
+ ? Enter the maximum radius of the torus [0 AU,.. AU]: 40
+ ? Reshape the inner radius according to the Netzer profile? [yes/no] (no):
+\endverbatim
+
+For this tutorial, select a torus geometry with a uniform density distribution (hence the zero values for the power-law
+exponent and the polar index), a half opening angle of 10 degrees and a radius range from 0.5 to 40 AU. A uniform dust
+density distribution is not very realistic, but it facilitates interpreting the results of this tutorial simulation.
+
+\verbatim
+   Possible choices for the dust mixture of the dust component:
+      1. A dust mix with average interstellar properties
+      2. A Draine & Li (2007) dust mix
+      3. A dust mix with mean Zubko properties
+         ...
+ ? Enter one of these numbers [1,14] (1): 3
+ ? Output the optical properties of the dust mix? [yes/no] (yes):
+ ? Output the mean optical properties of the dust mix? [yes/no] (yes):
+   Possible choices for the type of normalization for the dust component:
+      1. Normalization by defining the total dust mass
+         ...
+      4. Normalization by defining the edge-on optical depth at some wavelength
+         ...
+ ? Enter one of these numbers [1,7] (1): 4
+ ? Enter the wavelength at which to specify the optical depth [0.0001 micron,1e6 micron]: 0.55
+ ? Enter the edge-on optical depth at this wavelength [0,..]: 1
+   ...
+\endverbatim
+
+In addition to the spatial distribution of the dust, you need to provide its optical and calorimetric properties.
+<tt>SKIRT</tt> offers a wide range of options to defined the properties of a dust mixture, which can be categorized as
+follows. On the most basic level, <tt>SKIRT</tt> includes some "turn-key" dust mixes that describe a dust population
+consisting of identical, representative dust grains. The properties of the representative dust grain are averaged over
+several grain materials and over the grain size distribution for each material. With these representative properties
+<tt>SKIRT</tt> can produce an exact solution for scattering and absorption in the UV/optical, but not for the dust
+emission. A more accurate calculation of the dust emission spectrum requires specification of the material properties
+and grain size distribution for each type of dust seperately. <tt>SKIRT</tt> includes some "turn-key" dust mixes that
+provide this level of detail and require very little extra configuration. On the other hand, it is also possible to
+specify a custom dust mix with fully configurable grain compositions and size distributions.
+
+For this tutorial, specify the "mean Zubko" turn-key dust mix, which describes the representative properties for a
+specific dust model including graphite, silicate and PAH dust grains. Indirectly determine the amount of dust in the
+model by specifying that the V-band edge-on optical depth of the torus is \f$\tau^\mathrm{e}_V=1\f$. Finally, when
+asked for the second dust component, terminate the list by entering zero.
+
+\verbatim
+   Possible choices for the dust grid:
+      1. An axisymmetric dust grid in spherical coordinates
+      2. An axisymmetric dust grid in cylindrical coordinates
+      3. A cartesian dust grid
+         ...
+      5. An octtree dust grid
+         ...
+ ? Enter one of these numbers [1,8] (5): 2
+ ? Output data files for plotting the structure of the grid? [yes/no] (yes):
+ ? Enter the cylindrical radius of the grid [0 AU,.. AU]: 40
+ ? Enter the start point of the cylinder in the Z direction [-.. AU,.. AU]: -10
+ ? Enter the end point of the cylinder in the Z direction [-.. AU,.. AU]: 10
+   Possible choices for the bin distribution in the radial direction:
+      1. A linear mesh
+      2. A power-law mesh
+      3. A symmetric power-law mesh
+      4. A logarithmic mesh
+ ? Enter one of these numbers [1,4] (1): 2
+ ? Enter the number of bins in the mesh [1,100000] (100): 100
+ ? Enter the bin width ratio between the last and the first bin [0,..] (1): 20
+   Possible choices for the bin distribution in the Z direction:
+      1. A linear mesh
+      2. A power-law mesh
+      3. A symmetric power-law mesh
+ ? Enter one of these numbers [1,3] (1): 3
+ ? Enter the number of bins in the mesh [1,100000] (100): 100
+ ? Enter the ratio between the outermost and the innermost bins [0,..] (1): 20
+\endverbatim
+
+The spatial grid for this tutorial simulation can be two-dimensional, and needs more resolution in the center of the
+model. Select a 2D axisymmetric dust grid in cylindrical coordinates with a power-law mesh in the radial direction and
+a symmetric power-law mesh in the vertical direction. Specify a grid radius of 40 AU and a grid height of 20 AU
+centered on the origin, neatly enclosing the dust torus in the model. Specify 100 cells in each direction, and specify
+a ratio of the width of the outermost to the innermost bin of 20 in both directions.
+
+\verbatim
+ ? Enter the number of samples for determining cell mass [10,1000] (100):
+ ? Output convergence checks on the dust system? [yes/no] (yes):
+ ? Output the dust density distribution? [yes/no] (yes):
+ ? Output a V-band optical depth map seen from the center? [yes/no] (no):
+   Possible choices for the dust emissivity type:
+      1. Modified blackbody dust emissivity (assumes LTE conditions)
+ ? Enter one of these numbers or zero to select none [0,1] (1):
+   Possible choices for the dust library mechanism:
+      1. A dust library that calculates the emissivity for every dust cell
+      2. A dust library with a one-dimensional grid of emissivity entries
+      3. A dust library with a two-dimensional grid of emissivity entries
+ ? Enter one of these numbers [1,3] (1):
+ ? Do you want to include dust self-absorption? [yes/no] (no):
+ ? Output FITS files displaying the dust temperature distribution? [yes/no] (yes):
+ ? Output a data file describing the interstellar radiation field? [yes/no] (no):
+\endverbatim
+
+The remaining dust system parameters can be left to their default values. These options are described in more detail in
+another tutorial.
+
+\section TutorialBasicsPanRun Running the simulation
+
+To run the simulation, enter the following command (with the same current directory):
+
+\verbatim
+$ skirt PanTorus
+   Welcome to SKIRT v___
+   Constructing a simulation from ski file 'PanTorus.ski'...
+   ...
+   Starting setup...
+   ...
+   Starting the stellar emission phase...
+   ...
+   Starting the dust emission phase...
+   ...
+   Starting writing results...
+   ...
+\endverbatim
+
+The <tt>SKIRT</tt> progress log reflects the various stages of the similation. A panchromatic simulation run includes a
+dust emission phase in addition to the stellar emission phase. During the stellar emission phase, <tt>SKIRT</tt> tracks
+the amount of energy absorbed in each dust cell for each wavelength in the simulation's wavelength grid. At the start
+of the dust emission phase, <tt>SKIRT</tt> uses this information to calculate the dust temperature and the
+corresponding emission spectrum in each dust cell.
+
+\section TutorialBasicsPanOutput Output files
+
+Most of the output files for this tutorial are similar to those already described for the "Monochromatic simulation
+of a dusty disk galaxy" tutorial. This section describes the output file types that are new to this tutorial.
+
+The instruments used in this tutorial each produce two files:
+- \c PanTorus_iNN_total.fits is a FITS file containing the data cube with the total surface brightness for each pixel
+  as detected by the instrument. The data cube has a frame for each wavelength in the simulation's wavelength grid.
+- \c PanTorus_iNN_sed.dat is a short text data file representing the spectral energy distribution of the photon
+    packages detected by the instrument; there are two columns (wavelength, flux) that can easily be plotted.
+
+There are also some additional files describing aspects of the dust system that make sense only for panchromatic
+simulations:
+ - \c PanTorus_ds_tempxy.fits & \c xz ("temperature") are FITS data files containing a 1024 x 1024 pixel map of the
+   dust temperature in a coordinate plane, across the total extension of the dust grid.
+ - \c PanTorus_ds_celltemps.dat is a text data file listing the dust mass and dust temperature in each cell of the
+   dust grid; this information can be used to plot a histogram of the mass-weighted dust temperature distribution.
+
+\section TutorialBasicsPanPTS Plotting SEDs
+
+<tt>PTS</tt> offers a simple way to create a PDF file plotting the SEDs produced by a <tt>SKIRT</tt> simulation. The
+SEDs for all instruments are combined on the same figure. After the simulation has completed, make sure that the output
+directory is your current directory, and simply enter the command "pts plotseds". The PDF file is placed next to the
+original data files with a similar name (the instrument name is removed and the filename extension is replaced by
+.pdf):
+
+\verbatim
+$ pts plotseds
+...
+Starting plotseds...
+Created PDF grid plot file __/PanTorus_sed.pdf
+Finished plotseds
+$
+\endverbatim
+
+To adjust the axis ranges, open the Python script <code>~/PTS/pts/do/core/plotseds.py</code> in a text editor.
+Uncomment and update the lines provided for this purpose, and then rerun "pts plotseds". For example:
+
+\verbatim
+# a value of None means that the axis is autoscaled;
+# alternatively specify a range through a tuple with min and max values
+xlim = None
+ylim = None
+xlim = ( 0.1, 300 )
+ylim = ( 1e-2, 1 )
+\endverbatim
+
+\section TutorialBasicsPanRes Interpreting simulation results
+
+As always it is a good idea to open \c PanTorus_ds_convergence.dat in a text editor and check the dust grid convergence
+metrics. The expected values should be within a few percent of the actual values. It is also instructive to compare the
+theoretical and gridded dust density cuts (e.g. \c PanTorus_ds_trhoxz.fits and \c PanTorus_ds_grhoxz.fits) in a FITS
+viewer such as DS9. Note, for example, the grid effects and the varying cell sizes at the edges of the torus in this
+tutorial model.
+
+Open the temperature maps (\c PanTorus_ds_tempxy.fits and \c PanTorus_ds_tempxz.fits) with DS9. Evaluate the
+temperature gradient in the dust, and look up the minimum and maximum temperature values.
+
+Consider the SEDs plotted in the previous section. It is obvious that the edge-on extinction is a lot stronger than
+the face-on extinction, as can be expected from the dust geometry. The effect is especially strong for shorter
+wavelengths because the dust grain cross sections are larger in that wavelength regime. The dust emission continuum in
+the (far-)infrared is isotropic because the dust is essentially transparent at those wavelengths.
+
+Finally, open the instrument data cubes (\c PanTorus_i00_total.fits and \c PanTorus_i90_total.fits) with DS9 and browse
+through the frames (or wavelengths). Manually adjust the range of the pixel values shown, clipping away the extremely
+bright central pixel. When comparing between frames, make sure to use the same scale and pixel range. To determine the
+wavelength corresponding to a particular frame index in the data cube, open one of the %SED files (e.g. \c
+PanTorus_i00_sed.dat) in a text editor: the first column lists the wavelengths.
+
+Interpret the results in the data cubes for each wavelength regime. Outside of the central pixel, the UV/optical
+radiation reaching the instruments has been scattered by dust grains in the torus. In the (far-)infrared, the dust
+grains re-emit the thermal energy absorbed at shorter wavelengths.
+
+
+<b><i>Congratulations, you made it to the end of this tutorial!</i></b>
+
+*/

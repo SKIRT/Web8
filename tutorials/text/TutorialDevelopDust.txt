@@ -1,0 +1,215 @@
+/**
+
+\page TutorialDevelopDust Adding a toy dust mixture class to SKIRT to study scattering
+
+\image html TutorialDevelopDust.png
+
+<i>Illustration above</i>: the surface brightness of radiation scattered by a spherical dust shell with a central point
+source. The source luminosity and the dust albedo are constant for all panels; the asymmetry parameter of the
+scattering phase function for the dust varies from \f$g=0.9\f$ (mostly forward, left panel) to \f$g=0\f$ (isotropic,
+right panel).
+
+In this tutorial, you will implement an idealized dust mixture with a constant extinction coefficient and albedo, and a
+strongly wavelength-dependent asymmetry parameter of the scattering phase function. You will construct a simple
+spherically symmetric shell model using this dust mixture to study the effects of the asymmetry parameter on the
+observed surface density.
+
+This tutorial is on a slightly more advanced level than most of the other \c SKIRT tutorials. While the text offers
+guidance on how to accomplish the goals of the tutorial, it does not spell out all of the details. Thus, before
+starting this tutorial, you should have completed the "Adding a new geometry" development tutorial, and you should know
+how to use \c SKIRT as described in the user guide and in the various usage tutorials. You should have installed the Qt
+development environment and built the \c SKIRT code as described in the installation guide.
+
+\section TutorialDevelopDustMix Adding a dust mixture class
+
+\subsection TutorialDevelopDustMixHier The DustMix class hierarchy
+
+The DustMix class and its subclasses are at the core of the support for dust mixtures in \c SKIRT. Part of this class
+hierarchy is illustrated in the following diagram (connections starting with a triangle denote inheritance).
+
+\dot "" width=12cm
+digraph dustmixhierarchy {
+  rankdir=BT;
+  node [shape=rect, fontname=Helvetica, fontsize=10];
+  edge [arrowhead=empty];
+
+  InterstellarDustMix -> DustMix;
+  MultiGrainDustMix -> DustMix;
+    MRNDustMix -> MultiGrainDustMix;
+    ZubkoDustMix -> MultiGrainDustMix;
+    ConfigurableDustMix -> MultiGrainDustMix;
+  DraineLiDustMix -> DustMix;
+}
+\enddot
+
+A DustMix object (i.e. an instance of one of the DustMix subclasses) represents a dust mixture with its associated set
+of properties. A dust mixture consists of one or more dust populations; each dust population can represent dust grains
+with different chemical compositions and/or with different sizes. A continuous range of dust populations (e.g. a size
+distribution) must be discretized in a finite number of populations.
+
+The top-level DustMix class provides functions to the rest of the SKIRT code for retrieving relevant properties of the
+various dust populations in the mixture. Subclasses are simply expected to setup the properties for each dust
+population, and do not offer any additional retrieval functions. The DustMix class manages two categories of
+properties. Fundamental properties must be communicated by each concrete subclass to the DustMix class during setup;
+derived properties are calculated by the DustMix class without further assistance from the subclass. The DustMix
+classes do not perform any normalization on the dust properties; they publish absolute values in the appropriate SI
+units.
+
+The classes that inherit directly from DustMix, such as InterstellarDustMix and DrainLiDustMix, usually represent
+pre-calculated, average dust properties for some "standard" dust mix, simply imported from a data file.
+
+The MultiGrainDustMix class is an important "intermediate" DustMix subclass. It offers facilities to its subclasses to
+calculate the properties for a dust population from the underlying grain composition and grain size distribution. A
+multi-grain dust mix can consist of multiple dust population ranges, each with a specific grain composition and with a
+particular grain size distribution split into one or more bins. Some MultiGrainDustMix subclasses, such as MRNDustMix
+and ZubkoDustMix, implement a specific dust model with a builtin grain size distribution function (which can be quite
+complex, as in ZubkoDustMix). On the other hand, the ConfigurableDustMix class allows a dust mix to be fully configured
+from within the ski file using pre-conceived components.
+
+\subsection TutorialDevelopDustMixSco Scoping out the work
+
+The dust mixture you need for this tutorial has basic, idealized properties that can be easily implemented in the
+source code. The mixture has a single dust population consisting of grains with a constant extinction coefficient and
+albedo (at all wavelengths), and a scattering phase function that varies with wavelength from fully backward over
+isotropic to fully forward. This can be accomplished with a class that directly inherits the DustMix class, similar to,
+e.g., the InterstellarDustMix class in the diagram above.
+
+It so happens that the Benchmark1DDustMix class has a very similar structure. It reflects idealized dust properties
+defined in the context of a one-dimensional benchmark problem (Ivezic et al. 1997). The class is based directly on
+DustMix and defines a single dust population with properties that are calculated in the source code. To examine this
+class more closely, open the \c Benchmark1DDustMix.hpp and \c Benchmark1DDustMix.cpp files in the code editor.
+
+It appears that Benchmark1DDustMix offers no user-configurable properties and does all its work in the
+setupSelfBefore() function, which is invoked by the \c SKIRT machinery during simulation setup. As explained in the
+previous section, it is indeed in this phase that a DustMix subclass must define its dust populations. In this case,
+the setupSelfBefore() function initializes some arrays to store the optical dust properties, calculates these
+properties, and then hands them to the addpopulation() function offered by the DustMix class. You should use the same
+structure for your new class.
+
+According to its documentation, the addpopulation() function used here expects the following arguments to specify the
+optical properties for the new dust population: the dust mass per hydrogen atom, the absorption and scattering cross
+sections per hydrogen atom, and the scattering phase function asymmetry parameter of the Henyey-Greenstein phase
+function. The optical properties must be sampled at the grid points of the simulation's wavelength grid, thus the
+specified arrays must have the same length as the simulation's wavelength grid.
+
+For dust mixtures that can be combined with other dust mixtures in a \c SKIRT simulation, the cross sections must be
+specified in the appropriate SI units. As long as the simulation configuration has a single dust component, however,
+the units are not important because the dust density is automatically scaled to match the normalization of the dust
+contents (via optical depth or total dust mass). So, for the idealized dust mixture this tutorial, you can specify the
+cross sections in arbitrary units.
+
+\subsection TutorialDevelopDustMixCre Creating the new source and header files
+
+Locate the files \c Benchmark1DDustMix.hpp and \c Benchmark1DDustMix.cpp in your local working copy of the \c SKIRT
+source code (in the src/SKIRTcore directory), and copy them to a set of new files named \c TutorialDustMix.hpp and \c
+TutorialDustMix.cpp (in the same directory). Do not remove the original files!
+
+Go back to Qt Creator and right-click on the \c SKIRT project icon in the "Projects" pane. In the popu-menu, choose
+"Add Existing Files...". In the dialog, locate and select the two new source files and press the "Open" button. In the
+next (smaller) dialog, confirm that you want to add the new files to source control. Now locate the new files in Qt
+Creator's project browser and open them in the editor.
+
+In the new header file (.hpp), apply the following changes:
+ - replace the three occurrences of \c "BENCHMARK1DDUSTMIX_HPP" by \c "TUTORIALDUSTMIX_HPP",
+ - replace all occurrences of \c "Benchmark1DDustMix" by \c "TutorialDustMix",
+ - adjust the human-readable description (or "Title") in the Q_CLASSINFO macro,
+ - update the Doxygen documentation for the class and its functions.
+
+In the new source file (.cpp), for now, simply replace all occurrences of \c "Benchmark1DDustMix" by \c
+"TutorialDustMix". Build \c SKIRT with these changes. There should be no errors at this point.
+
+\subsection TutorialDevelopDustMixDef Defining the dust properties
+
+The existing implementation of the function setupSelfBefore() starts with a call to the same function in the base class
+(DustMix in this case). This call should always be present and thus must remain unchanged.
+
+The function next retrieves the simulation's wavelength grid, and creates temporary arrays with the same size as the
+wavelength grid for the absorption and scattering cross sections and for the assymmetry parameter. (The arrays are
+named for the opacity mass coefficients rather than the cross sections; this is acceptable because the units are
+arbitrary for this tutorial dust mixture). This section of the code can remain unchanged.
+
+Replace the section of the code that calculates the property values as follows:
+ - Set the absorption and scattering cross sections to the same constant value (such as 1) for all wavelengths,
+   reflecting an albedo of 0.5.
+ - Set the assymmetry parameter to values linearly progressing from -0.999 for the first wavelength in the grid
+   to 0.999 for the last wavelength in the grid; use a range of [-0.999, +0.999] instead of [-1,1]
+   to avoid numerical instabilities (and NaN results) in the calculation of the phase function.
+ - Take care to properly handle the case where the simulation has only a single wavelength grid point.
+
+In the invocation of the addpopulation() function, adjust the value of the first argument (the dust mass per hydrogen
+atom). Because the cross sections for this dust mix are scale-independent, you can specify an abritrary constant value.
+
+Save your changes and perform a build. There should be no errors.
+
+\subsection TutorialDevelopDustMixReg Registering the new class
+
+You must make the new class known to the \c SKIRT discovery mechanism so that it will be properly listed when
+constructing a new .ski file during an interactive Q&A session. Locate the file \c RegisterSimulationItems.cpp in Qt
+Creator's project browser and open it in the editor.
+
+Add the \c "TutorialDustMix.hpp" include directive to the already long list, in alpahabetical order. The locate the
+list of \c add<> statements for DustMix subclasses and insert a new statement in the location you want it to appear in
+the corresponding choice list while creating a new .ski file in the interactive Q&A session.
+
+Save your changes and perform a build. Assuming there are no errors, \c SKIRT is now ready for use with the new
+dust mixture.
+
+\section TutorialDevelopDustUse Using the new dust mixture
+
+\subsection TutorialDevelopDustUseCon Configuring a simulation model
+
+To more easily evaluate the effect of a varying asymmetry parameter in the scattering phase function, it is best to
+use the same input luminosity for all cases. Since the asymmetry parameter varies with wavelength (in the idealized
+dust mixture you just created), you need a wavelength-independent source spectrum. You can accomplish this by defining
+and loading an %SED from file. Create a regular text file called, e.g., "ConstantSED.txt" with the following contents:
+
+\verbatim
+2
+0.1  1
+1.0  1
+\endverbatim
+
+The first line specifies the number of wavelengths in the file. The following lines specify the same luminosity
+at the limiting wavelengths (0.1 and 1 \f$\mu\f$m), which will be interpolated for intermediate wavelengths.
+
+Create a \c SKIRT parameter file according to the following guidelines:
+ - A panchromatic simulation using a logarithmic wavelength grid in the range 0.1 to 1 \f$\mu\f$m
+   with 21 wavelength points, shooting half a million photon packages per wavelength.
+ - Extragalactic units with the "Wavelength" flux output style.
+ - A central stellar point source with an %SED loaded from "ConstantSED.txt" and arbitrary luminosity normalization.
+ - A spherically symmetric "shell" dust geometry with inner radus 0.9 pc, outer radius 1 pc, and constant density
+   (exponent equal to zero).
+ - The TutorialDustMix you just implemented.
+ - A radial optical depth of 1 (at any wavelength, since the opacities are constant).
+ - A spherically symmetric (1D) dust grid with an outer radius of 1 pc and a linear mesh with 10 bins (so that the
+   outer bin exactly matches the dust shell).
+ - No dust emission.
+ - An advanced ("full") instrument at a distance of 1 Mpc and with a field-of-view of 2 pc and 400 pixels in each
+   direction; the viewing angle doesn't matter because the model is spherically symmetric.
+
+Run \c SKIRT with this configuration and, if necessary, debug your code and the configuration file until the following
+things look as expected:
+ - The convergence of the dust grid (dust mass and radial surface density).
+ - The cuts through the theoretical and gridded dust density.
+ - The optical properties of your dust mix as a function of wavelength.
+
+\subsection TutorialDevelopDustUseEval Evaluating the simulation results
+
+If all goes well, \c SKIRT has produced several data cubes including a frame for each wavelength. The "total" frames
+include the direct light from the source in the central pixel, confusing the scaling of the other pixels. It is easier
+to study the scattered surface brightness recorded in the "scattered" data cube.
+
+Make sure that all frames in the data cube are shown with the same color bar and pixel scale (you can manually apply a
+scale using the "Scale Parameters" panel in DS9). Then use the "Cube" panel to scroll through the frames and evaluate
+the effect of changing the scattering phase function (see figure at the beginning of this tutorial). To obtain the
+mapping from data cube frame index to wavelength, open the %SED text column file produced by the \c SKIRT instrument.
+
+It is also instructive to study the contribution to the surface brightness (and/or to the integrated flux) as a
+function of the number of scattering events experienced by the observed photon package. To this end, open the .ski file
+and set the \em scatteringLevels attribute of the FullInstrument to a value of 9. When you re-run the simulation, \c
+SKIRT produces a separate data cube for each scattering level up to the specified limit.
+
+
+<b><i>Congratulations, you made it to the end of this tutorial!</i></b>
+
+*/

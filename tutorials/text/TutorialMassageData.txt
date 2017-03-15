@@ -1,0 +1,719 @@
+/**
+
+\page TutorialMassageData Massaging data and SKIRT output with PTS
+
+In this tutorial you will be introduced to the tools that have been designed for preparing observational data and analysing SKIRT output. These tools are bundled in the python package PTS (Python Toolkit for SKIRT). First, you will get an introduction on what PTS does, and how to use its basic components.
+Then, you will learn how PTS can help you to easily obtain image data for a certain galaxy. You will then follow a few simple steps to prepare these image for further analysis. You will then use SKIRT to produce a simple radiative transfer model for this galaxy, and compare the simulation output with the observations. If there is time left, there are also some more advanced topics that explain how to include new functionality into PTS and how to use observationally data directly to create a 3D SKIRT model (deprojection).
+
+\note Most PTS functionality is fairly new. Therefore, some of you may still encounter problems with the tools used during this tutorial. If this is the case, please don't hesitate to ask for help from the PTS team.
+
+\section TutorialMassageDataStart Getting ready
+
+For this tutorial, it is crucial to have an active internet connection. It is also very important to update PTS before starting with any of the topics. Updating PTS is easy, simple navigate (cd) to the PTS/pts repository directory, and execute the following command:
+
+\verbatim
+git pull
+\endverbatim
+
+If this operation is successful and you have installed the required python packages as in the PTS installation manual (http://www.skirt.ugent.be/pts/_installation_guide.html), there is nothing else you need to do in order to start working with PTS.
+
+\section TutorialMassageDataIntroduction Introduction
+
+PTS was initially created mainly to directly interface with SKIRT and provide tools for upgrading ski files, providing a test environment for SKIRT developers, converting SKIRT units, plotting simulation output (such as dust grids ands SEDs), extracting and converting the results of hydrodynamical simulations for input in SKIRT, etc. However, since then, it has substantially grown and now provides a wide range of functionalites also beyond the scope of radiative transfer. It has now been divided into 6 different subprojects, each of them having a distinct purpose:
+
+ - core: The core subproject contains all the basic components and also all SKIRT-related modules, for pre- and postprocessing data and for launching (batches of) SKIRT simulations (locally and remotely).
+ - eagle: This subproject contains classes and functions dedicated to the EAGLE project.
+ - magic: The magic subproject previously existed as a separate package called 'AstroMagic'. It contains a lot of classes that are very useful when working with astronomical images: a Frame class for 2D images with WCS information and other meta data, a class DataCube for working with 3D data (one wavelength plane), and classes such as Mask and SegmentationMap. Other classes read in or write regions files, such as the Region and SkyRegion classes. The magic subproject also features many advanced tools such as automatic source extraction, filter and PSF convolution, rebinning, automatic sky subtraction, unit conversion etc.
+ - dustpedia: Contains tools related to the DustPedia project, in which Ghent is actively involved. It contains classes that can be used to access the DustPedia archive through a convenient interface for example, and implements parts of the image processing algorithms that can be used to generate the GALEX and SDSS mosaics and their corresponding poisson error maps.
+ - modeling: Contains tools for radiative transfer modeling of galaxies. Contains a lot of classes, for data set preparation, photometry, decomposition, SED fitting, generating models, and analysing all sorts of properties of a 3D radiative transfer model (such as attenuation, dust heating, etc.)
+ - evolve: Genetic algorithm framework, used by the modeling subproject for generating radiative transfer models.
+
+Navigate to your local PTS repository (~/PTS/pts). You will find a separate directory for each of the PTS subprojects.
+
+\image latex pts_structure.png "" width=5cm
+
+You will also find a directory called 'do'. In 'do', there will also be a directory for each of the PTS subprojects. In these directories, you will find the PTS scripts that can be invoked from the command line. This is the main philosphy in terms of PTS development: command-line interfaces are placed within the 'do' directory, in the appropriate subdirectory, and the actual classes that contain the implementation are placed in a directory structure under either the 'core', 'eagle', 'magic', 'dustpedia', 'modeling' or 'evolve' subproject directory. Thus, many of the do scripts have a direct counterpart in the form of a module or class of which the methods are used when the corresponding script is invoked from the PTS command-line. However, there are also do scripts that have no counterpart, because their functionality is simple and can be completely contained within the script itself. Note that there is also a 'developer' and a 'fitskirt' directory in 'do', without suproject counterparts. These directories contain some small scripts useful for PTS developers and for working with FitSKIRT respectively.
+
+To get an overview of all the possible PTS commands, just press 'pts' in a terminal an press ENTER:
+
+\verbatim
+pts
+\endverbatim
+
+This should produce the following colorful output:
+
+\image latex pts.png "" width=17cm
+
+All PTS command are listed, grouped per subproject and described with a short sentence.
+
+Note that some pts commands in the list do not have a corresponding script in their 'do' subdirectory. This is because these are commands that are directly linked by PTS to a certain class, a so-called \em Configurable class. These classes can be directly configured from the command-line and they always have a run() function that performs the intended behaviour. More information about these classes and about adding a PTS command is given in the last (optional) topic.
+
+A very useful command is 'depends'. This command can tell which dependenceis are needed for PTS and whether these packages are present on your system. Try the command in the following way:
+
+\verbatim
+pts depends
+\endverbatim
+
+This script works by reading each file within the PTS repository and looking for import statements. You will hopefully get the following output:
+
+\image latex depends.png "" width=6cm
+
+If all of the packages are listed in green, that means you have every possible dependency for PTS. Dependencies that were not found are listed in red. Not every user of PTS needs all of the functionality and therefore not all the listed packages. Also during this tutorial, only a subset of the packages are really required. You can check with someone of the PTS team whether the output of 'depends' is good enough for the rest of the tutorial.
+
+A useful option, that is present for many PTS commands, is the '--help' or '-h' flag. Add it to the 'pts depends' command to get the following output:
+
+\image latex help.png "" width=15cm
+
+You see a convenient overview of all the different options that can be specified, as well as the usage syntax.
+
+Try one or more of the options for the 'depends' command. When you add -s, for example, also the dependencies from the Python Standard Library are listed. When you add "--version", the script will try to obtain and show the version number for each package. Also try the "--canopy" and "--pip" option, which is useful if you want to check how a particular package can be installed. In these cases, the output respectively looks as follows:
+
+\image latex canopy.png "" width=7cm
+
+And:
+
+\image latex pip.png "" width=7cm
+
+The 'depends' command can also be targetted to a specific PTS functionality, instead of looking in the entire PTS project. This works as follows:
+
+\verbatim
+pts depends command_name
+\endverbatim
+
+The command_name is one the commands that is otherwise called as 'pts command_name'. Choose one of the PTS commands to test this. And yes, 'pts depends' also works on itself:
+
+\verbatim
+pts depends depends
+\endverbatim
+
+This produces:
+
+\image latex dependsdepends.png "" width=10cm
+
+\section TutorialMassageDataBasics PTS basic components
+
+In a terminal window, navigate (cd) to a directory where a ski file is present (for example from the previous tutorial). Open an interactive ipython session in that directory:
+
+\verbatim
+ipython
+\endverbatim
+
+We will now import some of the core PTS components:
+
+\verbatim
+from pts.core.simulation.skifile import SkiFile
+\endverbatim
+
+Open the ski file as follows:
+
+\verbatim
+ski = SkiFile("example.ski")
+\endverbatim
+
+The <tt>SkiFile</tt> class allows SKIRT parameter files to be represented and handled conveniently as python objects. There are many functions in this class that help extracting and manipulating properties of the parameter file. To get a complete list of all the possible functions, do:
+
+\verbatim
+help(ski)
+\endverbatim
+
+You can now scroll through the list of functions by pressing ENTER.
+
+Another basic component that has been implemented in PTS is the <tt>Filter</tt> class. Import it in the following way:
+
+\verbatim
+from pts.core.basics.filter import Filter
+\endverbatim
+
+The Filter class represents a photometric filter with a certain tranmission curve. The specifications of all of the filters commonly used in UV-submm astronomy are included in PTS, so creating a specific filter object is only a matter of specifiying a string that identifies it. For example, to create the IRAC I1 filter, all of the following strings are recognized: "IRAC.I1", "IRAC I1", "IRAC 3.6", "IRAC 3.6um", "IRAC 3.6mu", "I1", "IRAC1", "IRAC-1", "the IRAC-1 band", "Spitzer 3.6", "IRAC_I1", "Spitzer_3.6", "IRAC_3.6". Specify one of these string as follows to create the filter:
+
+\verbatim
+irac_i1 = Filter.from_string("IRAC_I1")
+\endverbatim
+
+Many other filters are possible. These include the GALEX filters, SDSS, all Spitzer bands, MIPS filters, Herschel (Pacs and SPIRE), Planck, generic U, B, V, R, I, IRAS, and the UVOT filters. Try to create a few different filter objects. If for any filter you get an unexpected error or you think that a filter is missing, let someone from the PTS team know.
+
+Having a Filter object in the python environment can be very useful. Firstly, you can check some basic properties of the filter, such as 'name', 'observatory', and 'instrument'. To get the mean wavelength, the effective wavelength, the minimum and maximum wavelength, pivot wavelength and center wavelength, you can respectively access the 'mean', 'effective', 'min', 'max', 'pivot', and 'center' properties. The quantities that are returned are Astropy quantities with a certain unit, which makes it easy to integrate the use of a filter object in workbooks or scripts that use other Astropy quantities. Astropy quantites can be summed, subtracted from each other, multiplied, etc. and the unit of the result will always be set appropriately.
+
+Let's say we want to visualise the tranmission curve of a certain filter. This is easily achieved in PTS, first perform the following import statements:
+
+\verbatim
+from pts.core.data.transmission import TransmissionCurve
+from pts.core.plot.transmission import TransmissionPlotter
+\endverbatim
+
+You see that after importing the TransmissionPlotter module, you get a PTS welcome message. This is because this module initializes the logging system of PTS. Now create one or more filters of your wish, and for each of them load the tranmission curve as follows:
+
+\verbatim
+curve = TransmissionCurve.from_filter(filter)
+\endverbatim
+
+If you have done that, create a TransmissionPlotter as follows:
+
+\verbatim
+plotter = TransmissionPlotter()
+\endverbatim
+
+Now add the tranmission curves and give each of them a certain label (probably just the name of the filter):
+
+\verbatim
+plotter.add_transmission_curve(curve, label)
+\endverbatim
+
+Making the plot is now simply achieved by calling the run() function of the TransmissionPlotter:
+
+\verbatim
+plotter.run()
+\endverbatim
+
+For example, when the GALEX filters, the SDSS filters and the IRAC I1 filter has been added, the following plot will appear:
+
+\image latex transmissions.png "" width=15cm
+
+It is also possible to add invididual wavelengths to the plot, which are plotted as vertical lines and overlayed on the filter profiles. The wavelength that is added has to be an Astropy quantity. To 'make' a wavelength, do as follows:
+
+\verbatim
+from astropy.units import Unit
+wavelength = 0.5 * Unit("micron")
+\endverbatim
+
+If this wavelength is added to the plotter as follows (you don't have to recreate the plotter or add the transmission curves again after you have performed run()):
+
+\verbatim
+plotter.add_wavelength(wavelenght)
+\endverbatim
+
+the result is:
+
+\image latex transmissions_wavelength.png "" width=15cm
+
+You can also pass a filepath to the plotter.run() function, which will cause it to not open an interactive plotting window but save the plot as an image.
+Note that the transmission curves can also be saved in tabular data format. On the transmission curve object, invoke the 'save' function and specify the file path (e.g. "fuv_transmission.dat").
+
+\section TutorialMassageDataGetting Getting observational data
+
+Getting an overview of available image data and retrieving that data is very easy when you have PTS. In PTS, we have an command that looks up the available images on the Extragalactic Database (Ned) and organizes them to get a very quick overview. We will look for images of the Sombrero galaxy, which is done by executing the following command:
+
+\verbatim
+pts list_ned Sombrero
+\endverbatim
+
+You should get an output as follows:
+
+\image html screens/list_ned.png
+\image latex screens/list_ned.png "" width=15cm
+
+You see a long list of images, with for each image information about the year it was submitted, the title and journal of the publication, the number of citations and the authors (information that is not visible at first glance on the Ned homepage). The url from which the image can be downloaded is also always presented. The images are organized per filter, and the filters are conveniently sorted in order of increasing wavelength.
+
+If you specify the flag "--unknown", you will also get a list of the available images for which the filter was not recognized or which where taken with a very exotic filter. These images will then be listed at the end of the output.
+
+We are interested in a SDSS i image. To get a clearer view, we give these filter as arguments to the 'list_ned' command:
+
+\verbatim
+pts list_ned "SDSS i"
+\endverbatim
+
+You will find only one submission, so copy the image url.
+
+It will be convenient if you create a new directory somewhere specifically for this tutorial (e.g. SKIRTDays_PTS). In this directory, create an "images" directory. Now download the image to that directory (using wget on Linux or curl on MacOS) and untar it in place (tar -xvzf).
+
+ - On mac:
+
+\verbatim
+curl url -k -o outfile.fits.gz
+\endverbatim
+
+Or copy the url to your browser and press ENTER.
+
+- On linux:
+
+\verbatim
+wget url
+\endverbatim
+
+Remove the tar.gz file after the extraction.
+
+\section TutorialMassageDataPreparing Preparing the image
+
+\subsection TutorialMassageDataPreparingUnits Converting the units
+
+In a terminal window, navigate to the images directory and open an ipython session. Execute the following import statements:
+
+\verbatim
+from pts.magic.core.frame import Frame
+\endverbatim
+
+Then, open the SDSS i frame:
+
+\verbatim
+frame=Frame.from_file("NGC_4594_SDSS_i-bms2014.fits")
+\endverbatim
+
+The unit of the frame is nanomaggies. To convert the frame to Jansky, use the fact that:
+
+\verbatim
+1 nanomaggie = 3.613e-6 Jy
+\endverbatim
+
+The unit conversion is done in two simple steps:
+
+\verbatim
+frame *= 3.613e-6
+frame.unit = "Jy"
+\endverbatim
+
+Now save the frame under a more convenient name:
+
+\verbatim
+frame.save("SDSS_i.fits")
+\endverbatim
+
+The new unit will automatically be specified in the header of the new FITS file.
+
+\subsection TutorialMassageDataPreparingSources Identifying and removing sources in the image
+
+In PTS, we have our own implementation of a source extractor, similar as the SExtractor software, but completely written in python and based on existing and actively developed python astronomy libraries (such as Astropy, Astroquery, Photutils, Pyregion). It is therefore easily incorporated into other PTS frameworks such as the modeling subproject. All of its image preparation tools can also be called independently. For example, we will start by running the find_sources command on the SDSS i image. Navigate to the 'images' directory where the FITS file is, create a new directory 'find_i' for the output and execute the following command:
+
+\verbatim
+pts find_sources SDSS_i.fits -o find_i --debug
+\endverbatim
+
+If the \em debug flag is added to a PTS command, more messages will be logged, which can be useful when problems are encountered (which is not uncommon when working with real-world data). The find_sources command will run for a while. At the start it will fetch information from the HYPERLEDA catalog of galaxies and the 2MASS point sources catalog, so an internet connection is required.
+
+Based on the catalog positions, PTS will perform all sorts of image processing techniques to identify actually detected background galaxies and foreground stars in the image. For the stars, which are positively identified by fitting a simple Gaussian PSF or 2D Airy disk function, it will also look whether saturation bleed, diffraction spikes, halos or other artefacts can be detected. If so, the corresponding pixels are also tagged. After looking for galaxies and stars based on the catalog data, it will also perform a last source detection step to look for other contaminating sources around the galaxy, or foreground stars that have been missed by the catalog.
+
+When the 'find_sources' procedure finishes, look in the 'find_i' directory. Here you will find 4 different kinds of files:
+
+ - cat files: these files contain the catalog data (one for the galaxies and one for the stars), in tabular format (open them in a text editor)
+ - reg files: these are the region files that indicate where in the frame sources were found. The galaxies, stars (pure PSFs), saturated areas, and other sources each have their own region files. The individual regions are assigned a unique index and the star regions are also color coded (see below for the meaning of these colors)
+ - the segments.fits file: this FITS file consists of 3 separate frames: the 'galaxies', the 'stars' and the 'other_sources' frame.
+ - the statistics.dat file: if you open this file in a text editor, you can find the FWHM of the PSF that PTS has fitted to the point sources. It should have found a value around 2 arcseconds.
+
+Open the SDSS i image in DS9. Then load the stars.reg regions file onto the image. You will see about 160 circular regions in different colors. The red circles represent positions from the 2MASS point sources catalog for which PTS has not found a matching point source (star), or for which PTS thinks these were wrongly identified by the 2MASS catalog. This is very obvious in this case because a clearly excessive number of coordinates on the clumpy dust ring are listed as point sources. PTS recognizes this and ignores them for the rest of the procedure. The other positions go through a peak detection step, where a peak is searched above the local background of that position. This involves sigma-clipping and polynomial approximation of the neighbouring pixels. When a peak was found for a certain position (within a range of a few pixels around the catalog position), you find a green cross in the stars region. The corresponding sources are then fitted to an analytical PSF (a 2D Gaussian function), to match the exact center position and FWHM. If this procedure succeeds, the star is indicated in blue. Otherwise (fitting to a PSF was not possible), the circular region is green.
+You notice that the highly saturated star on the bottom right could not be fitted to a PSF, because its intensity profile is obviously capped and spread out over the neighbouring area. When you open the segments.fits file however, and go to the second plane (the stars plane), you see that at that place, the whole area is indeed tagged as belonging to that star (the segment has a value that is equal to the star index) and not just the PSF profile.
+
+\image latex star_regions.png "" width=10cm
+
+\image latex segments.png "" width=10cm
+
+If this all seems fine, you can proceed with the next step. If anything looks suspicious, please don't hesitate to ask someone from the PTS team to have a closer look.
+
+To actually extract the found sources from the image, create an other folder called 'extract_i' and perform the following command:
+
+\verbatim
+pts extract SDSS_i.fits -i find_i -o extract_i
+\endverbatim
+
+Afterwards, check the output in the 'extract_i' directory. The mask.fits file is a binary image of the same shape as the SDSS i image, where all pixels that belong to a contaminating source are tagged. The SDSS_i.fits file contains the final source extracted image. Open it in DS9 and compare it to the SDSS_i.fits file that was used as input. Put them on the same scale and 'blink' them. Are you satisfied with the result?
+
+If some sources such as highly saturated stars seem not completely extracted from the image, there are a few parameters that can be tweaked in order to improve the result. For example, try to add the "--dilate_saturation" flag. Also specify the saturation dilation factor, take a value of 2.5 (the default is 2). You can also add the "--debug" flag to get more output. Make a new directory for the result, for example "extract_i_new". Thus, the command now looks as follows:
+
+\verbatim
+pts extract SDSS_i.fits -i find_i -o extract_i_new --dilate_saturation --saturation_dilation_factor 2.5 --debug
+\endverbatim
+
+Look at the new output. Has the result improved?
+There are also a lot more different options that can be specified to the 'extract' and the 'find_sources' commands. Finetuning all these parameters falls beyond the scope of this tutorial, but don't hesitate to ask more information from the PTS team if you are interested.
+
+\image latex extraction.png "" width=10cm
+
+\section TutorialMassageDataSEDs Getting observed SEDs
+
+In your tutorial directory (SKIRTDays_PTS), create a directory 'seds'. In a terminal window, navigate to this new directory and perform the following command:
+
+\verbatim
+pts get_seds Sombrero
+\endverbatim
+
+You will see output such as:
+
+\image html get_seds.png
+\image latex get_seds.png "" width=8cm
+
+The SED files are saved as .dat files in the working directory. We will plot them later together with the simulated SED.
+
+To make a plot of the SEDs, execute (still in the same directory):
+
+\verbatim
+pts plot_seds
+\endverbatim
+
+This will create a plot file
+
+PTS also has a convenient API. With this API, there is an unlimited amount of things you can do, you can customize every detail of every feature of PTS.
+For example, to have more customization for plotting the SEDs, open <tt>ipython</tt> and do as follows:
+
+\verbatim
+from pts.core.plot.sed import SEDPlotter
+from pts.core.data.sed import ObservedSED
+\endverbatim
+
+You can now decide for yourself which SEDs that you want to include in the plot. Use the function add_observed_sed to add individual SEDs and give them a custom label.
+
+\verbatim
+plotter = SEDPlotter()
+
+# Add an SED
+sed = ObservedSED.from_file("...")
+plotter.add_observed_sed(sed, label)
+\endverbatim
+
+When you run the plotter, you can also specify extra arguments, for example the limits for the plot. Try specifying the min_wavelength, max_wavelength, min_flux, and max_flux parameters and check the result. Setting the title parameter is also an option. Set a custom name for the plot file with the output parameter:
+
+\verbatim
+plotter.run(min_wavelength=..., max_wavelength=..., title=..., output="new_sed_plot.pdf")
+\endverbatim
+
+\section TutorialMassageDataSimulation Setting up a simulation
+
+Download the ski template file for the Sombrero galaxy from http://www.skirt.ugent.be/skirtdays2016/downloads/ and put it in the tutorial directory. Also download the input files and put them in a new directory 'in' in the tutorial directory. The ski file describes an axisymmetric model of the galaxy, with a stellar distribution composed out of 15 multi-Gaussian expansion components of which the global luminosity has been scaled so that the model SED fits best to the observed stellar SED (using chi squared minimization, see De Looze et al. 2012a). The intrinsic SED of the stars has been parameterized by a Maraston single stellar population with an age of 10 Gyr and a close to solar metallicity. The dust ring has been modeled by a linear combination of four Gaussian functions of radius. The model is axisymmetrical so a 2D cylindrical dust grid is used. The wavelength grid consist of a nested logarithmic grid with 50 points between 0.05 micron and 5000 micron, and 50 points between 1 micron and 30 micron.
+
+For this ski file, you'll still have to add the instruments. The instruments in a ski file define the orientation, pixelscale and extent of the observer with respect to the model. Multiple instruments can be added. One instrument that is certainly useful is one that produces a datacube that can be directly compared with an observed image of the galaxy, for example the SDSS i image we have retrieved and prepared earlier. To specify the properties of this instrument, we must first get some parameters of the galaxy such as its distance and the angles between the plane of the disk and our line of sight. In other words, we need an estimate of the position angle and the inclination of the galaxy disk. To obtain these parameters in a rudimentary way, we can derive them from a 2D bulge-disk decomposition. The position angle of the 2D disk component will be taken as the position angle of the galaxy and the apparant ellipticity of this component can give an estimate of the inclination angle. In PTS, we have a tool that retrieves the decomposition parameters from the S4G study (Spitzer Survey of Stellar Structure in Galaxies), in which the GALFIT software has been applied to more than 2,000 galaxies. To get the parameters for the Sombrero galaxy, first create a directory 'parameters' next to the 'images' directory and run:
+
+\verbatim
+pts get_s4g Sombrero -o parameters
+\endverbatim
+
+This will create 3 files inside the parameters directory. 2 files describe the disk and bulge parameters. Another file stores more general galaxy parameters, such as the center position, distance, etc.
+
+Now comes the step of translating the galaxy parameters into a 'projection' model. This is done with the 'get_projections' tool. This tool needs the world coordinate system (WCS) that you want to project the galaxy to. For this example, we will compare the simulated datacube to the retrieved SDSS i image. Therefore, navigate to the directory where your 'images' and 'parameters' directories, create a directory 'projections' and use the following command:
+
+\verbatim
+pts get_projections images/SDSS_i.fits parameters -o projections
+\endverbatim
+
+This commmand will produce three different files inside the 'projections' directory. One file represents the 'earth' projection and can therefore be used to create instruments that produce images (or SEDs) from the coordinate system of the SDSS i image. The face-on and edge-on projections are defined for the same distance and pixelscale but allow the galaxy to be viewed with an inclination of 0 degrees and 90 degrees respectively.
+
+We can now use these projections to add instruments to the ski file. Still in the tutorial directory, open an ipython session and perform the following imports:
+
+\verbatim
+from pts.core.simulation.skifile import SkiFile
+from pts.modeling.basics.projection import GalaxyProjection
+from pts.modeling.basics.instruments import SEDInstrument, FrameInstrument, SimpleInstrument, FullInstrument
+\endverbatim
+
+Open the ski file:
+
+\verbatim
+ski = SkiFile("sombrero.ski")
+\endverbatim
+
+Now load the projection files:
+
+\verbatim
+earth = GalaxyProjection.from_file("projections/earth.proj")
+edgeon = GalaxyProjection.from_file("projections/edgeon.proj")
+faceon = GalaxyProjection.from_file("projections/faceon.proj")
+\endverbatim
+
+Now create a few instruments for the simulation, where you at least have an instrument that writes out an SED and a datacube for the 'earth' projection. You can add any combination of one of different instruments (SEDInstrument, FrameInstrument, SimpleInstrument, FullInstrument) with one of the different projections. For example, to create a SimpleInstrument for the 'earth' projection, do:
+
+\verbatim
+earth_instrument = SimpleInstrument.from_projection(earth)
+\endverbatim
+
+Now add your instruments to the ski file as follows:
+
+\verbatim
+ski.add_instrument(name, instrument)
+\endverbatim
+
+You can use the names 'earth', 'edgeon', and 'faceon', but also for example 'i84', 'i90' and 'i0' (but each instrument must have a unique name).
+
+Check the number of photon packages that has been set in the ski file as follows:
+
+\verbatim
+ski.packages()
+\endverbatim()
+
+This number of photon packages is too low (the output images will be too noisy), so increase it by a factor of 10. Use the setpackages() function to set the new number of photon packages per wavelength.
+
+Now save the ski file:
+
+\verbatim
+ski.save()
+\endverbatim
+
+Note that are many other possible possible manipulations of the ski file from the python interface, but we can only show a limited set within the context of this tutorial.
+
+\section TutorialMassageDataLaunch Launching the simulation
+
+Now we will launch a SKIRT simulation from the Sombrero ski file, but we will do so from PTS. PTS has the launch_simulation command, which can be used to launch a single SKIRT simulation locally or remotely. The remote execution is completely managed by the PTS installation at the client (e.g. your laptop), thus PTS is not required at the remote host end. PTS will upload the ski file and input files, launch a job or screen session for the remote simulation (of course SKIRT has to be installed remotely), and retrieve the results of the simulation when it has finished. Launching remotely requires some extra configuration of PTS however, and falls beyong the scope of this tutorial. There is also a 'launch_batch' command, which can be used to launch a set of simulations remotely. When several remote hosts have been configured, the launch_batch command will scatter the requested simulations across these hosts.
+
+When a remote host is not specified to the 'launch_simulation' command, the simulation will be launched on your own laptop (which is what we will do). You can always check the possible options for the command by adding the '-h' flag:
+
+\verbatim
+pts launch_simulation -h
+\endverbatim
+
+You will see an exhaustive list of all possible configuration options.
+
+For this simulation, we will enable the following flags:
+
+ - analysis/plotting/grids: plots will be made that visualise the dust grid
+ - analysis/plotting/seds: the seds will be plotted directly after the simulation finishes
+ - analysis/plotting/progress: plots will be made of the progress of different simulation phases as a function of time
+ - analysis/plotting/reference_seds: specifies the SED files of which the flux points will be plotted against the simulated SEDs
+
+Assuming your SED files are in the 'seds' directory, next to your sombrero.ski file, the following command should perform the simulation:
+
+\verbatim
+pts launch_simulation sombrero.ski -i in -o out --analysis/plotting/grids --analysis/plotting/seds
+--analysis/plotting/progress --analysis/plotting/reference_seds seds/2MASS.dat,seds/DustPedia.dat,
+seds/GALEX.dat,seds/SINGS.dat,seds/IRAS-FSC.dat,seds/IRAS.dat,seds/LVL.dat,seds/S4G.dat
+--analysis/plotting/path plot
+\endverbatim
+
+\note If this gives an error, it is possible that some of the SED data files are not present in your 'seds' directory. This can happen when some services were unavailable at the moment you ran 'get_seds'. Just check which of the SEDs in the above list are missing and remove them from the command string.
+
+The launch_simulation command will automatically detect the current load on the resources of the system (free cores and free memory) and adjust the execution properties accordingly, so you don't have to worry about parallelization.
+
+The simulation will take about 10 minutes. When the simulation is finished, the simulation output will be written out to the 'out' directory and the plots will be created inside the 'plot' directory.
+
+If you want, you can open the sombrero_earth_total.fits datacube in DS9 and scroll through the wavelengths (each frame is a separate wavelength, in increasing order). You will probably have to adjust the scale for individual frames in order to obtain a good result:
+
+\image latex sombrero_simulated.png "" width=10cm
+
+The SED plot that has been created by PTS should look as follows:
+
+\image latex sed.pdf "" width=15cm
+
+The new_ds_gridxy.pdf and new_ds_gridxz.pdf will show the structure of the dust grid that was used for the simulation. You can also look at the progress plots that have been created.
+
+\section TutorialMassageDataAnalysis Analysing the simulation output and comparing with observation
+
+In your tutorial directory, open an ipython session (or use the one that is already open), and execute the following import statements:
+
+\verbatim
+from pts.core.basics.filter import Filter
+from pts.magic.core.datacube import DataCube
+from pts.magic.basics.coordinatesystem import CoordinateSystem
+from pts.core.simulation.wavelengthgrid import WavelengthGrid
+\endverbatim
+
+Load the wavelength grid as follows:
+
+\verbatim
+wg = WavelengthGrid.from_skirt_output()
+\endverbatim
+
+Now load in the SKIRT datacube, and set its coordinate system to the coordinate system of the SDSS i image:
+
+\verbatim
+datacube = DataCube.from_file("out/sombrero_earth_total.fits", wg)
+datacube.wcs = CoordinateSystem.from_file("images/SDSS_i.fits")
+\endverbatim
+
+Convert the datacube from neutral flux density to wavelength flux density in the following way:
+
+\verbatim
+datacube.to_wavelength_density("W / (m2 * arcsec2 * micron)", "micron")
+\endverbatim
+
+Now create the SDSS i filter and convolve the datacube with this filter to create a mock observation of the Sombrero galaxy in the i band:
+
+\verbatim
+sdss_i = Filter.from_string("SDSS i")
+frame = datacube.convolve_with_filter(sdss_i)
+\endverbatim
+
+This can take a while. The result of this procedure is a single frame in the same units as the datacube (W / (m2 * arcsec2 * micron)) and with the same WCS information. You can always check these (and other) properties by entering "frame.wcs" or "frame.unit" in the ipython command-line.
+
+Now check the pixelscale (averaged over the x and y direction) of frame as follows:
+
+\verbatim
+frame.pixelscale.average
+\endverbatim
+
+This should give you a value of 0.3959999978544 arcsec/pix. We will now use the pixelscale to convert the unit of the frame to Jy, just as the unit of the SDSS i image.
+
+First, we convert to W / (m2 * arcsec2 * Hz), using the speed of light and the pivot wavelenght of the SDSS i filter:
+
+\verbatim
+from astropy import constants
+speed_of_light = constants.c
+
+frame *= (sdss_i.pivot ** 2 / speed_of_light).to("micron/Hz").value
+frame.unit = "W / (m2 * arcsec2 * Hz)"
+\endverbatim
+
+Now do the conversion to Jy:
+
+\verbatim
+frame *= 1e26 * (frame.pixelscale.average**2).to("arcsec2/pix2").value
+frame.unit = "Jy"
+\endverbatim
+
+Now save the frame:
+
+\verbatim
+frame.save("simulated_SDSS_i.fits")
+\endverbatim
+
+Now open both the simulated SDSS i image as the observed SDSS i image in SD9 and compare them. What do you think of the result?
+
+\image latex comparison.png "" width=15cm
+
+If you think the result is still to noisy, you can choose to rerun the simulation with an increased number of photon packages and repeat the procedure (if you have time left). To restrict the runtime, you can choose to decrease the number of wavelengths.
+
+\section TutorialMassageDataNewClass Adding new PTS functionality (OPTIONAL)
+
+It is rather straightforward to add new functionality to PTS. If you want to add a very short script, choose the subproject it belongs to and add the script to the corresponding 'do' subdirectory. Look at the other do scripts and try to mimick the coding style, and certainly adopt the PTS header and write a short description for your script. Now, the script (script_name.py) will appear as one of the PTS commands, and can be immediately used by calling 'pts script_name'.
+
+For larger implementations, you are advised to create a dedicated class in one of the PTS subprojects. Put the class inside a module file, for example 'mymodule.py'. Start your module with the following header:
+
+\verbatim
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+# *****************************************************************
+# **       PTS -- Python Toolkit for working with SKIRT          **
+# **       © Astronomical Observatory, Ghent University          **
+# *****************************************************************
+
+## \package pts.core.advanced.myown Contains the MyOwnPTSClass class.
+
+# -----------------------------------------------------------------
+\endverbatim
+
+Then, add:
+
+\verbatim
+# Ensure Python 3 compatibility
+from __future__ import absolute_import, division, print_function
+\endverbatim
+
+Import the relevant PTS classes and modules:
+
+\verbatim
+# Import the relevant PTS classes and modules
+from ..basics.configurable import Configurable
+from ..tools import filesystem as fs
+from ..tools.logging import log
+
+# -----------------------------------------------------------------
+\endverbatim
+
+Then you can start to write your class implementation:
+
+\verbatim
+class MyOwnPTSClass(Configurable):
+
+    """
+    This class ...
+    """
+
+    def __init__(self, config=None):
+
+        """
+        This is the constructor of my own PTS class. What does it do? Well, ...
+        :param config: the configuration
+        """
+
+        # Call the constructor of the base class
+        super(MyOwnPTSClass, self).__init__(config)
+
+        # .. do other stuff, such as initializing the class attributes to a default value ... #
+
+    # -----------------------------------------------------------------
+
+    def run(self, **kwargs):
+
+        """
+        This function ...
+        :param kwargs: parameters that are passed by name
+        :return:
+        """
+
+        # Call the setup function
+        self.setup(**kwargs)
+
+        # Do what I have to do
+        self.do()
+
+        # Write
+        self.write()
+
+    # -----------------------------------------------------------------
+
+    def setup(self, **kwargs):
+
+        """
+        The setup function ...
+        """
+
+        super(MyOwnPTSClass, self).setup(**kwargs)
+
+    # -----------------------------------------------------------------
+
+    def do(self):
+
+        """
+        This function does ...
+        """
+
+        log.info("Doing something ...")
+
+        ... do something ...
+
+    # -----------------------------------------------------------------
+
+    def write(self):
+
+        """
+        This function writes ...
+        """
+
+        log.info("Writing ...")
+
+        ... write the output ...
+
+# -----------------------------------------------------------------
+\endverbatim
+
+You'll have to create one other file, which is the configuration module for your class. Depending on what kind of parameters your class can take, the configuration module can define different kinds of settings that can be read from the command line and influence the behaviour of your class object.
+
+Create a module file in the subproject/config directory (so pts/core/config for example), and give it a name that should be the PTS command (so command.py). Start this file as follows:
+
+\verbatim
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+# *****************************************************************
+# **       PTS -- Python Toolkit for working with SKIRT          **
+# **       © Astronomical Observatory, Ghent University          **
+# *****************************************************************
+
+from pts.core.basics.configuration import ConfigurationDefinition
+
+# -----------------------------------------------------------------
+\endverbatim
+
+Now you can create the configuration definition. Below is an example (similar as how the launch_simulation.py module is composed):
+
+\verbatim
+# Create the configuration
+definition = ConfigurationDefinition()
+
+definition.add_required("ski_file", "file_path", "ski file path")
+
+# Input and output
+definition.add_optional("input", "directory_path", "input directory for the simulation(s)", letter="i")
+definition.add_optional("output", "directory_path", "output directory for the simulation(s)", fs.cwd(), letter="o")
+
+# Flags
+definition.add_flag("relative", "treats the given input and output paths as being relative to the ski/fski file")
+\endverbatim
+
+You have to adjust the names of the required settings, optional settings and flags according to the parameters that are relevant for your class. You also have to specify the type of argument that is expected (except for flags). Possible types are "string", "boolean", "integer", "real", "file_path", etc. To get a complete list, execute the command "pts get_configuration_types".
+
+When your new command has been invoked and the settings specified on the command-line, the setting values will be available in the class as follows (for example for the 'ski_path' parameter):
+
+\verbatim
+self.config.ski_path
+\endverbatim
+
+For the class and configuration module to work together as a PTS command however, one last thing has to be done. In the directory of the PTS subproject that you are working in, find the commands.dat file and open it. Add an entry similar as the others, but specifying your command name and the path to your class.
+
+Now make a short implementation for your class and launch it from the command line specifying one or more settings.
+
+<b><i>Congratulations, you made it to the end of this tutorial!</i></b>
+
+*/

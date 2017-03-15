@@ -2,9 +2,6 @@
 
 \mainpage SKIRT documentation index
 
-To jump to the home page from any point in this web site, click the <tt>SKIRT</tt> logo above the navigation bar at the
-top of the page.
-
 The <tt>SKIRT</tt> documentation is structured as follows:
 
 <b> Part I: Guides -- overall guidance and tutorials. </b>

@@ -1,0 +1,27 @@
+/**
+
+\mainpage Tutorials for the SKIRT project and PTS
+
+The best way to begin using \c SKIRT, \c FitSKIRT or the Python Toolkit for SKIRT (PTS), is to run through the
+corresponding tutorials.
+
+<b>For beginning SKIRT users</b>
+
+  - \ref TutorialBasicsMono
+  - \ref TutorialBasicsPan
+  - \ref TutorialGridsTreeVoro
+  - \ref TutorialHydroAMR
+  - \ref TutorialHydroSPH
+
+<b>For advanced SKIRT, FitSKIRT and PTS users</b>
+
+  - \ref TutorialParallelization
+  - \ref TutorialMassageData
+  - \ref TutorialFitNGC4013
+
+<b>For SKIRT developers</b>
+
+  - \ref TutorialDevelopDust
+  - \ref TutorialDevelopGeom
+
+*/
