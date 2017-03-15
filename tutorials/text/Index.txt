@@ -1,6 +1,6 @@
 /**
 
-\mainpage Tutorials for the SKIRT project and PTS
+\mainpage Tutorials
 
 The best way to begin using \c SKIRT, \c FitSKIRT or the Python Toolkit for SKIRT (PTS), is to run through the
 corresponding tutorials.

@@ -12,7 +12,7 @@ example:
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- A SKIRT parameter file -->
 <skirt-simulation-hierarchy type="MonteCarloSimulation" format="6.1">
-    <OligoMonteCarloSimulation packages="1e6">
+    <OligoMonteCarloSimulation numPackages="1e6">
         <units type="Units">
             <ExtragalacticUnits/>
         </units>
