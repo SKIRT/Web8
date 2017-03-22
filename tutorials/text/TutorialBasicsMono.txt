@@ -12,11 +12,19 @@ different parameters.
 \section TutorialBasicsMonoPre Getting ready
 
 Before starting this tutorial, you should have installed the <tt>SKIRT</tt> code as described in the Installation
-Guide, and optionally the Python Toolkit for <tt>SKIRT</tt> (<tt>PTS</tt>) as well. Since <tt>SKIRT</tt> is a command
-line tool, you need to open a Terminal window so that you can enter commands at the prompt.
+Guide, and optionally the Python Toolkit for <tt>SKIRT</tt> (<tt>PTS</tt>) as well. There are two equivalent ways
+of creating the \em ski files for this and other tutorials:
 
-For brevity, the examples in this tutorial omit portions of the <tt>SKIRT</tt> output, such as the time stamp
-preceding each line and the version information on the welcome line.
+ - Using a \c SKIRT console question and answer (Q&A) session, running in a Terminal window. The text in the tutorials
+   assumes that you use this default option. You need to open a Terminal window so that you can enter commands at the
+   prompt.
+ - Using the optional \c MakeUp desktop tool that can be built as part of the \c SKIRT project, assuming that
+   the appropriate external libraries are installed on your computer (see the Installation Guide). This tool offers
+   a graphical wizard that follows the same Q&A logic as the \c SKIRT console, with a nicer interface (see the
+   \c MakeUp User Guide for more information).
+
+For brevity, the examples in the tutorials omit portions of the <tt>SKIRT</tt> output, such as the time stamp preceding
+each line and the version information on the welcome line.
 
 \section TutorialBasicsMonoSki Creating the ski file
 
@@ -35,7 +43,7 @@ executable; for example:
 
 \verbatim
 $ cd ~/SKIRT/run
-$ ../release/skirt
+$ ../release/SKIRT/main/skirt
 \endverbatim
 
 <tt>SKIRT</tt> responds with a welcome message and starts an interactive session in the terminal window, during which
@@ -142,87 +150,6 @@ for surface brightness.
 
 For this tutorial, select the \em Frequency option to get surface brightness values in MJy/sr.
 
-\section TutorialBasicsMonoInst Instrument system
-
-Running a radiative transfer simulation is not particularly useful unless the results are registered by one or more
-instruments, which collect the photon packages that leave the system, in a process similar to the operation of real
-instruments at a telescope.
-
-The <tt>SKIRT</tt> instruments essentially simulate imaging spectrometers, i.e. 3D spectrographs with one wavelength
-dimension (determined by the simulation's wavelength grid) and two spatial directions on the plane of the sky. Each
-instrument is characterized by its own instrumental characteristics (pixel size and field of view in the horizontal and
-vertical directions) and by its position with respect to the system (for axisymmetric systems, this means the
-inclination and distance).
-
-It should be noted that the number of instruments, and the pixel size of these instruments, strongly influence both
-memory consumption (for storing the data cubes) and simulation run time (for peeling off photon packages in the
-direction of each instrument).
-
-\verbatim
-   Possible choices for the instrument system:
-      1. An instrument system
-   Automatically selected the only choice: 1
-\endverbatim
-
-There is only one type of instrument system (simply a list of instruments) so the default choice is automatically
-selected.
-
-\verbatim
-   Possible choices for item #1 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-      2. A basic instrument that outputs the total flux in every pixel as a data cube
-      3. A basic instrument that outputs the total flux as data cube and as SED
-      4. An advanced instrument that records individual contributions to the flux
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
- ? Enter the name for this instrument: i88
- ? Enter the distance to the system [0 Mpc,.. Mpc]: 10
- ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 88
- ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the total field of view in the horizontal direction [0 pc,.. pc]: 40000
- ? Enter the number of pixels in the horizontal direction [1,10000] (250): 800
- ? Enter the center of the frame in the horizontal direction [-.. pc,.. pc] (0 pc):
- ? Enter the total field of view in the vertical direction [0 pc,.. pc]: 10000
- ? Enter the number of pixels in the vertical direction [1,10000] (250): 400
- ? Enter the center of the frame in the vertical direction [-.. pc,.. pc] (0 pc):
-\endverbatim
-
-For the first (and only) instrument in this tutorial simulation, select a basic instrument that outputs the total
-surface brightness in every pixel. Since you will be shooting photon packages at a single wavelength only, the "data
-cube" will have only one frame, and it doesn't make much sense to produce an SED.
-
-Specify an appropriate name for the instrument. This name is used to identify the output files for the instrument. This
-is not so relevant here, but it becomes important when there are multiple instruments. Further specify a size of 800
-times 200 pixels with a scale of 50 pc, a distance of 10 Mpc from the galaxy, and an inclination of 88 degrees. The
-remaining two angles can be left to their default values of zero, and the center of the instrument should remain at the
-origin.
-
-\verbatim
-   Possible choices for item #2 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-      2. A basic instrument that outputs the total flux in every pixel as a data cube
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 0
-\endverbatim
-
-When asked for the second instrument, enter zero to terminate the list, since the tutorial simulation has only one
-instrument.
-
-\section TutorialBasicsMonoPhot Photon packages
-
-The number of photon packages launched for each wavelength is a very important parameter, since it determines the
-accuracy of your simulation. On the other hand, the simulation run time essentially scales with the number of photon
-packages (multiplied by the number of wavelengths). Typical values range from \f$10^5\f$ to \f$10^9\f$. An appropriate
-number is usually determined experimentally: first run your simulation with a modest number of photon packages, look at
-the results and then run the simulation again with more photon packages if needed.
-
-\verbatim
- ? Enter the number of photon packages per wavelength [0,1e15] (1e6):
-\endverbatim
-
-For your first simulation, leave the number of photon packages at the default value of \f$10^6\f$.
-
 \section TutorialBasicsMonoWave Wavelength grid
 
 <tt>SKIRT</tt> works with a fixed wavelength grid, i.e. a list of \f$N_\lambda\f$ wavelengths, on which the entire
@@ -273,22 +200,23 @@ configured using built-in features. So you need to select the "built-in geometry
          ...
       9. An exponential disk geometry
          ...
-     33. A decorator that adds a rotation to any geometry
-     34. A decorator that constructs a spheroidal variant of any spherical geometry
+     37. A decorator that adds a rotation to any geometry
+     38. A decorator that constructs a spheroidal variant of any spherical geometry
          ...
- ? Enter one of these numbers [1,42] (1): 9
- ? Enter the radial scale length [0 pc,.. pc]: 4000
- ? Enter the axial scale height [0 pc,.. pc]: 350
- ? Enter the radial truncation length [0 pc,.. pc] (0 pc):
- ? Enter the axial truncation height [0 pc,.. pc] (0 pc):
+ ? Enter one of these numbers [1,46] (1): 9
+ ? Enter the scale length ]0 pc,.. pc[: 4000
+ ? Enter the scale height ]0 pc,.. pc[: 350
+ ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the vertical truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
  ? Enter the radial inner radius [0 pc,.. pc] (0 pc):
- ? Enter the luminosities, one per wavelength, in solar units [0,..]: 5e9
+ ? Enter the luminosities, one for each wavelength ]0 Lsun/micron,.. Lsun/micron[: 5e9
 \endverbatim
 
 In an oligochromatic simulation, each stellar component is characterized by a particular geometry and by the total
 component luminosity at each wavelength in the simulation's wavelength grid. For the stellar disk geometry, select an
 exponential disk with a scale length of 4 kpc and a scale height of 350 pc, without inner or outer truncation. Further
-specify a V-band luminosity of \f$L_{\text{V}} = 5\times10^9~L_{\odot,{\text{V}}}\f$.
+specify a luminosity at \f$\lambda=0.55~\mu\text{m}\f$ (the wavelength specified previously) of
+\f$L_\lambda = 5\times10^9~L_\odot/\mu\text{m}\f$.
 
 \verbatim
    Possible choices for item #2 in the stellar components list:
@@ -301,9 +229,9 @@ specify a V-band luminosity of \f$L_{\text{V}} = 5\times10^9~L_{\odot,{\text{V}}
       1. A point source geometry
       2. A Plummer geometry
          ...
-     34. A decorator that constructs a spheroidal variant of any spherical geometry
+     38. A decorator that constructs a spheroidal variant of any spherical geometry
          ...
- ? Enter one of these numbers [1,42] (1): 34
+ ? Enter one of these numbers [1,46] (1): 38
    Possible choices for the spherical geometry to be made spheroidal:
       1. A Plummer geometry
       2. A gamma geometry
@@ -312,16 +240,16 @@ specify a V-band luminosity of \f$L_{\text{V}} = 5\times10^9~L_{\odot,{\text{V}}
       5. An Einasto geometry
       6. A shell geometry
  ? Enter one of these numbers [1,6] (1): 3
+ ? Enter the effective radius ]0 pc,.. pc[: 1600
  ? Enter the Sersic index n [0.5,10] (1): 2
- ? Enter the effective radius [0 pc,.. pc]: 1600
  ? Enter the flattening parameter q [0,1] (1): 0.7
- ? Enter the luminosities, one per wavelength, in solar units [0,..]: 3e9
+ ? Enter the luminosities, one for each wavelength ]0 Lsun/micron,.. Lsun/micron[: 3e9
 \endverbatim
 
 For the second stellar component, again select the "built-in geometry" stellar component type. For the geometry, select
-a spheroidal variant of the Sersic model with Sersic index \f$n=2\f$, effective radius \f$R_{\text{e}} = 1.6\f$ kpc,
-and flattening parameter \f$q=0.7\f$. Further specify a V-band luminosity of \f$L_{\text{V}} =
-3\times10^9~L_{\odot,{\text{V}}}\f$.
+a spheroidal variant of the Sersic model with effective radius \f$R_{\text{e}} = 1.6\f$ kpc, Sersic index \f$n=2\f$,
+and flattening parameter \f$q=0.7\f$. Further specify a luminosity of \f$L_\lambda =
+3\times10^9~L_\odot/\mu\text{m}\f$.
 
 <tt>SKIRT</tt> offers a number of geometry decorators that modify other geometries in various ways, including
 off-center translation, adding clumpiness, and spheroidal or triaxial flattening. You must select the decorator
@@ -380,18 +308,18 @@ dust distribution type.
          ...
       9. An exponential disk geometry
          ...
- ? Enter one of these numbers [1,42] (9): 9
- ? Enter the radial scale length [0 pc,.. pc]: 4000
- ? Enter the axial scale height [0 pc,.. pc]: 140
- ? Enter the radial truncation length [0 pc,.. pc] (0 pc):
- ? Enter the axial truncation height [0 pc,.. pc] (0 pc):
- ? Enter the radial inner radius [0 pc,.. pc] (0 pc):
+ ? Enter one of these numbers [1,46] (9): 9
+ ? Enter the scale length ]0 pc,.. pc[: 4000
+ ? Enter the scale height ]0 pc,.. pc[: 140
+ ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the vertical truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the radial inner radius [0 pc,.. pc[ (0 pc):
    Possible choices for the dust mixture of the dust component:
       1. A dust mix with average interstellar properties
       2. A Draine & Li (2007) dust mix
       3. A dust mix with mean Zubko properties
          ...
- ? Enter one of these numbers [1,15] (1):
+ ? Enter one of these numbers [1,16] (1):
  ? Output the optical properties of the dust mix? [yes/no] (yes):
  ? Output the mean optical properties of the dust mix? [yes/no] (yes):
    Possible choices for the type of normalization for the dust component:
@@ -401,8 +329,8 @@ dust distribution type.
       4. Normalization by defining the edge-on optical depth
          ...
  ? Enter one of these numbers [1,7] (1): 3
- ? Enter the wavelength for the optical depth [0.0001 micron,1e6 micron]: 0.55
- ? Enter the face-on optical depth at this wavelength [0,..]: 1
+ ? Enter the wavelength at which to specify the optical depth [0.0001 micron,1e6 micron]: 0.55
+ ? Enter the face-on optical depth at this wavelength ]0,..[: 1
 \endverbatim
 
 Each dust component is characterized by a particular geometry (determining the dust density distribution), a dust mix
@@ -435,6 +363,7 @@ When asked for the second dust component, terminate the list by entering zero.
       5. An octtree dust grid
          ...
  ? Enter one of these numbers [1,8] (5): 2
+ ? Output data files for plotting the structure of the grid? [yes/no] (yes):
  ? Enter the cylindrical radius of the grid [0 pc,.. pc]: 20000
  ? Enter the start point of the cylinder in the Z direction [-.. pc,.. pc]: -5000
  ? Enter the end point of the cylinder in the Z direction [-.. pc,.. pc]: 5000
@@ -443,16 +372,18 @@ When asked for the second dust component, terminate the list by entering zero.
       2. A power-law mesh
       3. A symmetric power-law mesh
       4. A logarithmic mesh
- ? Enter one of these numbers [1,4] (1): 2
+      5. A mesh read from a file
+ ? Enter one of these numbers [1,5] (1): 2
  ? Enter the number of bins in the mesh [1,100000] (100): 100
- ? Enter the bin width ratio between the last and the first bin [0,..] (1): 20
+ ? Enter the bin width ratio between the last and the first bin ]0,..[ (1): 20
    Possible choices for the bin distribution in the Z direction:
       1. A linear mesh
       2. A power-law mesh
       3. A symmetric power-law mesh
- ? Enter one of these numbers [1,3] (1): 3
+      4. A mesh read from a file
+ ? Enter one of these numbers [1,4] (1): 3
  ? Enter the number of bins in the mesh [1,100000] (100): 100
- ? Enter the bin width ratio between the outermost and the innermost bins [0,..] (1): 30
+ ? Enter the bin width ratio between the outermost and the innermost bins ]0,..[ (1): 30
 \endverbatim
 
 As mentioned above, <tt>SKIRT</tt> discretizes the dust on a spatial grid, i.e. a collection of small dust cells
@@ -483,14 +414,94 @@ the outermost to the innermost bin of 20 in the radial and 30 in the vertical di
 in the vertical direction because we want a higher resolution there in the inner regions.
 
 \verbatim
- ? Enter the number of samples for determining cell mass [10,1000] (100):
- ? Output convergence checks on the dust system? [yes/no] (yes):
- ? Output the dust density distribution? [yes/no] (yes):
+ ? Enter the number of random density samples for determining cell mass [10,1000] (100):
+ ? Output a data file with convergence checks on the dust system? [yes/no] (yes):
+ ? Output FITS files displaying the dust density distribution? [yes/no] (yes):
  ? Output a V-band optical depth map seen from the center? [yes/no] (no):
- ? Output a map of the mean intensity of the radiation field? [yes/no] (no):
+ ? Output FITS files displaying the mean intensity of the radiation field? [yes/no] (no):
 \endverbatim
 
-Finally the dust system takes a few additional parameters which can be left to their default values.
+The dust system takes a few additional parameters which can be left to their default values.
+
+\section TutorialBasicsMonoInst Instrument system
+
+Running a radiative transfer simulation is not particularly useful unless the results are registered by one or more
+instruments, which collect the photon packages that leave the system, in a process similar to the operation of real
+instruments at a telescope.
+
+The <tt>SKIRT</tt> instruments essentially emulate imaging spectrometers, i.e. 3D spectrographs with one wavelength
+dimension (determined by the simulation's wavelength grid) and two spatial directions on the plane of the sky. Each
+instrument is characterized by its own instrumental characteristics (pixel size and field of view) and by its position
+with respect to the system (for axisymmetric systems, this means the inclination and distance).
+
+It should be noted that the number of instruments, and the pixel size of these instruments, strongly influence both
+memory consumption (for storing the data cubes) and simulation run time (for peeling off photon packages in the
+direction of each instrument).
+
+\verbatim
+   Possible choices for the instrument system:
+      1. An instrument system
+   Automatically selected the only choice: 1
+\endverbatim
+
+There is only one type of instrument system (simply a list of instruments) so the default choice is automatically
+selected.
+
+\verbatim
+   Possible choices for item #1 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+      3. A basic instrument that outputs the total flux as data cube and as SED
+      4. An advanced instrument that records individual contributions to the flux
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
+ ? Enter the name for this instrument: i88
+ ? Enter the distance to the system [0 Mpc,.. Mpc]: 10
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 88
+ ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the total field of view in the horizontal direction ]0 pc,.. pc[: 40000
+ ? Enter the number of pixels in the horizontal direction [1,10000] (250): 800
+ ? Enter the center of the frame in the horizontal direction ]-.. pc,.. pc[ (0 pc):
+ ? Enter the total field of view in the vertical direction ]0 pc,.. pc[: 10000
+ ? Enter the number of pixels in the vertical direction [1,10000] (250): 400
+ ? Enter the center of the frame in the vertical direction ]-.. pc,.. pc[ (0 pc):
+\endverbatim
+
+For the first (and only) instrument in this tutorial simulation, select a basic instrument that outputs the total
+surface brightness in every pixel. Since you will be shooting photon packages at a single wavelength only, the "data
+cube" will have only one frame, and it doesn't make much sense to produce an SED.
+
+Specify an appropriate name for the instrument. This name is used to identify the output files for the instrument. This
+is not so relevant here, but it becomes important when there are multiple instruments. Further specify a size of 800
+times 200 pixels with a scale of 50 pc, a distance of 10 Mpc from the galaxy, and an inclination of 88 degrees. The
+remaining two angles can be left to their default values of zero, and the center of the instrument should remain at the
+origin.
+
+\verbatim
+   Possible choices for item #2 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,6] (3): 0
+\endverbatim
+
+When asked for the second instrument, enter zero to terminate the list, since the tutorial simulation has only one
+instrument.
+
+\section TutorialBasicsMonoPhot Photon packages
+
+The number of photon packages launched for each wavelength is a very important parameter, since it determines the
+accuracy of your simulation. On the other hand, the simulation run time essentially scales with the number of photon
+packages (multiplied by the number of wavelengths). Typical values range from \f$10^5\f$ to \f$10^9\f$. An appropriate
+number is usually determined experimentally: first run your simulation with a modest number of photon packages, look at
+the results and then run the simulation again with more photon packages if needed.
+
+\verbatim
+ ? Enter the number of photon packages per wavelength [0,1e15] (1e6):
+\endverbatim
+
+For your first simulation, leave the number of photon packages at the default value of \f$10^6\f$.
 
 \section TutorialBasicsMonoWrit Writing the ski file
 
@@ -513,7 +524,7 @@ Or if \c skirt is not in your system path, include the absolute or relative path
 for example:
 
 \verbatim
-$ ../release/skirt MonoDisk
+$ ../release/SKIRT/main/skirt MonoDisk
 \endverbatim
 
 <tt>SKIRT</tt> responds with a welcome message and immediately starts performing the simulation. In this mode
@@ -522,6 +533,7 @@ $ ../release/skirt MonoDisk
 \verbatim
    Welcome to SKIRT v___
    Constructing a simulation from ski file 'MonoDisk.ski'...
+   Running on ___ for ___
    Starting simulation MonoDisk...
    Starting setup...
    ...
@@ -553,10 +565,9 @@ The execution of a simulation progresses in three distinct stages:
 \section TutorialBasicsMonoOutput Output files
 
 The output files for this tutorial simulation are written in the current directory. All filenames start with
-"MonoDisk", i.e. the name of the ski file. Three files are always generated for every simulation:
+"MonoDisk", i.e. the name of the ski file. Two files are always generated for every simulation:
  - \c MonoDisk_log.txt contains the progress log as it was written to the console.
  - \c MonoDisk_parameters.xml contains a copy of the ski file, with a time stamp of when the simulation was run.
-   Using a regular TeX installation, this file can be easily processed into a nicely formatted document.
 
 During setup, <tt>SKIRT</tt> outputs several files describing the dust system. You can turn this off by answering "no"
 to the respective questions during the interactive session. The following files are written for this tutorial
@@ -649,16 +660,8 @@ snippet, where "..." indicates omitted information:
 \verbatim
 ...
 <skirt-simulation-hierarchy type="MonteCarloSimulation" ...">
-    <OligoMonteCarloSimulation packages="1e6" ...>
+    <OligoMonteCarloSimulation numPackages="1e6" ...>
         ...
-        <instrumentSystem type="InstrumentSystem">
-            ...
-            <FrameInstrument instrumentName="i88" distance="10 Mpc"
-                inclination="88 deg" azimuth="0 deg" positionAngle="0 deg"
-                fieldOfViewX="4e4 pc" pixelsX="800" centerX="0 pc"
-                fieldOfViewY="1e4 pc" pixelsY="200" centerY="0 pc"/>
-            ...
-        </instrumentSystem>
         <wavelengthGrid type="OligoWavelengthGrid">
             <OligoWavelengthGrid wavelengths="0.55 micron"/>
         </wavelengthGrid>
@@ -668,13 +671,21 @@ snippet, where "..." indicates omitted information:
         <dustSystem type="OligoDustSystem">
             ...
         </dustSystem>
+        <instrumentSystem type="InstrumentSystem">
+            ...
+            <FrameInstrument instrumentName="i88" distance="10 Mpc"
+                inclination="88 deg" azimuth="0 deg" positionAngle="0 deg"
+                fieldOfViewX="4e4 pc" pixelsX="800" centerX="0 pc"
+                fieldOfViewY="1e4 pc" pixelsY="200" centerY="0 pc"/>
+            ...
+        </instrumentSystem>
     </OligoMonteCarloSimulation>
 </skirt-simulation-hierarchy>
 \endverbatim
 
 Make the following changes:
  - increase the number of photon packages by a factor of five (replace "1e6" by "5e6");
- - add a second instrument by duplicating the <FrameInstrument ... /> element;
+ - add a second instrument by duplicating the <tt>\<FrameInstrument ... /\></tt> element;
  - change the new instrument's name to i84 and adjust its inclination to 84 degrees.
 
 Save your changes and execute the adjusted simulation using the command "skirt MonoDisk2". The simulation will run
