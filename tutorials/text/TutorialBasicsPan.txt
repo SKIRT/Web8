@@ -63,60 +63,6 @@ You will be setting up a dust torus surrounding a stellar source, so it is most 
 sizes expressed in astronomical units. Select the frequency output style, expressing integrated fluxes in Jy and
 surface densities in MJy/sr.
 
-\section TutorialBasicsPanInst Instrument system
-
-\verbatim
-   ...
-   Possible choices for item #1 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-      2. A basic instrument that outputs the total flux in every pixel as a data cube
-      3. A basic instrument that outputs the total flux as data cube and as SED
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,5] (3): 3
- ? Enter the name for this instrument: i00
- ? Enter the distance to the system [0 pc,.. pc]: 100
- ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg):
- ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the total field of view in the horizontal direction [0 AU,.. AU]: 80
- ? Enter the number of pixels in the horizontal direction [1,10000] (250): 800
- ? Enter the center of the frame in the horizontal direction [-.. AU,.. AU] (0 AU):
- ? Enter the total field of view in the vertical direction [0 AU,.. AU]: 80
- ? Enter the number of pixels in the vertical direction [1,10000] (250): 800
- ? Enter the center of the frame in the vertical direction [-.. AU,.. AU] (0 AU):
-   Possible choices for item #2 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-      2. A basic instrument that outputs the total flux in every pixel as a data cube
-      3. A basic instrument that outputs the total flux as data cube and as SED
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,5] (3): 3
- ? Enter the name for this instrument: i90
- ? Enter the distance to the system [0 pc,.. pc]: 100
- ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
-   ... [remaining questions: same answers as for first instrument]
-   ...
-\endverbatim
-
-For this tutorial, the intention is to create both an %SED and an integral field data cube for each line of sight under
-study, i.e. a face-on view and an edge-on view. Therefore, you need to include two instruments of the default type
-"that outputs the total flux as data cube and as SED". For the first instrument, specify an inclination of 0 degrees
-and a corresponding name, such as "i00" or "faceon". For the second instrument, specify an inclination of 90 degrees
-and a name such as "i90" or "edgeon". The azimuth angle is irrelevant because the simulated model will be axisymmetric,
-and the position angle (which rotates the instrument frame in its own plane) is best left at zero. For both
-instruments, specify a distance of 100 pc, and a field of view of 80 AU and 800 pixels in both directions, centered on
-the origin. When asked for a third instrument, enter zero to terminate the list.
-
-\section TutorialBasicsPanPhot Photon packages
-
-\verbatim
- ? Enter the number of photon packages per wavelength [0,1e15] (1e6): 5e5
-\endverbatim
-
-The run time of a panchromatic <tt>SKIRT</tt> simulation is roughly proportional to the product of the number of photon
-packages and the number of wavelengths. To limit the run time for this tutorial, set the number of photon packages to
-\f$5\times10^5\f$. This number is sufficient to produce a reasonable %SED for the simple 2D tutorial model, but the
-frames in the data cube will still be quite noisy.
-
 \section TutorialBasicsPanWave Wavelength grid
 
 \verbatim
@@ -172,7 +118,7 @@ lie inside the finer grid range are automatically removed, so the total number o
    Possible choices for the geometry of the spatial stellar distribution:
       1. A point source geometry
       ...
- ? Enter one of these numbers [1,42] (1):
+ ? Enter one of these numbers [1,46] (1):
 \endverbatim
 
 The stellar source for this tutorial is modeled by a point source in the origin. Select a stellar component with
@@ -184,12 +130,12 @@ built-in geometry, and a point source geometry (the default choice in both cases
       2. The SED of the Sun
       3. A Pegase galaxy SED
          ...
- ? Enter one of these numbers [1,10] (1): 2
+ ? Enter one of these numbers [1,11] (1): 2
    Possible choices for the type of normalization for the stellar component:
       1. Stellar component normalization through the bolometric luminosity
-      ...
- ? Enter one of these numbers [1,3] (1):
- ? Enter the bolometric luminosity for this component, in solar units [0,..]: 1
+      2. Stellar component normalization through the luminosity at a given wavelength
+ ? Enter one of these numbers [1,2] (1):
+ ? Enter the bolometric luminosity for this component ]0 Lsun,.. Lsun[: 1
    ...
 \endverbatim
 
@@ -223,13 +169,13 @@ need to select the "component" dust distribution type.
          ...
      14. A torus geometry
          ...
- ? Enter one of these numbers [1,42] (9): 14
- ? Enter the radial powerlaw exponent p of the torus [0,..]: 0
- ? Enter the polar index q of the torus [0,..]: 0
+ ? Enter one of these numbers [1,46] (9): 14
+ ? Enter the radial powerlaw exponent p of the torus [0,..[: 0
+ ? Enter the polar index q of the torus [0,..[: 0
  ? Enter the half opening angle of the torus [0 deg,90 deg]: 10
- ? Enter the minimum radius of the torus [0 AU,.. AU]: 0.5
- ? Enter the maximum radius of the torus [0 AU,.. AU]: 40
- ? Reshape the inner radius according to the Netzer profile? [yes/no] (no):
+ ? Enter the minimum radius of the torus [0 AU,.. AU[: 0.5
+ ? Enter the maximum radius of the torus [0 AU,.. AU[: 40
+ ? Reshape the inner radius according to the Netzer luminosity profile? [yes/no] (no):
 \endverbatim
 
 For this tutorial, select a torus geometry with a uniform density distribution (hence the zero values for the power-law
@@ -242,7 +188,7 @@ density distribution is not very realistic, but it facilitates interpreting the 
       2. A Draine & Li (2007) dust mix
       3. A dust mix with mean Zubko properties
          ...
- ? Enter one of these numbers [1,14] (1): 3
+ ? Enter one of these numbers [1,15] (1): 3
  ? Output the optical properties of the dust mix? [yes/no] (yes):
  ? Output the mean optical properties of the dust mix? [yes/no] (yes):
    Possible choices for the type of normalization for the dust component:
@@ -252,7 +198,7 @@ density distribution is not very realistic, but it facilitates interpreting the 
          ...
  ? Enter one of these numbers [1,7] (1): 4
  ? Enter the wavelength at which to specify the optical depth [0.0001 micron,1e6 micron]: 0.55
- ? Enter the edge-on optical depth at this wavelength [0,..]: 1
+ ? Enter the edge-on optical depth at this wavelength ]0,..[: 1
    ...
 \endverbatim
 
@@ -282,24 +228,26 @@ asked for the second dust component, terminate the list by entering zero.
          ...
  ? Enter one of these numbers [1,8] (5): 2
  ? Output data files for plotting the structure of the grid? [yes/no] (yes):
- ? Enter the cylindrical radius of the grid [0 AU,.. AU]: 40
- ? Enter the start point of the cylinder in the Z direction [-.. AU,.. AU]: -10
- ? Enter the end point of the cylinder in the Z direction [-.. AU,.. AU]: 10
+ ? Enter the cylindrical radius of the grid ]0 AU,.. AU[: 40
+ ? Enter the start point of the cylinder in the Z direction ]-.. AU,.. AU[: -10
+ ? Enter the end point of the cylinder in the Z direction ]-.. AU,.. AU[: 10
    Possible choices for the bin distribution in the radial direction:
       1. A linear mesh
       2. A power-law mesh
       3. A symmetric power-law mesh
       4. A logarithmic mesh
- ? Enter one of these numbers [1,4] (1): 2
+      5. A mesh read from a file
+ ? Enter one of these numbers [1,5] (1): 2
  ? Enter the number of bins in the mesh [1,100000] (100): 100
- ? Enter the bin width ratio between the last and the first bin [0,..] (1): 20
+ ? Enter the bin width ratio between the last and the first bin ]0,..[ (1): 20
    Possible choices for the bin distribution in the Z direction:
       1. A linear mesh
       2. A power-law mesh
       3. A symmetric power-law mesh
- ? Enter one of these numbers [1,3] (1): 3
+      4. A mesh read from a file
+ ? Enter one of these numbers [1,4] (1): 3
  ? Enter the number of bins in the mesh [1,100000] (100): 100
- ? Enter the ratio between the outermost and the innermost bins [0,..] (1): 20
+ ? Enter the ratio between the outermost and the innermost bins ]0,..[ (1): 20
 \endverbatim
 
 The spatial grid for this tutorial simulation can be two-dimensional, and needs more resolution in the center of the
@@ -310,9 +258,9 @@ a ratio of the width of the outermost to the innermost bin of 20 in both directi
 
 \verbatim
  ? Enter the number of samples for determining cell mass [10,1000] (100):
- ? Output convergence checks on the dust system? [yes/no] (yes):
- ? Output the dust density distribution? [yes/no] (yes):
- ? Output a V-band optical depth map seen from the center? [yes/no] (no):
+ ? Output a data file with convergence checks on the dust system? [yes/no] (yes):
+ ? Output FITS files displaying the dust density distribution? [yes/no] (yes):
+ ? Output FITS file with a V-band optical depth map seen from the center? [yes/no] (no):
    Possible choices for the dust emissivity type:
       1. Modified blackbody dust emissivity (assumes LTE conditions)
  ? Enter one of these numbers or zero to select none [0,1] (1):
@@ -323,11 +271,64 @@ a ratio of the width of the outermost to the innermost bin of 20 in both directi
  ? Enter one of these numbers [1,3] (1):
  ? Do you want to include dust self-absorption? [yes/no] (no):
  ? Output FITS files displaying the dust temperature distribution? [yes/no] (yes):
- ? Output a data file describing the interstellar radiation field? [yes/no] (no):
 \endverbatim
 
 The remaining dust system parameters can be left to their default values. These options are described in more detail in
 another tutorial.
+
+\section TutorialBasicsPanInst Instrument system
+
+\verbatim
+   ...
+   Possible choices for item #1 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+      3. A basic instrument that outputs the total flux as data cube and as SED
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 3
+ ? Enter the name for this instrument: i00
+ ? Enter the distance to the system ]0 pc,.. pc[: 100
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg):
+ ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the total field of view in the horizontal direction ]0 AU,.. AU[: 80
+ ? Enter the number of pixels in the horizontal direction [1,10000] (250): 800
+ ? Enter the center of the frame in the horizontal direction ]-.. AU,.. AU[ (0 AU):
+ ? Enter the total field of view in the vertical direction ]0 AU,.. AU[: 80
+ ? Enter the number of pixels in the vertical direction [1,10000] (250): 800
+ ? Enter the center of the frame in the vertical direction ]-.. AU,.. AU[ (0 AU):
+   Possible choices for item #2 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+      3. A basic instrument that outputs the total flux as data cube and as SED
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 3
+ ? Enter the name for this instrument: i90
+ ? Enter the distance to the system ]0 pc,.. pc[: 100
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
+   ... [remaining questions: same answers as for first instrument]
+   ...
+\endverbatim
+
+For this tutorial, the intention is to create both an %SED and an integral field data cube for each line of sight under
+study, i.e. a face-on view and an edge-on view. Therefore, you need to include two instruments of the default type
+"that outputs the total flux as data cube and as SED". For the first instrument, specify an inclination of 0 degrees
+and a corresponding name, such as "i00" or "faceon". For the second instrument, specify an inclination of 90 degrees
+and a name such as "i90" or "edgeon". The azimuth angle is irrelevant because the simulated model will be axisymmetric,
+and the position angle (which rotates the instrument frame in its own plane) is best left at zero. For both
+instruments, specify a distance of 100 pc, and a field of view of 80 AU and 800 pixels in both directions, centered on
+the origin. When asked for a third instrument, enter zero to terminate the list.
+
+\section TutorialBasicsPanPhot Photon packages
+
+\verbatim
+ ? Enter the number of photon packages per wavelength [0,1e15] (1e6): 5e5
+\endverbatim
+
+The run time of a panchromatic <tt>SKIRT</tt> simulation is roughly proportional to the product of the number of photon
+packages and the number of wavelengths. To limit the run time for this tutorial, set the number of photon packages to
+\f$5\times10^5\f$. This number is sufficient to produce a reasonable %SED for the simple 2D tutorial model, but the
+frames in the data cube will still be quite noisy.
 
 \section TutorialBasicsPanRun Running the simulation
 
@@ -369,8 +370,8 @@ There are also some additional files describing aspects of the dust system that 
 simulations:
  - \c PanTorus_ds_tempxy.fits & \c xz ("temperature") are FITS data files containing a 1024 x 1024 pixel map of the
    dust temperature in a coordinate plane, across the total extension of the dust grid.
- - \c PanTorus_ds_celltemps.dat is a text data file listing the dust mass and dust temperature in each cell of the
-   dust grid; this information can be used to plot a histogram of the mass-weighted dust temperature distribution.
+ - \c PanTorus_ds_celltemps.dat is a text data file listing the dust temperature in each cell of the
+   dust grid; this information can be used to plot a histogram of the dust temperature distribution.
 
 \section TutorialBasicsPanPTS Plotting SEDs
 
