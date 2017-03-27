@@ -21,7 +21,7 @@ corresponding tutorials.
 
 <b>For SKIRT developers</b>
 
-  - \ref TutorialDevelopDust
   - \ref TutorialDevelopGeom
+  - \ref TutorialDevelopDust
 
 */

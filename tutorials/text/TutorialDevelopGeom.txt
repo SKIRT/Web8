@@ -3,15 +3,19 @@
 \page TutorialDevelopGeom Adding a new geometry class to SKIRT
 
 \image html TutorialDevelopGeom_ExpDisk.png
+
+<i>Illustration above</i>: exponential disk; density cut along \f$xz\f$-plane (left) and edge-on surface
+brightness (right).
+
 \image html TutorialDevelopGeom_IsoDisk.png
 
-<i>Illustration above</i>: Top row: exponential disk; Bottom row: isothermal disk;
-Left column: cut through xz-plane; Right colummn: edge-on surface brightness.
+<i>Illustration above</i>: isothermal disk; density cut along \f$xz\f$-plane (left) and edge-on surface
+brightness (right).
 
 In this tutorial, you will extend the \c SKIRT code with a new geometry that can be used for stellar and dust density
-distributions. Before starting this tutorial, you should have installed the Qt development environment and built the \c
-SKIRT code as described in the installation guide. You should also know how to use \c SKIRT as described in the user
-guide and in the various usage tutorials.
+distributions. Before starting this tutorial, you should know how to use \c SKIRT as described in the User Guide and in
+the various tutorials for beginners. You should be ready to use a text editor or integrated development environment to
+modify portions of the \c SKIRT source code and rebuild the project as described in the Installation Guide.
 
 \section TutorialDevelopGeomStru Structure of the SKIRT code
 
@@ -27,9 +31,9 @@ digraph runtime {
   node [shape=rect, fontname=Helvetica, fontsize=10];
   edge [dir=back arrowtail=ediamond];
 
-  OligoMonteCarloSimulation -> Parallel;
+  OligoMonteCarloSimulation -> ConsoleLog;
   OligoMonteCarloSimulation -> FilePaths;
-  OligoMonteCarloSimulation -> Console;
+  OligoMonteCarloSimulation -> ParallelFactory;
   OligoMonteCarloSimulation -> Random;
   OligoMonteCarloSimulation -> ExtragalacticUnits;
   OligoMonteCarloSimulation -> OligoWavelengthGrid;
@@ -51,17 +55,17 @@ combination of the structural makeup of the hierarchy, the selection of included
 rather than another type of dust grid), and the properties of the various simulation items (not shown in the diagram).
 The hierarchy also includes the functionality needed to perform the simulation and output the results, embodied in the
 code associated with each specific simulation item class. The run-time simulation hierarchy mimics the contents of the
-ski file used to configure the simulation, with the exception of the Parallel, FilePaths and Log (Console) objects,
+ski file used to configure the simulation, with the exception of the ConsoleLog, FilePaths and ParallelFactory objects,
 which are added internally.
 
-Multiple run-time simulation hierarchies can co-exist and are independent of each other. There is no shared or
-global data, except when accessing truly global resources (such as the console) which are protected by
-appropriate locking mechanisms.
+Multiple run-time simulation hierarchies can co-exist and are independent of each other. There is no shared or global
+data, except when accessing truly global resources (such as the console) which are protected by appropriate locking
+mechanisms.
 
 \subsection TutorialDevelopGeomStruCom Compile-time structure
 
-A simulation item is an instance of a C++ class that inherits the SimulationItem class. The following diagram
-presents a small part of the inheritance tree:
+A simulation item is an instance of a C++ class that inherits the SimulationItem class. The following diagram presents
+a small part of the inheritance tree:
 
 \dot "" width=14cm
 digraph inheritance {
@@ -71,13 +75,15 @@ digraph inheritance {
 
   StellarComp -> SimulationItem;
     SPHStellarComp -> StellarComp;
-    OtherStellarComp -> StellarComp;
+    GeometricStellarComp -> StellarComp;
+      OligoStellarComp -> GeometricStellarComp;
+      PanStellarComp -> GeometricStellarComp;
   Simulation -> SimulationItem;
     MonteCarloSimulation -> Simulation;
       OligoMonteCarloSimulation -> MonteCarloSimulation;
-      OtherMonteCarloSimulation -> MonteCarloSimulation;
+      PanMonteCarloSimulation -> MonteCarloSimulation;
   Log -> SimulationItem;
-    Console -> Log;
+    ConsoleLog -> Log;
     FileLog -> Log;
 }
 \enddot
@@ -98,13 +104,10 @@ The \c SKIRT code includes a \em discovery mechanism that allows all information
 defined in a single place. All relevant metadata, such property definitions and human readable strings to describe
 these properties, are provided in the class declaration itself rather than being scattered across the code.
 
-Using these metadata and the discovery mechanism, \c SKIRT can
- - create a simulation hierarchy based on user responses during an interactive console Q&A session,
- - save or load a simulation hierarchy to and from a ski file (in XML format),
- - generate a human-readable report summarizing the simulation parameters for a simulation hierarchy.
-
-Because these functions use the metadata provided in each simulation item class, they automatically adjust to changes
-in or additions to the \c SKIRT code without any additional developer effort.
+Using these metadata and the discovery mechanism, \c SKIRT can create a simulation hierarchy based on user responses
+during an interactive console Q&A session, and it can save or load a simulation hierarchy to and from a ski file (in
+XML format). Because these functions use the metadata provided in each simulation item class, they automatically adjust
+to changes in or additions to the \c SKIRT code without any additional developer effort.
 
 \section TutorialDevelopGeomMat The mathematics
 
@@ -157,7 +160,7 @@ with cumulative distribution
 Solving \f${\cal{X}}=P(R)\f$ for \f$R\f$, where \f$\cal{X}\f$ is a uniform random deviate, we obtain
 \f[ R = h_R \left[ -1-W_{-1} \left(\frac{ {\cal{X}}-1}{\text{e}}\right) \right] \f]
 where \f$W_{-1}\f$ is the Lambert function of order \f$-1\f$, which can be calculated in \c SKIRT using
-the function SpecialFunctions::LambertW1.
+the function SpecialFunctions::LambertW1().
 
 The documentation for the SepAxGeometry::randomz() function states that it returns
 a random \f$z\f$ from the one-dimensional probability distribution
@@ -179,104 +182,78 @@ reinventing the wheel, browse the \c SKIRT documentation and look for an existin
 needs. It so happens that the ExpDiskGeometry class also defines an axisymmetric dust disk. To examine it more closely,
 open the \c ExpDiskGeometry.hpp header file in the code editor.
 
-It appears that ExpDiskGeometry inherits from SepAxGeometry, an abstract class representing axisymmetric dust
-geometries where the density is a separable function of \f$R\f$ and \f$z\f$. ExpDiskGeometry offers two properties
-\f$h_R\f$ and \f$h_z\f$ corresponding to the free parameters you need, plus several properties related to inner and
-outer truncation of the disk, which you don't need but can easily be removed. There is also a data member for the
-central density \f$\rho_0\f$.
+It turns out that ExpDiskGeometry inherits from SepAxGeometry, an abstract class representing axisymmetric dust
+geometries where the density is a separable function of \f$R\f$ and \f$z\f$. The \c PROPERTY and \c ATTRIBUTE macros
+define properties for the scale length \f$h_R\f$ and the scale height \f$h_z\f$, corresponding to the free parameters
+you need, plus several properties related to inner and outer truncation of the disk, which you don't need but can
+easily be removed. These macros actually provide the metadata used by the discovery mechanism, in addition to defining
+appropriate public getter functions with the same name as the corresponding property.
 
-Looking in some more detail, ExpDiskGeometry offers the following functions:
- - a default constructor
- - the setupSelfBefore() function, which calculates the central density
- - setters and getters for the model parameters
- - the functions density(), randomR(), randomz(), SigmaR(), and SigmaZ() that define various aspects of
-   the geometry modeled by this class
+Furthermore, ExpDiskGeometry offers the following functions:
+ - the setupSelfBefore() function, which calculates the central density \f$\rho_0\f$ and stores the result in a
+   data member for later use;
+ - the functions density(), randomCylRadius(), randomZ(), SigmaR(), and SigmaZ(), which implement various aspects of
+   the geometry modeled by this class.
 
-Clearly you should use the same structure for your new class. The main work will consist of adjusting the key functions
-for the new geometry.
+You can use the same structure for your new class. The main work will consist of adjusting the key functions for the
+new geometry.
 
 \section TutorialDevelopGeomCre Creating the new source and header files
 
-It is quite possible to create a new class from within the Qt Creator development environment. However since your new
-class will so closely resemble an existing one, it is easier to copy the header and source files using a regular file
-browser (or if you prefer, command lines in a terminal window). Locate the files \c ExpDiskGeometry.hpp and \c
-ExpDiskGeometry.cpp in your local working copy of the \c SKIRT source code (in the src/SKIRTcore directory), and copy
-them to a set of new files named \c IsoThermalDiskGeometry.hpp and \c IsoThermalDiskGeometry.cpp (in the same
-directory). Do not remove the original files!
+Locate the files \c ExpDiskGeometry.hpp and \c ExpDiskGeometry.cpp in your local working copy of the \c SKIRT source
+code (in the <tt>SKIRT/core</tt> directory), and copy them to a set of new files named \c IsoThermalDiskGeometry.hpp
+and \c IsoThermalDiskGeometry.cpp (in the same directory). Do not remove the original files!
 
-Go back to Qt Creator (in "Edit" mode) and right-click on the \c SKIRT project icon in the "Projects" pane. In the
-popu-menu, choose "Add Existing Files...". In the dialog, locate and select the two new source files and press the
-"Open" button. In the next (smaller) dialog, confirm that you want to add the new files to source control. Now locate
-the new files in Qt Creator's project browser and open them in the editor.
-
-In the new header file, replace the three occurrences of \c "EXPDISKGEOMETRY_HPP" by \c "ISOTHERMALDISKGEOMETRY_HPP".
+In the new header file (.hpp), replace the two occurrences of \c "EXPDISKGEOMETRY_HPP" by \c "ISOTHERMALDISKGEOMETRY_HPP".
 This is the standard header guard to avoid multiple includes of the same class definition.
 
-In both new files, replace all occurrences of \c "ExpDiskGeometry" by \c "IsoThermalDiskGeometry".
+In both new files (.hpp and .cpp), replace all occurrences of \c "ExpDiskGeometry" by \c "IsoThermalDiskGeometry".
 
-Press the "Hammer" icon in the left margin to save your changes and perform a build. There should be no errors.
+Build the \c SKIRT project with these changes. Depending on the build procedure in use, you may need to explicitly
+rerun CMake for the build system to recognize the newly introduced source files. To make sure that the new files are
+actually being compiled, introduce a syntax error and verify that the compiler catches it. After correcting these
+intentionally introduced issues, there should be no compilation or build errors left at this point.
 
 \section TutorialDevelopGeomDec The class declaration
 
-Since the class declaration for IsoThermalDiskGeometry is very similar to that of ExpDiskGeometry,
-the header file \c IsoThermalDiskGeometry.hpp for your new class does not need a lot of work.
+Because the class declaration for IsoThermalDiskGeometry is very similar to that of ExpDiskGeometry, the header file \c
+IsoThermalDiskGeometry.hpp for your new class does not need a lot of work.
 
-Most importantly, adjust the description of the class in the first occurrence of the Q_CLASSINFO() macro.
-For example, replace "an exponential disk geometry" by "an iso-thermal disk geometry".
-This text will be used for identifying your new geometry to a user, such as when constructing
-a new .ski file during an interactive Q&A session.
+Adjust the description of the class in the \c ITEM_CONCRETE macro. For example, replace "an exponential disk geometry"
+by "an iso-thermal disk geometry". This text will be used for identifying your new geometry to a user, such as when
+constructing a new .ski file during an interactive Q&A session.
 
-You should also remove the getters and setters for the truncation parameters, the corresponding Q_CLASSINFO() macros,
-and the corresponding data members, since these parameters are not needed in the new class.
+Remove the \c PROPERTY and \c ATTRIBUTE macros for the truncation parameters, and the corresponding data members, since
+these parameters are not needed in the new class.
 
 While updating the documentation, take care to follow the rules for comments in "/ **"-style documentation blocks.
-These comments are processed by the <a href="http://www.doxygen.org">Doxygen</a> utility to produce
-the \c SKIRT manual in HTML format. It is \em really important to write decent comments for every function.
-When in doubt about the syntax for formatting comments, look for examples elsewhere in the \c SKIRT source code or
-check the <a href="http://www.doxygen.org/manual.html">Doxygen manual</a> on the web.
+These comments are processed by the <a href="http://www.doxygen.org">Doxygen</a> utility to produce the \c SKIRT manual
+in HTML format. It is \em really important to write decent comments for every function. When in doubt about the syntax
+for formatting comments, look for examples elsewhere in the \c SKIRT source code or check the <a
+href="http://www.doxygen.org/manual.html">Doxygen manual</a> on the web.
 
 \section TutorialDevelopGeomDef The class definition
 
 The source file \c IsoThermalDiskGeometry.cpp needs more extensive edits beyond replacing the class name.
 
-The constructor should initialize all data members to some default value, without performing extensive calculations.
-Often the constructor simply sets all data members to zero.
-Since you removed the truncation-related data members declared for the class, you need to remove their
-initialization from the constructor as well:
+The implementation of the function setupSelfBefore() must always start with a call to the same function in the base
+class (SepAxGeometry in this case). This call should remain unchanged. Remove the code that verifies the values of the
+truncation-related properties, and update the code that calculates the central density:
 
-\code
-IsoThermalDiskGeometry::IsoThermalDiskGeometry()
-    : _hR(0), _hz(0), _rho0(0)
-{
-}
-\endcode
-
-Note that there is no destructor. This is fine since the class does not allocate any resources that need deallocation.
-
-The implementation of the function setupSelfBefore() must always start with a call to the same function in the
-base class (SepAxGeometry in this case). This call can remain unchanged. Remove the code that deals with the
-truncation-related properties; other than that everything can stay unchanged. The allowed range for the
-scale height and scale length is the same as for the exponential disk, and the central density happens to be
-the same as for the untruncated exponential disk:
-
-\code
+\verbatim
 void IsoThermalDiskGeometry::setupSelfBefore()
 {
     SepAxGeometry::setupSelfBefore();
 
-    // verify property values
-    if (_hR <= 0) throw FATALERROR("Radial scale length hR should be positive");
-    if (_hz <= 0) throw FATALERROR("Axial scale height hz should be positive");
-
     // calculate central density
     _rho0 = 1.0/(4.0*M_PI*_hz*_hR*_hR);
 }
-\endcode
+\endverbatim
 
-Update the implementation of the functions density(), sigmaR(), and sigmaZ()
-to reflect the (surface) density formulas derived before:
+Update the implementation of the functions density(), sigmaR(), and sigmaZ() to reflect the (surface) density formulas
+derived before:
 
-\code
+\verbatim
 double IsoThermalDiskGeometry::density(double R, double z) const
 {
     double sechz = 1.0 / cosh(z/_hz);
@@ -292,61 +269,60 @@ double IsoThermalDiskGeometry::sigmaZ() const
 {
     return 2.0*_rho0*_hz;
 }
-\endcode
+\endverbatim
 
-Update the implementation of the functions randomR() and randomz() to reflect the formulas derived before
+Update the implementation of the functions randomCylRadius() and randomZ() to reflect the formulas derived before
 for generating the appropriate random values:
 
-\code
-double IsoThermalDiskGeometry::randomR() const
+\verbatim
+double IsoThermalDiskGeometry::randomCylRadius() const
 {
-    double X = _random->uniform();
+    double X = random()->uniform();
     return _hR * (-1.0-SpecialFunctions::LambertW1((X-1.0)/M_E));
 }
 
-double IsoThermalDiskGeometry::randomz() const
+double IsoThermalDiskGeometry::randomZ() const
 {
-    double X = _random->uniform();
+    double X = random()->uniform();
     return 0.5 * _hz * log(X/(1.0-X));
 }
-\endcode
+\endverbatim
 
-Press the "Hammer" icon again to save your changes and perform a build. There should be no errors.
+Save your changes and perform a build. There should be no errors.
 
 \section TutorialDevelopGeomReg Registering the new class
 
-Having declared and defined the new class, you must make its existence known to the \c SKIRT discovery mechanism
-so that it will be properly listed when constructing a new .ski file during an interactive Q&A session.
+Having declared and defined the new class, you must make its existence known to the \c SKIRT discovery mechanism so
+that it will be properly listed when constructing a new .ski file during an interactive Q&A session. Note that this
+registration requirement applies only to simulation item classes, i.e. classes that inherit directly or indirectly from
+the SimulationItem class, as is the case for your new IsoThermalDiskGeometry class.
 
-Note that this registration requirement applies only simulation item classes, i.e. classes that inherit directly
-or indirectly from the SimulationItem class, as is the case for your new IsoThermalDiskGeometry class.
-
-Locate the file \c RegisterSimulationItems.cpp in Qt Creator's project browser and open it in the editor. You need
-to add two lines in this file: an \c include directive for the new class header, and an \c add<> statement to
-register the new class.
+Locate and open the file \c SimulationItemRegistry.cpp (also in the <tt>SKIRT/core</tt> directory). You need to add two
+lines in this file: an \c include directive for the new class header, and an \c add<> statement to register the new
+class.
 
 Add the \c include directive to the already long list of \c include directives, in alpahabetical order. For
 example:
 
-\code
+\verbatim
 #include "InterstellarDustMix.hpp"
 #include "IsoThermalDiskGeometry.hpp"
 ...
-\endcode
+\endverbatim
 
-Insert a new \c add<> statement to the existing list, in the location you want it to appear in the corresponding
-choice list while creating a new .ski file in the interactive Q&A session. In this case, locate the
-list of \c add<> statements for geometry classes and insert a new statement (for example) right after
-the one for the ExpDiskGeometry class:
+Insert a new \c add<> statement to the existing list, in the location you want it to appear in the corresponding choice
+list while creating a new .ski file in the interactive Q&A session. In this case, locate the list of \c add<>
+statements for geometry classes and insert a new statement (for example) right after the one for the ExpDiskGeometry
+class:
 
-\code
-    add<ExpDiskGeometry>();
-    add<IsoThermalDiskGeometry>();
+\verbatim
+    ItemRegistry::add<ExpDiskGeometry>();
+    ItemRegistry::add<IsoThermalDiskGeometry>();
     ...
-\endcode
+\endverbatim
 
-Press the "Hammer" icon again to save your changes and perform a build. Assuming there are no errors,
-\c SKIRT is now ready for use with the new geometry.
+Again save your changes and perform a build. Assuming there are no errors, \c SKIRT is now ready for use with the new
+geometry.
 
 \section TutorialDevelopGeomUse Using the new class
 
@@ -363,16 +339,15 @@ The list of choices will include a new item for the iso-thermal disk geometry:
      ...
 \endverbatim
 
-Enter the appropriate choice (10 in the example) to select your new geometry.
-Complete the Q&A session to save the ski file.
-Alternatively, you can edit a copy of a ski file you made earlier to use your new geometry.
+Enter the appropriate choice (10 in the example) to select your new geometry. Complete the Q&A session to save the ski
+file. Alternatively, you can edit a copy of a ski file you made earlier to use your new geometry.
 
-To verify the results for a stellar distribution, run a simulation without dust and with appropriate
-frame instruments to generate an image of the surface brightness observed in a few relevant directions.
+To verify the results for a stellar distribution, run a simulation without dust and with appropriate frame instruments
+to generate an image of the surface brightness observed from a few relevant viewing angles.
 
-To verify the results for a dust density distribution, set the writeDensity property of the dust system to “true”,
-so that \c SKIRT generates cuts through the dust along the coordinate axes (in the output files
-\c prefix_ds_trhoxy.fits and \c prefix_ds_trhoxz.fits).
+To verify the results for a dust density distribution, set the \em writeDensity property of the dust system to “true”,
+so that \c SKIRT generates cuts through the dust along the coordinate axes (in the output files \c
+prefix_ds_trhoxy.fits and \c prefix_ds_trhoxz.fits).
 
 
 <b><i>Congratulations, you made it to the end of this tutorial!</i></b>
