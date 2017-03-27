@@ -454,7 +454,7 @@ selected.
       3. A basic instrument that outputs the total flux as data cube and as SED
       4. An advanced instrument that records individual contributions to the flux
          ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 2
  ? Enter the name for this instrument: i88
  ? Enter the distance to the system [0 Mpc,.. Mpc]: 10
  ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 88
@@ -483,7 +483,7 @@ origin.
       1. A basic instrument that outputs the total integrated flux as an SED
       2. A basic instrument that outputs the total flux in every pixel as a data cube
          ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 0
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 0
 \endverbatim
 
 When asked for the second instrument, enter zero to terminate the list, since the tutorial simulation has only one

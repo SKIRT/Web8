@@ -9,9 +9,9 @@ corresponding tutorials.
 
   - \ref TutorialBasicsMono
   - \ref TutorialBasicsPan
-  - \ref TutorialGridsTreeVoro
   - \ref TutorialHydroAMR
   - \ref TutorialHydroSPH
+  - \ref TutorialGridsTreeVoro
 
 <b>For advanced SKIRT, FitSKIRT and PTS users</b>
 

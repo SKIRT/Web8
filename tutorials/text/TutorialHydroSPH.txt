@@ -4,6 +4,9 @@
 
 \image html TutorialHydroSPH.png
 
+<i>Illustration above</i>: dust temperature map (along one of the coordinate planes) for the SPH-simulated galaxy
+used in this tutorial.
+
 In this tutorial you will use <tt>SKIRT</tt> to study the dust in a galaxy model produced by the EAGLE cosmological
 simulations (http://icc.dur.ac.uk/Eagle ; http://eagle.strw.leidenuniv.nl). The EAGLE simulation code, an adjusted
 version of Gadget-3 (http://wwwmpa.mpa-garching.mpg.de/gadget), includes a gravitational solver for dark and baryonic
@@ -13,8 +16,8 @@ will use data for a single galaxy extracted from the present-day snapshot of an 
 snapshot data includes information on stellar particles, representing the radiation sources, and on gas particles, from
 which a dust distribution can be derived.
 
-The concept note found at http://www.skirt.ugent.be/skirt/_hydro.html provides a more general overview of
-<tt>SKIRT</tt>'s capabilities for postprocessing (magneto-)hydrodynamical simulation results.
+The <a href="../skirt/_concepts.html">SKIRT concepts section</a> includes a concept note that provides a more general
+overview of <tt>SKIRT</tt>'s capabilities for postprocessing (magneto-)hydrodynamical simulation results.
 
 \section TutorialHydroSphPre Getting ready
 
@@ -25,7 +28,7 @@ before starting this tutorial, you should have installed the <tt>SKIRT</tt> code
 
 To complete this tutorial, you need the files containing the data extracted from the EAGLE snapshot in a format
 appropriate for importing into SKIRT. Download the files \c eagle_stars.dat and \c eagle_gas.dat from the <a
-href="http://www.skirt.ugent.be/downloads">SKIRT downloads page</a> and put them into your local working directory.
+href="../downloads/index.html">SKIRT downloads page</a> and put them into your local working directory.
 
 \section TutorialHydroSphSki Creating the ski file
 
@@ -44,10 +47,11 @@ The first question is for the filename of the \em ski file. For this tutorial, e
 \section TutorialHydroSphSim Type of simulation
 
 \verbatim
-   Possible choices for the simulation:
+   Possible choices for a Monte Carlo simulation:
       1. An oligochromatic Monte Carlo simulation
       2. A panchromatic Monte Carlo simulation
  ? Enter one of these numbers [1,2] (1): 2
+   ...
 \endverbatim
 
 In this tutorial, the goal is to produce a spectral energy distribution (%SED) including infrared wavelengths and the
@@ -73,48 +77,6 @@ Leave the seed for the random generator to its default value (not shown).
 You will be studying a complete galaxy, so it is appropriate to select extragalactic units. For this tutorial, just so
 you experience the various options, select the "neutral" output style, expressing integrated fluxes in
 \f$\text{W}\,\text{m}^{-2}\f$ and surface densities in \f$\text{W}\,\text{m}^{-2}\,\text{arcsec}^{-2}\f$.
-
-\section TutorialHydroSphInst Instrument system
-
-\verbatim
-   ...
-   Possible choices for item #1 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-      2. A basic instrument that outputs the total flux in every pixel as a data cube
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 1
- ? Enter the name for this instrument: i90
- ? Enter the distance to the system [0 Mpc,.. Mpc]: 10
- ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
- ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg): 0
- ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg): 0
-   Possible choices for item #2 in the instruments list:
-     1. A basic instrument that outputs the total integrated flux as an SED
-     2. A basic instrument that outputs the total flux in every pixel as a data cube
-        ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 1
- ? Enter the name for this instrument: i00
- ? Enter the distance to the system [0 Mpc,.. Mpc]: 10
- ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg):
- ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
-   Possible choices for item #3 in the instruments list:
-        ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 0
-\endverbatim
-
-For this tutorial, configure two instruments of the type that outputs the total integrated flux as an %SED. Specify
-two different inclinations, for example 90 and 0 degrees, and a distance to the system of 10 Mpc.
-
-\section TutorialHydroSphPhot Photon packages
-
-\verbatim
- ? Enter the number of photon packages per wavelength [0,1e15] (1e6): 1e5
-\endverbatim
-
-To limit the run time for this tutorial, set the number of photon packages to \f$10^5\f$. This number is sufficient to
-produce an approximate %SED for the simple galaxy model, but it would be insufficient to produce resolved images with
-an acceptable signal to noise level.
 
 \section TutorialHydroSphWave Wavelength grid
 
@@ -156,8 +118,9 @@ lie inside the finer grid range are automatically removed, so the total number o
  ? Do you want to import velocity information from the SPH particle file? [yes/no] (no):
    Possible choices for the SED family used to assign an SED to each particle:
       1. A Bruzual-Charlot SED family for single stellar populations
-      2. A MAPPINGS III SED family for starbursting regions
- ? Enter one of these numbers [1,2] (1):
+      2. A Starburst99 SED family for single stellar populations
+      3. A MAPPINGS III SED family for starbursting regions
+ ? Enter one of these numbers [1,3] (1):
  ? Do you want to output a data file with the luminosities per wavelength bin? [yes/no] (no):
    Possible choices for item #2 in the stellar components list:
       1. A stellar component with a built-in geometry (in an panchromatic simulation)
@@ -174,9 +137,9 @@ information and select the Bruzual-Charlot family of %SED templates.
 
 Each line in the provided text file represents a smoothed particle. The first three columns specify the \f$x\f$,
 \f$y\f$ and \f$z\f$ coordinates of the particle (in pc) and the fourth column is the smoothing length \f$h\f$ (in pc).
-If the \em velocity flag is set to true, the subsequent three columns (i.e. the fifth through the seventh columns)
+If the \em importVelocity flag is set to true, the subsequent three columns (i.e. the fifth through the seventh columns)
 contain the \f$v_\mathrm{x}\f$, \f$v_\mathrm{y}\f$ and \f$v_\mathrm{z}\f$ components of the particle's velocity (in
-km/s). If the \em velocity flag is set to false, these columns are not present.
+km/s). If the \em importVelocity flag is set to false, these columns are not present.
 
 The number and interpretation of the subsequent columns depends on the specified %SED family. For the Bruzual-Charlot
 %SED family, the remaining three columns provide the properties of the stellar population. The fifth column is the
@@ -221,15 +184,15 @@ value is missing, the particle is never ignored.
    Possible choices for the dust mix describing the attributes of the dust:
       1. A dust mix with average interstellar properties
          ...
-     10. A Zubko et al. multi-component dust mix
+     11. A Zubko et al. multi-component dust mix
          ...
- ? Enter one of these numbers [1,14] (1): 10
- ? Output the optical properties of the dust mix? [yes/no] (yes):
- ? Output the mean optical properties of the dust mix? [yes/no] (yes):
- ? Output grain size information for the dust mix? [yes/no] (yes):
- ? Enter the number of graphite subpopulations [1,2000000000] (5):
- ? Enter the number of silicate subpopulations [1,2000000000] (5):
- ? Enter the number of PAH subpopulations [1,2000000000] (5):
+ ? Enter one of these numbers [1,15] (1): 11
+ ? Output a data file with the optical properties of the dust mix? [yes/no] (yes):
+ ? Output a data file with the mean optical properties of the dust mix? [yes/no] (yes):
+ ? Output a data file with grain size information for the dust mix? [yes/no] (yes):
+ ? Enter the number of graphite grain size bins [1,2000000000] (5):
+ ? Enter the number of silicate grain size bins [1,2000000000] (5):
+ ? Enter the number of neutral and ionized PAH size bins (each) [1,2000000000] (5):
 \endverbatim
 
 <tt>SKIRT</tt> supports a set of built-in dust mixtures describing the optical properties of the dust. A dust mixture
@@ -262,12 +225,12 @@ number should be higher.
       6. A Voronoi dust grid
  ? Enter one of these numbers [1,6] (3): 3
  ? Do you want to output data files for plotting the structure of the grid? [yes/no] (yes):
- ? Enter the start point of the box in the X direction [-.. pc,.. pc]: -20000
- ? Enter the end point of the box in the X direction [-.. pc,.. pc]: 20000
- ? Enter the start point of the box in the Y direction [-.. pc,.. pc]: -20000
- ? Enter the end point of the box in the Y direction [-.. pc,.. pc]: 20000
- ? Enter the start point of the box in the Z direction [-.. pc,.. pc]: -20000
- ? Enter the end point of the box in the Z direction [-.. pc,.. pc]: 20000
+ ? Enter the start point of the box in the X direction ]-.. pc,.. pc[: -20000
+ ? Enter the end point of the box in the X direction ]-.. pc,.. pc[: 20000
+ ? Enter the start point of the box in the Y direction ]-.. pc,.. pc[: -20000
+ ? Enter the end point of the box in the Y direction ]-.. pc,.. pc[: 20000
+ ? Enter the start point of the box in the Z direction ]-.. pc,.. pc[: -20000
+ ? Enter the end point of the box in the Z direction ]-.. pc,.. pc[: 20000
  ? Enter the minimum level of grid refinement (typically 2 to 3) [0,50] (2): 3
  ? Enter the maximum level of grid refinement (typically 6 to 10) [2,50] (6): 7
    Possible choices for the search method used for traversing the tree grid:
@@ -280,6 +243,7 @@ number should be higher.
  ? Enter the maximum fraction of dust mass contained in each dust cell [0,0.01] (1e-6): 2e-5
  ? Enter the maximum density dispersion in each dust cell, as fraction of the reference density [0,1] (0):
  ? Do you want to use barycentric subdivision? [yes/no] (no):
+   ...
 \endverbatim
 
 <tt>SKIRT</tt> discretizes the dust on a spatial grid, i.e. a collection of small cells in which properties such as
@@ -298,7 +262,8 @@ For high-quality simulations, you will need to raise the maximum level to 10 or 
 contains more and smaller cells. Of course this strongly increases the execution time. For this tutorial simulation,
 the maximum fraction of dust mass in each cell may be set to a value of \f$2\times 10^{-5}\f$. For high-quality
 simulations, this parameter should be set at higher (and thus less stringent) values, resulting in an octtree with less
-cells, which lowers accuracy as well as execution time. Leave the other parameters to their default values.
+cells, which lowers accuracy as well as execution time. Leave the other parameters (some of which are not shown) to
+their default values.
 
 \verbatim
    ...
@@ -311,9 +276,9 @@ cells, which lowers accuracy as well as execution time. Leave the other paramete
       2. A dust library with a one-dimensional grid of emissivity entries
       3. A dust library with a two-dimensional grid of emissivity entries
  ? Enter one of these numbers [1,3] (1): 2
- ? Enter the number of library entries [10,10000000] (500): 5000
+ ? Enter the number of field strength grid points [10,10000000] (500): 5000
  ? Do you want to include dust self-absorption? [yes/no] (no):
-   ...
+ ? Do you want to output FITS files displaying the dust temperature distribution? [yes/no] (yes):
 \endverbatim
 
 As soon as a simulation includes a dust system, dust absorption and scattering are automatically enabled. For a
@@ -340,8 +305,50 @@ long-wavelength radiation, so self-absorption by dust is negligible. If the syst
 also mid- and far-infrared radiation, so self-absorption might be important.
 
 For this tutorial simulation, use the "transient heating" dust emissivity and a 1D dust library with 5000 entries.
-Disable dust self-absorption since it has no effect for this optically-thin model. Leave the other parameters (some of
-which are not shown) to their default values.
+Disable dust self-absorption since it has no effect for this optically-thin model. Leave the other parameters to their
+default values.
+
+\section TutorialHydroSphInst Instrument system
+
+\verbatim
+   ...
+   Possible choices for item #1 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 1
+ ? Enter the name for this instrument: i90
+ ? Enter the distance to the system ]0 Mpc,.. Mpc[: 10
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
+ ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg): 0
+ ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg): 0
+   Possible choices for item #2 in the instruments list:
+     1. A basic instrument that outputs the total integrated flux as an SED
+     2. A basic instrument that outputs the total flux in every pixel as a data cube
+        ...
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 1
+ ? Enter the name for this instrument: i00
+ ? Enter the distance to the system ]0 Mpc,.. Mpc[: 10
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg):
+ ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
+   Possible choices for item #3 in the instruments list:
+        ...
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 0
+\endverbatim
+
+For this tutorial, configure two instruments of the type that outputs the total integrated flux as an %SED. Specify
+two different inclinations, for example 90 and 0 degrees, and a distance to the system of 10 Mpc.
+
+\section TutorialHydroSphPhot Photon packages
+
+\verbatim
+ ? Enter the number of photon packages per wavelength [0,1e15] (1e6): 1e5
+\endverbatim
+
+To limit the run time for this tutorial, set the number of photon packages to \f$10^5\f$. This number is sufficient to
+produce an approximate %SED for the simple galaxy model, but it would be insufficient to produce resolved images with
+an acceptable signal to noise level.
 
 \section TutorialHydroSphRun Running the simulation
 
@@ -367,8 +374,8 @@ simulations:
 - \c PanEagle_ds_mix_0_size.dat is a text file with grain size information for each of the dust populations in the
   dust mixture configured for this simulation. For this tutorial simulation, there are 20 populations in total
   (5 each for graphites, silicates, neutral PAHs, and ionized PAHs).
-- \c PanEagle_ds_celltemps.dat is a text data file listing the dust mass and an indicative dust temperature in each
-  cell of the dust grid; this information can be used to plot a histogram of the mass-weighted dust temperature
+- \c PanEagle_ds_celltemps.dat is a text data file listing an indicative dust temperature in each
+  cell of the dust grid; this information can be used to plot a histogram of the dust temperature
   distribution. The indicative temperature in each cell is a mass-weighted average of the equilibrium temperatures
   for all dust populations in the dust mixture. The assumption that all dust grains are in local thermal equilibrium
   with the radiation field is not always justified, which is why we call these temperature values "indicative".

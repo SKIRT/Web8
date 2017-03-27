@@ -72,8 +72,8 @@ coordinates and their configuration space is a cuboid lined up with the coordina
 on the origin).
 
 The four classes indicated in the diagram with a blue border implement "regular" dust grids that can be configured with
-an arbitrary arrangement of grid points in each dimension (1D, 2D, or 3D). The \c SKIRT documentation includes a
-concept note that provides a more in-depth discussion of these grids.
+an arbitrary arrangement of grid points in each dimension (1D, 2D, or 3D). The <a href="../skirt/_concepts.html">SKIRT
+concepts section</a> includes a concept note that provides a more in-depth discussion of these grids.
 
 The other two classes (indicated in the diagram with a red border) implement adaptive grids, i.e. grids that can adjust
 to the actual 3D dust distribution in the simulation. These grids are the subject of this tutorial. The OctTreeDustGrid
@@ -335,12 +335,13 @@ The dust system takes a few additional parameters which can be left to their def
 \subsection TutorialGridsTreeVoroSpiralInst Instrument system
 
 \verbatim
+   ...
    Possible choices for item #1 in the instruments list:
       1. A basic instrument that outputs the total integrated flux as an SED
       2. A basic instrument that outputs the total flux in every pixel as a data cube
       3. A basic instrument that outputs the total flux as data cube and as SED
          ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 2
  ? Enter the name for this instrument: i00
  ? Enter the distance to the system ]0 Mpc,.. Mpc[: 10
  ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 0
@@ -357,7 +358,7 @@ The dust system takes a few additional parameters which can be left to their def
       2. A basic instrument that outputs the total flux in every pixel as a data cube
       3. A basic instrument that outputs the total flux as data cube and as SED
          ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 2
  ? Enter the name for this instrument: i90
  ? Enter the distance to the system [0 Mpc,.. Mpc[: 10
  ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
@@ -372,7 +373,7 @@ The dust system takes a few additional parameters which can be left to their def
    Possible choices for item #3 in the instruments list:
       1. A basic instrument that outputs the total integrated flux as an SED
          ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 0
+ ? Enter one of these numbers or zero to terminate the list [0,5] (3): 0
    ...
 \endverbatim
 
