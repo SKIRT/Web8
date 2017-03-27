@@ -2,18 +2,19 @@
 
 \page TutorialGridsTreeVoro Building a proper SKIRT dust grid for a spiral galaxy
 
-\image html TutorialGridsTreeVoro_Flux.png
-\image html TutorialGridsTreeVoro_Density.png
+In this tutorial you will experiment with adaptive grids for a spiral galaxy model in \c SKIRT, and learn how
+to balance several conflicting requirements to obtain an 'optimal' grid for your purposes.
 
-<i>Illustration on the previous page</i>: surface brightness of the spiral galaxy modeled in this tutorial for
+\image html TutorialGridsTreeVoro_Flux.png
+
+<i>Illustration above</i>: surface brightness of the spiral galaxy modeled in this tutorial for
 inclinations of 0 degrees (face-on), 86 degrees, and 90 degrees (edge-on).
+
+\image html TutorialGridsTreeVoro_Density.png
 
 <i>Illustration above</i>: cut along the \f$xz\f$-plane through the theoretical dust density (top), the dust density
 gridded by an octree with 850 000 cells (middle), and the dust density gridded by a Voronoi tesselation with 200 000
 cells.
-
-In this tutorial you will experiment with adaptive grids for a spiral galaxy model in \c SKIRT, and learn how
-to balance several conflicting requirements to obtain an 'optimal' grid for your purposes.
 
 \section TutorialGridsTreeVoroPre Getting ready
 
@@ -45,6 +46,13 @@ digraph dustgridhierarchy {
   node [shape=rect, fontname=Helvetica, fontsize=10];
   edge [arrowhead=empty];
 
+  Sphere1DDustGrid [color=blue];
+  Sphere2DDustGrid [color=blue];
+  Cylinder2DDustGrid [color=blue];
+  CartesianDustGrid [color=blue];
+  OctTreeDustGrid [color=red];
+  VoronoiDustGrid [color=red];
+
   SphereDustGrid -> DustGrid;
     Sphere1DDustGrid -> SphereDustGrid;
     Sphere2DDustGrid -> SphereDustGrid;
@@ -60,16 +68,17 @@ digraph dustgridhierarchy {
 The SphereDustGrid subclasses are defined in spherical coordinates and their configuration space is a sphere centered
 on the origin. Likewise, the CylinderDustGrid subclasses are defined in cylindrical coordinates and their configuration
 space is a cylinder centered on the vertical coordinate axes. The BoxDustGrid subclasses are defined in Cartesian
-coordinate and their configuration space is a cuboid lined up with the coordinate axes (but not necessarily centered
+coordinates and their configuration space is a cuboid lined up with the coordinate axes (but not necessarily centered
 on the origin).
 
 The four classes indicated in the diagram with a blue border implement "regular" dust grids that can be configured with
-an arbitrary arrangement of grid points in each dimension (1D, 2D, or 3D). The concept note found at
-http://www.skirt.ugent.be/skirt/_spatial_grids.html provides a more in-depth discussion of these grids.
+an arbitrary arrangement of grid points in each dimension (1D, 2D, or 3D). The \c SKIRT documentation includes a
+concept note that provides a more in-depth discussion of these grids.
 
-The other classes implement adaptive grids, i.e. grids that can adjust to the actual 3D dust distribution in the
-simulation. These grids are the subject of this tutorial. The OctTreeDustGrid offers a hierarchical grid that consists
-of recursively subdivided cuboids. The VoronoiDustGrid uses a Voronoi tesselation of space.
+The other two classes (indicated in the diagram with a red border) implement adaptive grids, i.e. grids that can adjust
+to the actual 3D dust distribution in the simulation. These grids are the subject of this tutorial. The OctTreeDustGrid
+offers a hierarchical grid that consists of recursively subdivided cuboids. The VoronoiDustGrid uses a Voronoi
+tesselation of space.
 
 \section TutorialGridsTreeVoroSpiral Configuring a spiral galaxy
 
@@ -89,10 +98,11 @@ The first question is for the filename of the \em ski file. For this tutorial, e
 \subsection TutorialGridsTreeVoroSpiralSim Type of simulation
 
 \verbatim
-   Possible choices for the simulation:
+   Possible choices for a Monte Carlo simulation:
       1. An oligochromatic Monte Carlo simulation
       2. A panchromatic Monte Carlo simulation
  ? Enter one of these numbers [1,2] (1): 1
+   ...
 \endverbatim
 
 In an actual research setting you would probably run a panchromatic simulation to study the absorption, scattering and
@@ -119,59 +129,6 @@ Leave the seed for the random generator to its default value (not shown).
 You will be configuring a galaxy model, thus it is most natural to select Extragalactic units. Furthermore, select the
 frequency output style, expressing integrated fluxes in Jy and surface densities in MJy/sr.
 
-\subsection TutorialGridsTreeVoroSpiralInst Instrument system
-
-\verbatim
-   ...
-   Possible choices for item #1 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-      2. A basic instrument that outputs the total flux in every pixel as a data cube
-      3. A basic instrument that outputs the total flux as data cube and as SED
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
- ? Enter the name for this instrument: i00
- ? Enter the distance to the system [0 Mpc,.. Mpc]: 10
- ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 0
- ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the total field of view in the horizontal direction [0 pc,.. pc]: 20 kpc
- ? Enter the number of pixels in the horizontal direction [1,10000] (250): 512
- ? Enter the center of the frame in the horizontal direction [-.. pc,.. pc] (0 pc):
- ? Enter the total field of view in the vertical direction [0 pc,.. pc]: 20 kpc
- ? Enter the number of pixels in the vertical direction [1,10000] (250): 512
- ? Enter the center of the frame in the vertical direction [-.. pc,.. pc] (0 pc):
-   Possible choices for item #2 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-      2. A basic instrument that outputs the total flux in every pixel as a data cube
-      3. A basic instrument that outputs the total flux as data cube and as SED
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
- ? Enter the name for this instrument: i90
- ? Enter the distance to the system [0 Mpc,.. Mpc]: 10
- ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
- ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
- ? Enter the total field of view in the horizontal direction [0 pc,.. pc]: 20 kpc
- ? Enter the number of pixels in the horizontal direction [1,10000] (250): 512
- ? Enter the center of the frame in the horizontal direction [-.. pc,.. pc] (0 pc):
- ? Enter the total field of view in the vertical direction [0 pc,.. pc]: 10 kpc
- ? Enter the number of pixels in the vertical direction [1,10000] (250): 256
- ? Enter the center of the frame in the vertical direction [-.. pc,.. pc] (0 pc):
-   Possible choices for item #3 in the instruments list:
-      1. A basic instrument that outputs the total integrated flux as an SED
-         ...
- ? Enter one of these numbers or zero to terminate the list [0,6] (3): 0
-\endverbatim
-
-Include two basic instruments that output the total flux in every pixel, one at an inclination of 0 degrees (face-on)
-and one at an inclination of 90 degrees. The azimuth and position angles can remain at the default value of zero. The
-distance of the instrument to the model affects all fluxes with the same factor; use a value of your liking (for
-example 10 Mpc). For the face-on view, specify a field of view of \f$20\times 20\f$ kpc centered on the origin, with
-\f$512\times 512\f$ pixels. For the edge-on view, the vertical size and number of pixels can be reduced to, say, half
-of the horizontal size.
-
-Leave the number of photon packages at the default value of \f$10^{6}\f$ (not shown).
-
 \subsection TutorialGridsTreeVoroSpiralWave Wavelength grid
 
 \verbatim
@@ -193,29 +150,29 @@ For this tutorial enter a wavelength 'list' consisting of a single value at the 
    Possible choices for the geometry of the spatial stellar distribution:
       1. A point source geometry
          ...
-     38. A decorator that clips another geometry using a cubodial box
-     39. A decorator that adds spiral structure to any axisymmetric geometry
-     40. A decorator that adds clumpiness to any geometry
+     42. A decorator that clips another geometry using a cubodial box
+     43. A decorator that adds spiral structure to any axisymmetric geometry
+     44. A decorator that adds clumpiness to any geometry
          ...
- ? Enter one of these numbers [1,42] (1): 39
+ ? Enter one of these numbers [1,46] (1): 43
    Possible choices for the axisymmetric geometry to be decorated with spiral structure:
       1. An axisymmetric Gaussian geometry
       2. An exponential disk geometry
       3. A broken exponential disk geometry
          ...
- ? Enter one of these numbers [1,11] (1): 2
- ? Enter the radial scale length [0 pc,.. pc]: 1800
- ? Enter the axial scale height [0 pc,.. pc]: 300
- ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc] (0 pc):
- ? Enter the axial truncation height (zero means no truncation) [0 pc,.. pc] (0 pc):
- ? Enter the radial inner radius [0 pc,.. pc] (0 pc):
+ ? Enter one of these numbers [1,16] (1): 2
+ ? Enter the scale length ]0 pc,.. pc[: 1800
+ ? Enter the scale height ]0 pc,.. pc[: 300
+ ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the axial truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the radial inner radius [0 pc,.. pc[ (0 pc):
  ? Enter the number of spiral arms [1,100] (1): 2
- ? Enter the pitch angle [0 deg,90 deg] (10 deg): 20
- ? Enter the radius zero-point [0 pc,.. pc]: 300
+ ? Enter the pitch angle ]0 deg,90 deg[ (10 deg): 20
+ ? Enter the radius zero-point ]0 pc,.. pc[: 300
  ? Enter the phase zero-point [0 deg,360 deg] (0 deg):
- ? Enter the weight of the spiral perturbation [0,1]: 0.5
+ ? Enter the weight of the spiral perturbation ]0,1]: 0.5
  ? Enter the arm-interarm size ratio index [0,10] (1): 2
- ? Enter the luminosities, one for each wavelength, in solar units [0,..]: 1e11
+ ? Enter the luminosities, one for each wavelength ]0 Lsun/micron,.. Lsun/micron[: 1e11
    Possible choices for item #2 in the stellar components list:
       1. A stellar component with a built-in geometry (in an oligochromatic simulation)
          ...
@@ -240,7 +197,7 @@ outer truncation. For the stellar spiral structure, specify 2 arms, a pitch angl
 
 Finally, \c SKIRT expects a luminosity value for each of the wavelengths included in the simulation's wavelength grid.
 Since you specified a single wavelength, you need to enter a single luminosity value. For this tutorial, specify a
-value appropriate for a spiral galaxy, for example \f$10^{11}\f$ solar luminosities.
+value appropriate for a spiral galaxy, for example \f$L_\lambda = 10^{11}~L_\odot/\mu\text{m}\f$.
 
 \subsection TutorialGridsTreeVoroSpiralDust Dust system
 
@@ -258,27 +215,27 @@ value appropriate for a spiral galaxy, for example \f$10^{11}\f$ solar luminosit
    Possible choices for the geometry of the dust component:
       1. A point source geometry
          ...
-     38. A decorator that clips another geometry using a cubodial box
-     39. A decorator that adds spiral structure to any axisymmetric geometry
-     40. A decorator that adds clumpiness to any geometry
+     42. A decorator that clips another geometry using a cubodial box
+     43. A decorator that adds spiral structure to any axisymmetric geometry
+     44. A decorator that adds clumpiness to any geometry
      ...
- ? Enter one of these numbers [1,42] (9): 39
+ ? Enter one of these numbers [1,46] (9): 43
    Possible choices for the axisymmetric geometry to be decorated with spiral structure:
       1. An axisymmetric Gaussian geometry
       2. An exponential disk geometry
       3. A broken exponential disk geometry
          ...
- ? Enter one of these numbers [1,11] (1): 2
- ? Enter the radial scale length [0 pc,.. pc]: 2000
- ? Enter the axial scale height [0 pc,.. pc]: 150
- ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc] (0 pc):
- ? Enter the axial truncation height (zero means no truncation) [0 pc,.. pc] (0 pc):
- ? Enter the radial inner radius [0 pc,.. pc] (0 pc):
+ ? Enter one of these numbers [1,16] (1): 2
+ ? Enter the scale length ]0 pc,.. pc[: 2000
+ ? Enter the scale height ]0 pc,.. pc[: 150
+ ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the axial truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the radial inner radius [0 pc,.. pc[ (0 pc):
  ? Enter the number of spiral arms [1,100] (1): 2
- ? Enter the pitch angle [0 deg,90 deg] (10 deg): 20
- ? Enter the radius zero-point [0 pc,.. pc]: 300
+ ? Enter the pitch angle ]0 deg,90 deg[ (10 deg): 20
+ ? Enter the radius zero-point ]0 pc,.. pc[: 300
  ? Enter the phase zero-point [0 deg,360 deg] (0 deg): 10
- ? Enter the weight of the spiral perturbation [0,1]: 0.5
+ ? Enter the weight of the spiral perturbation ]0,1]: 0.5
  ? Enter the arm-interarm size ratio index [0,10] (1): 2
 \endverbatim
 
@@ -296,16 +253,16 @@ slightly different phase (10 degrees instead of zero).
       2. A Draine & Li (2007) dust mix
       3. A dust mix with mean Zubko properties
          ...
- ? Enter one of these numbers [1,15] (1): 3
- ? Output the optical properties of the dust mix? [yes/no] (yes): no
- ? Output the mean optical properties of the dust mix? [yes/no] (yes): no
+ ? Enter one of these numbers [1,16] (1): 3
+ ? Output a data file with the optical properties of the dust mix? [yes/no] (yes): no
+ ? Output a data file with the mean optical properties of the dust mix? [yes/no] (yes): no
    Possible choices for the type of normalization for the dust component:
       1. Normalization by defining the total dust mass
          ...
       7. Normalization by defining the Z-axis optical depth at some wavelength
  ? Enter one of these numbers [1,7] (1): 7
  ? Enter the wavelength at which to specify the optical depth [0.0001 micron,1e6 micron]: 0.55
- ? Enter the Z-axis optical depth at this wavelength [0,..]: 2
+ ? Enter the Z-axis optical depth at this wavelength ]0,..[: 2
    Possible choices for item #2 in the dust components list:
       1. A dust component
  ? Enter one of these numbers or zero to terminate the list [0,1] (1): 0
@@ -326,12 +283,12 @@ of the dust mixture to a text file, you will not need this information, so you c
       6. A Voronoi dust grid
  ? Enter one of these numbers [1,6] (3): 3
  ? Do you want to output data files for plotting the structure of the grid? [yes/no] (yes): no
- ? Enter the start point of the box in the X direction [-.. pc,.. pc]: -10 kpc
- ? Enter the end point of the box in the X direction [-.. pc,.. pc]: 10 kpc
- ? Enter the start point of the box in the Y direction [-.. pc,.. pc]: -10 kpc
- ? Enter the end point of the box in the Y direction [-.. pc,.. pc]: 10 kpc
- ? Enter the start point of the box in the Z direction [-.. pc,.. pc]: -1 kpc
- ? Enter the end point of the box in the Z direction [-.. pc,.. pc]: +1 kpc
+ ? Enter the start point of the box in the X direction ]-.. pc,.. pc[: -10 kpc
+ ? Enter the end point of the box in the X direction ]-.. pc,.. pc[: 10 kpc
+ ? Enter the start point of the box in the Y direction ]-.. pc,.. pc[: -10 kpc
+ ? Enter the end point of the box in the Y direction ]-.. pc,.. pc[: 10 kpc
+ ? Enter the start point of the box in the Z direction ]-.. pc,.. pc[: -1 kpc
+ ? Enter the end point of the box in the Z direction ]-.. pc,.. pc[: +1 kpc
  ? Enter the minimum level of grid refinement (typically 2 to 3) [0,50] (2):
  ? Enter the maximum level of grid refinement (typically 6 to 10) [2,50] (6):
    Possible choices for the search method used for traversing the tree grid:
@@ -345,20 +302,21 @@ of the dust mixture to a text file, you will not need this information, so you c
  ? Enter the maximum density dispersion, as fraction of the reference density [0,1] (0):
  ? Do you want to use barycentric subdivision? [yes/no] (no):
  ? Enter the number of random density samples for determining cell mass [10,1000] (100):
- ? Do you want to output a data file with convergence checks on the dust system? [yes/no] (yes):
- ? Do you want to output FITS files displaying the dust density distribution? [yes/no] (yes):
-   ...
+ ? Output a data file with convergence checks on the dust system? [yes/no] (yes):
+ ? Output FITS files displaying the dust density distribution? [yes/no] (yes):
+ ? Output FITS file with a V-band optical depth map seen from the center? [yes/no] (no):
+ ? Output FITS files displaying the mean intensity of the radiation field? [yes/no] (no):
 \endverbatim
 
 Consider the spatial discretization of a dust density distribution with a lot of three-dimensional structure and a
 large dynamic range. To obtain a rule of thumb for the resolution of a regular dust grid (i.e. a grid with fixed grid
 points in each dimension), one could posit that the projection of a grid cell on an instrument should have roughly the
 same size as a detector pixel. For a detector with only \f$512\times 512\f$ pixels, this would lead to \f$512^3\approx
-1.3\times 10^8\f$ grid cells. However one can usually do a lot better than this. The goal is minimize the total number
-of cells (and thus the simulation run time) while still producing the appropriate simulation results. To this end, it
-is generally best to place smaller cells in high-density areas (and in areas where the density changes rapidly), and
-larger cells in low-density areas. The adaptive grids offered by \c SKIRT serve this purpose. However, you still need
-to properly configure the heuristics used by these grids to place their cells.
+1.3\times 10^8\f$ grid cells. However one can usually do a lot better than this. The goal is to minimize the total
+number of cells (and thus the simulation run time) while still producing the appropriate simulation results. To this
+end, it is generally best to place smaller cells in high-density areas (and in areas where the density changes
+rapidly), and larger cells in low-density areas. The adaptive grids offered by \c SKIRT serve this purpose. However,
+you still need to properly configure the heuristics used by these grids to place their cells.
 
 For example, the octtree grid recursively subdivides the cuboidal domain into 8 cuboidal subcells until each cell
 satisfies certain criteria, or until a maximum level of subdivision has been reached. The grid can take into account up
@@ -372,7 +330,60 @@ default values with the exception of the maximum fraction of dust mass contained
 set to a more relaxed value of \f$10^{-5}\f$. You will study the effect of these parameter values in the second part of
 this tutorial.
 
-Finally the dust system takes a few additional parameters which can be left to their default value (not shown).
+The dust system takes a few additional parameters which can be left to their default value.
+
+\subsection TutorialGridsTreeVoroSpiralInst Instrument system
+
+\verbatim
+   Possible choices for item #1 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+      3. A basic instrument that outputs the total flux as data cube and as SED
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
+ ? Enter the name for this instrument: i00
+ ? Enter the distance to the system ]0 Mpc,.. Mpc[: 10
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 0
+ ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the total field of view in the horizontal direction ]0 pc,.. pc[: 20 kpc
+ ? Enter the number of pixels in the horizontal direction [1,10000] (250): 512
+ ? Enter the center of the frame in the horizontal direction ]-.. pc,.. pc[ (0 pc):
+ ? Enter the total field of view in the vertical direction ]0 pc,.. pc[: 20 kpc
+ ? Enter the number of pixels in the vertical direction [1,10000] (250): 512
+ ? Enter the center of the frame in the vertical direction ]-.. pc,.. pc[ (0 pc):
+   Possible choices for item #2 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+      2. A basic instrument that outputs the total flux in every pixel as a data cube
+      3. A basic instrument that outputs the total flux as data cube and as SED
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,6] (3): 2
+ ? Enter the name for this instrument: i90
+ ? Enter the distance to the system [0 Mpc,.. Mpc[: 10
+ ? Enter the inclination angle of the detector [0 deg,180 deg] (0 deg): 90
+ ? Enter the azimuth angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the position angle of the detector [-360 deg,360 deg] (0 deg):
+ ? Enter the total field of view in the horizontal direction ]0 pc,.. pc[: 20 kpc
+ ? Enter the number of pixels in the horizontal direction [1,10000] (250): 512
+ ? Enter the center of the frame in the horizontal direction ]-.. pc,.. pc[ (0 pc):
+ ? Enter the total field of view in the vertical direction ]0 pc,.. pc[: 10 kpc
+ ? Enter the number of pixels in the vertical direction [1,10000] (250): 256
+ ? Enter the center of the frame in the vertical direction ]-.. pc,.. pc[ (0 pc):
+   Possible choices for item #3 in the instruments list:
+      1. A basic instrument that outputs the total integrated flux as an SED
+         ...
+ ? Enter one of these numbers or zero to terminate the list [0,6] (3): 0
+   ...
+\endverbatim
+
+Include two basic instruments that output the total flux in every pixel, one at an inclination of 0 degrees (face-on)
+and one at an inclination of 90 degrees. The azimuth and position angles can remain at the default value of zero. The
+distance of the instrument to the model affects all fluxes with the same factor; use a value of your liking (for
+example 10 Mpc). For the face-on view, specify a field of view of \f$20\times 20\f$ kpc centered on the origin, with
+\f$512\times 512\f$ pixels. For the edge-on view, the vertical size and number of pixels can be reduced to, say, half
+of the horizontal size.
+
+Leave the number of photon packages at the default value of \f$10^{6}\f$ (not shown).
 
 \subsection TutorialGridsTreeVoroSpiralRun Running the simulation
 

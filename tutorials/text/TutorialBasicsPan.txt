@@ -32,7 +32,7 @@ The first question is for the filename of the \em ski file. For this tutorial, e
 \section TutorialBasicsPanSim Type of simulation
 
 \verbatim
-   Possible choices for the simulation:
+   Possible choices for a Monte Carlo simulation:
       1. An oligochromatic Monte Carlo simulation
       2. A panchromatic Monte Carlo simulation
  ? Enter one of these numbers [1,2] (1): 2
