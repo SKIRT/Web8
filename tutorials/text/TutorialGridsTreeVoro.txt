@@ -163,9 +163,9 @@ For this tutorial enter a wavelength 'list' consisting of a single value at the 
  ? Enter one of these numbers [1,16] (1): 2
  ? Enter the scale length ]0 pc,.. pc[: 1800
  ? Enter the scale height ]0 pc,.. pc[: 300
- ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the axial truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the radial inner radius [0 pc,.. pc[ (0 pc):
+ ? Enter the radius of the central cavity [0 pc,.. pc[ (0 pc):
+ ? Enter the truncation radius (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
  ? Enter the number of spiral arms [1,100] (1): 2
  ? Enter the pitch angle ]0 deg,90 deg[ (10 deg): 20
  ? Enter the radius zero-point ]0 pc,.. pc[: 300
@@ -228,9 +228,9 @@ value appropriate for a spiral galaxy, for example \f$L_\lambda = 10^{11}~L_\odo
  ? Enter one of these numbers [1,16] (1): 2
  ? Enter the scale length ]0 pc,.. pc[: 2000
  ? Enter the scale height ]0 pc,.. pc[: 150
- ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the axial truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the radial inner radius [0 pc,.. pc[ (0 pc):
+ ? Enter the radius of the central cavity [0 pc,.. pc[ (0 pc):
+ ? Enter the truncation radius (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
  ? Enter the number of spiral arms [1,100] (1): 2
  ? Enter the pitch angle ]0 deg,90 deg[ (10 deg): 20
  ? Enter the radius zero-point ]0 pc,.. pc[: 300

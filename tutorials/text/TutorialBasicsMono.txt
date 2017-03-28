@@ -206,9 +206,9 @@ configured using built-in features. So you need to select the "built-in geometry
  ? Enter one of these numbers [1,46] (1): 9
  ? Enter the scale length ]0 pc,.. pc[: 4000
  ? Enter the scale height ]0 pc,.. pc[: 350
- ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the vertical truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the radial inner radius [0 pc,.. pc] (0 pc):
+ ? Enter the radius of the central cavity [0 pc,.. pc] (0 pc):
+ ? Enter the truncation radius (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
  ? Enter the luminosities, one for each wavelength ]0 Lsun/micron,.. Lsun/micron[: 5e9
 \endverbatim
 
@@ -311,9 +311,9 @@ dust distribution type.
  ? Enter one of these numbers [1,46] (9): 9
  ? Enter the scale length ]0 pc,.. pc[: 4000
  ? Enter the scale height ]0 pc,.. pc[: 140
- ? Enter the radial truncation length (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the vertical truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
- ? Enter the radial inner radius [0 pc,.. pc[ (0 pc):
+ ? Enter the radius of the central cavity [0 pc,.. pc[ (0 pc):
+ ? Enter the truncation radius (zero means no truncation) [0 pc,.. pc[ (0 pc):
+ ? Enter the truncation height (zero means no truncation) [0 pc,.. pc[ (0 pc):
    Possible choices for the dust mixture of the dust component:
       1. A dust mix with average interstellar properties
       2. A Draine & Li (2007) dust mix
