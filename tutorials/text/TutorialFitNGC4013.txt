@@ -2,404 +2,337 @@
 
 \page TutorialFitNGC4013 Fitting the NGC4013 galaxy with FitSKIRT
 
-In this section we show a step-by-step setup for a <tt>FitSKIRT</tt> fit using a flattened Sersic profile for the central bulge
-and a double exponential for the stellar disk and dust disk. The data used in this tutorial is
-available from the <a href="http://www.skirt.ugent.be/downloads">downloads page</a>. The first step consists of starting a <tt>SKIRT</tt> Q&A session,
-creating the \em ski file and adjusting it afterwards. The second step is to create a suitable \em fksi file. The final step
-shows how to run the code and what output to expect. Remember that you need the FWHM determined before (if you have followed the PTS data reduction tutorial).
-We will use 18.6 Mpc as distance to this galaxy.
+\image html TutorialFitNGC4013_g.png
 
-\section SKIRT-template
+<i>Illustration above</i>: observed SDSS g-band surface brightness of NGC4013 prepared for use with \c FitSKIRT; the
+black regions are masked to remove foreground features.
 
-For simplicity we will only use the u and g band data in this tutorial. The addition of extra frames is done using the
-exact same procedure as described here. Create a new directory and copy the two reference frames and start a <tt>SKIRT</tt> Q&A
-session.
+In this tutorial you will employ <tt>FitSKIRT</tt> to fit an axisymmetric computer model to observed images of the
+edge-on spiral galaxy NGC4013 in multiple wavelength bands. The procedure includes the following steps, reflected in
+the structure of this tutorial.
+
+- Download the observational data in a form already prepared for use with <tt>FitSKIRT</tt>.
+- Configure the \em ski file (\c SKIRT parameter file) representing the model that will be fitted to the data.
+- Configure the \em fski file (\c FitSKIRT parameter file) that governs the fitting procedure.
+- Run \c FitSKIRT and interprete the results.
+
+\section TutorialFitNGC4013Prep Getting ready
+
+This tutorial assumes that you have completed some of the introductory <tt>SKIRT</tt> tutorials, or that you have
+otherwise acquired the working knowlegde introduced there. At the very least, before starting this tutorial, you should
+have installed the <tt>SKIRT</tt> project and a FITS file viewer (preferably DS9).
+
+To complete this tutorial, you need the relevant observations of NGC4013 in a form already prepared for use with
+<tt>FitSKIRT</tt>. Download the archive \c NGC4013_prepared.zip from the <a href="../downloads/index.html">SKIRT
+downloads page</a> and extract its contents (the files <tt>*_norm.fits</tt>) into your local working directory.
+
+
+\section TutorialFitNGC4013Model Configuring the model
+
+\subsection TutorialFitNGC4013ModelSki Creating a ski file
+
+As a first step, you need to configure a regular \c SKIRT parameter file representing the galaxy model that you will
+employ in the fitting procedure. This ski file should have arbitrary but realistic values for the model parameters that
+you want to recover by fitting the model to the observed data. In this tutorial, you will use just the observed
+\f$u\f$- and \f$g\f$-band images. Extending the procedure for additional bands is straightforward, and is left as an
+exercise.
+
+Using the \c SKIRT console Q&A or the \c MakeUp GUI wizard, create a new ski file called \c SpiralOrig.ski with the
+following characteristics:
+
+- An oligochromatic simulation with the two wavelengths 0.356 and 0.470 \f$\mu\f$m, centered at the \f$u\f$- and
+  \f$g\f$-band respectively.
+- Extragalactic units with neutral-style flux output.
+- A first stellar component using a \em flattened Sérsic geometry with effective radius 2500 pc, Sérsic index 2.5, and
+  flattening parameter 0.5. Remember to first select the decorator that constructs a spheroidal variant of a target
+  geometry, and then the spherical Sérsic geometry as the target.
+- A second stellar component using an exponential disk geometry with scale length 4400 pc and scale height 500 pc,
+  without any inner or outer truncation.
+- Luminosities set arbitrarily to \f$L_\lambda = 10^{20}~\text{L}_\odot/\mu\text{m}\f$ for both stellar components and
+  for both wavelengths (i.e. four luminosities in total). These values are used as the units in which FitSKIRT
+  represents the luminosities corresponding to an optimal fit to the observations. Because the observed images in this
+  tutorial have been normalized, these units are not physical. Instead the values have simply been chosen to obtain
+  "luminosities" in a range from 1 to 100.
+- A single dust distribution component using an exponential disk geometry with scale length 6600 pc and scale height
+  250 pc, without any inner or outer truncation.
+- The default dust mix with average interstellar properties.
+- Dust component normalization on total dust mass with \f$M_\text{dust}=4\times10^7\,\text{M}_\odot\f$.
+- An axisymmetric dust grid in cylindrical coordinates with cylindrical radius 25 kpc, and vertical limits
+  -4 kpc to 4 kpc.
+- A radial logarithmic mesh with 200 bins and default central bin width fraction.
+- A vertical symmetric power-law mesh with 200 bins and bin width ratio 50.
+- A single instrument with a different frame per wavelength (a "MultiFrameInstrument") with two frames (one for each
+  wavelength in the simulation) at distance 18.6 Mpc (the estimated distance of NGC4013) and inclination 90 deg.
+- Properties for both frames: total field of view 28496 pc by 5194 pc centered on the origin; 790 by 144 pixels.
+- A small number of photon packages per wavelength, e.g. \f$10^4\f$.
+
+Before moving on to the next step, run \c SKIRT for the newly configured ski file and verify that the output is as
+expected. Specifically, verify the convergence of the dust grid (total dust mass in the grid should be within roughly
+10% of the theoretical, expected mass) and review the files produced by the MultiFrameInstrument. Enabling this
+verification is the main reason for specifying realistic values in the ski file, even for properties that will be
+fitted to the observed data later on.
+
+\subsection TutorialFitNGC4013ModelTemplate Turning the ski file into a template
+
+After verifying that the \c SKIRT model is appropriate, you need to turn the ski file into a template for use with \c
+FitSKIRT. Make a copy of the ski file, perhaps called \c SpiralTemplate.ski, and open the copy in a text editor.
+
+First ensure that all properties named <em>write...</em> throughout the ski file are set to "false", with the sole
+exception of the \em writeStellarComps property of the \c MultiFrameInstrument. While it is not a fatal error if any of
+the other \em write properties are enabled, the generated output will be ignored by \c FitSKIRT. Because the simulation
+defined in the ski file will be performed literally thousands of times, producing unneeded output would be a waste of
+computing resources.
+
+Next, and most importantly, you need to indicate the \em free parameters of the model in the ski file template, i.e.
+the parameters that will be adjusted by \c FitSKIRT to find an optimal fit to the observed data. For the luminosities
+of the stellar components, nothing needs to be done because they are automatically treated as free parameters. The
+other free parameters are defined by placing the corresponding property values between square brackets and adding a
+label for identification, as shown in the example below.
+
+In this tutorial, there are four free luminosity parameters (two stellar components for each of two wavelengths) and
+you will use nine additional free model parameters: inclination; scale length and height of the stellar disk; effective
+radius, Sérsic index and flattening parameter of the stellar bulge; scale length and height of the dust disk; and total
+dust mass. Locate the corresponding property values in the ski file and adjust them as follows (only the lines that
+actually need updating are shown; dots indicate portions of the line that remain unchanged):
 
 \verbatim
-mkdir NGC4013
-cd NGC4013/
-mkdir reference
-cp ../tutorial_NGC4013_complete/u_norm.fits ./reference/u.fits
-cp ../tutorial_NGC4013_complete/g_norm.fits ./reference/g.fits
-skirt
-\endverbatim
-
-Go through the session as you would do for a regular SKIRT simulation (See the SKIRT tutorial for more information).
-However, keep in mind that you need to select an OligoMonteCarloSimulation and a MultiFrameInstrument. Apart from the
-flag to write out the separate stellar components, it is advisable to set all flags to False. Use 0.354 and 0.475
-micron as central wavelengths for the u and g band images and try to run the file just using SKIRT to see if any error
-pops up. When everything looks like you expect it to look, open the .ski file in your favorite XML editor. Now look for
-the free parameters, place them in square brackets and give them an appropriate label. For example look for the following
-lines
-
-\verbatim
-<MultiFrameInstrument instrumentName="lol" distance="18.6 Mpc" inclination="90 deg"
-<ExpDiskGeometry radialScale="4400 pc" axialScale="500 pc"
-<SpheroidalGeometry flattening="0.5">
-<SersicGeometry index="2.5" radius="2500 pc"/>
-<ExpDiskGeometry radialScale="6600 pc" axialScale="250 pc"
-<DustMassDustCompNormalization dustMass="4e7 Msun"/>
-\endverbatim
-
-and replace them by this
-
-\verbatim
-<MultiFrameInstrument instrumentName="lol" distance="18.6 Mpc" inclination="[inclination:90 deg]"
-<ExpDiskGeometry radialScale="[stellar_length:4400 pc]" axialScale="[stellar_height:500 pc]"
-<SpheroidalGeometry flattening="[flattening:0.5]">
-<SersicGeometry index="[sersic_index:2.5]" radius="[bulge_radius:2500 pc]"/>
-<ExpDiskGeometry radialScale="[dust_length:6600 pc]" axialScale="[dust_height:250 pc]"
+<SpheroidalGeometryDecorator flattening="[bulge_flattening:0.5]">
+<SersicGeometry effectiveRadius="[bulge_radius:2500 pc]" index="[bulge_index:2.5]"/>
+<ExpDiskGeometry scaleLength="[stellar_length:4400 pc]" scaleHeight="[stellar_height:500 pc]" ...>
+<ExpDiskGeometry scaleLength="[dust_length:6600 pc]" scaleHeight="[dust_height:250 pc]"
 <DustMassDustCompNormalization dustMass="[dust_mass:4e7 Msun]"/>
+<MultiFrameInstrument instrumentName="ins" distance="18.6 Mpc" inclination="[inclination:90 deg]" ...>
 \endverbatim
 
-Notice that the luminosities, although also fitted by <tt>FitSKIRT</tt> should not be put in brackets. Instead the value that is
-put in is a dummy value used to create the simulations before determining the best fitting luminosity. Once all free
-parameters have been put in brackets and labelled, start a <tt>FitSKIRT</tt> Q&A session.
+Save your changes and run the template ski file with \c SKIRT as a basic syntactic check of your changes. \c SKIRT
+recognizes and ignores the square brackets and the label in property values, so the results should be as before (except
+that just the output files produced by the instrument are now present).
 
-\section FitSKIRT
 
-Start the creation of a new .fski file simply by typing "fitskirt", select the same unit options as you did in the SKIRT
-file.
+\section TutorialFitNGC4013Scheme Configuring the fitting scheme
+
+The next step is to configure a parameter file for \c FitSKIRT. This file has the ".fski" filename extension and is
+commonly called an fski file. It specifies the various aspects of a particular fitting scheme, including the name of
+the ski file defining the model, the ranges for the free model parameters, the observational reference images, and the
+parameters of the genetic search algorithm.
+
+Creating an fski file is similar to creating a ski file. You can use the \c FitSKIRT console Q&A (enter the \c fitskirt
+command in a Terminal window without any arguments), or you can use the \c MakeUp GUI wizard (select the appropriate
+option in the initial wizard pane).
+
+\subsection TutorialFitNGC4013SchemeSki Units and ski template
 
 \verbatim
-Welcome to FitSKIRT v7 (git 109-fbb9c3b-dirty built on Oct 21 2014 at 11:13:01)
-Interactively constructing a fit scheme...
-Enter the name of the fski file to be created: tutorial
-Possible choices for the fit scheme:
-   1. An oligochromatic fit scheme
-Automatically selected the only choice: 1
-Possible choices for the units system:
-   1. SI units
-   2. Stellar units (length in AU, distance in pc)
-   3. Extragalactic units (length in pc, distance in Mpc)
-Enter one of these numbers [1,3] (3):
-Possible choices for the output style for flux density and surface brightness:
-   1. Neutral: lambda F_lambda = nu F_nu
-   2. Wavelength: F_lambda
-   3. Frequency: F_nu
-Enter one of these numbers [1,3] (1):
-Possible choices for the SKIRT simulation to be run for this fit scheme:
-   1. An adjustable SKIRT simulation
-Automatically selected the only choice: 1
+   Welcome to FitSKIRT ...
+   ...
+ ? Enter the name of the fski file to be created: SpiralFit
+   ...
+   Possible choices for the units system:
+      1. SI units
+      2. Stellar units (length in AU, distance in pc)
+      3. Extragalactic units (length in pc, distance in Mpc)
+ ? Enter one of these numbers [1,3] (3):
+   Possible choices for the output style for flux density and surface brightness:
+      1. Neutral: λ F_λ = ν F_ν
+      2. Wavelength: F_λ
+      3. Frequency: F_ν
+ ? Enter one of these numbers [1,3] (1): 1
+   ...
+ ? Enter the name of the ski file specifying the SKIRT simulation: SpiralTemplate
 \endverbatim
 
-Notice that the only available option at this point is to construct a fit using an adjustable SKIRT simulation. Next
-fill in the name (or path) of the ski file you have created and adjusted in the previous step, in this case
-"2comp.ski".
+Provide an appropriate name for the \c FitSKIRT parameter file under construction, for example \c SpiralFit (the
+filename extension will be added automatically).
+
+Subsequently, specify the same units system and flux output style as in the ski file that defines the model. If there
+is a mismatch for the units system and/or the flux output style, \c FitSKIRT will terminate with a fatal error when
+performing the fitting scheme. (Unfortunately the implementation cannot automatcially extract the units information
+from the ski file while constructing the fski file.)
+
+Finally, enter the name of the ski file that defines the model to be fitted, e.g. \c SpiralTemplate in this tutorial
+(again, the filename extension will be added automatically).
+
+\subsection TutorialFitNGC4013SchemeFree Free parameters other than luminosities
 
 \verbatim
-Enter the name of the ski file specifying the SKIRT simulation: 2comp.ski
+   ...
+   Possible choices for item #1 in the parameter ranges list:
+      1. A parameter range
+   Automatically selected the only choice: 1
+ ? Enter the label identifying this parameter range: inclination
+   Possible choices for the type of physical quantity represented by this parameter range:
+      1. Dimensionless
+      2. Length
+      3. Distance
+      4. Mass
+      5. Position angle
+ ? Enter one of these numbers [1,5] (2): 5
+ ? Enter the minimum value in this parameter range ]-∞ deg,∞ deg[: 88
+ ? Enter the maximum value in this parameter range ]-∞ deg,∞ deg[: 92
+
+  Possible choices for item #2 in the parameter ranges list:
+      1. A parameter range
+ ? Enter one of these numbers or zero to terminate the list [0,1] (1):
+   ...
 \endverbatim
 
-Next choose for the random seed and start entering the free parameters.
-The example below shows one example for the physical quantity, Position angle.
+For each of the free parameters indicated in the ski template (see \ref TutorialFitNGC4013ModelTemplate), you need to
+enter the search range (i.e. the range of values that will be searched while looking for an optimal fit), in addition
+to the type of physical quantity involved (so that \c FitSKIRT knows which units to use). The example above shows the
+questions and responses for the free parameter labeled \em inclination. Continue adding parameter ranges until you
+have specified all nine free parameters (not shown in the example), using the information in the table below.
+The order of the parameter ranges in the fski file determines the order in which \c FitSKIRT reports fitting results
+for the parameters; other than that the order does not influence the results.
+
+| label | phys. qty | min. value | max. value
+|-------|-----------|------------|------------
+| inclination | Position angle | \f$88^\circ\f$ | \f$92^\circ\f$
+| bulge_radius | Length | 200 pc | 5000 pc
+| bulge_index | Dimensionless | 0.51 | 6.99
+| bulge_flattening | Dimensionless | 0.01 | 1
+| stellar_length | Length | 500 pc | 8000 pc
+| stellar_height | Length | 100 pc | 1000 pc
+| dust_length | Length | 1000 pc | 12000 pc
+| dust_height | Length | 50 pc | 800 pc
+| dust_mass | Mass | \f$10^6\,\text{M}_\odot\f$ | \f$10^8\,\text{M}_\odot\f$
+
+\subsection TutorialFitNGC4013SchemeRef Reference images and luminosities
 
 \verbatim
-Do you want a fixed seed (only for testing purposes)? [yes/no] (no):
-Possible choices for the parameter ranges:
-   1. A list of parameter ranges
-Automatically selected the only choice: 1
-Possible choices for item #1 in the parameter ranges list:
-   1. A parameter range
-Automatically selected the only choice: 1
-Enter the label identifying this parameter range: inclination
-Possible choices for the type of physical quantity represented by this parameter range:
-   1. Dimensionless
-   2. Length
-   3. Distance
-   4. Mass
-   5. Position angle
-Enter one of these numbers [1,5] (2): 5
-Enter the minimum value in this parameter range [-.. deg,.. deg]: 88
-Enter the maximum value in this parameter range [-.. deg,.. deg]: 92
+   ...
+   Possible choices for item #1 in the reference images list:
+      1. A reference image
+   Automatically selected the only choice: 1
+ ? Enter the name (or relative path) of this reference image: u_norm.fits
+   Possible choices for the convolution kernel:
+      1. A Gaussian convolution kernel
+      2. A convolution kernel read from a FITS file
+ ? Enter one of these numbers [1,2] (1):
+ ? Enter the full width at half max in pixels ]0,1000] (3): 1.7
+ ? Enter the dimension in pixels of the kernel frame [1,1000] (6):
+ ? Enter the minimum luminosity factors, one per stellar component ]0,∞[: 1, 1
+ ? Enter the maximum luminosity factors, one per stellar component ]0,∞[: 100, 100
+
+   Possible choices for item #2 in the reference images list:
+      1. A reference image
+ ? Enter one of these numbers or zero to terminate the list [0,1] (1):
+   ...
 \endverbatim
 
-Make sure to include the other free parameters, giving them appropriate quantities and ranges. Notice that a Distance
-parameter is not used in this case, it is simply there for completeness. It is advisable to insert the parameter ranges in
-a logical order as the same order will be used to create the output files.
+For each wavelength in the simulation you need to add the corresponding reference image (i.e. the target image to be
+fitted). In addition you need to specify information about the point-spread function (PSF) of the instrument that
+captured the image, so that \c FitSKIRT can convolve the synthetic image produced by the \c SKIRT simulation with an
+appropriate kernel before comparing it to the observed image. Finally, you need to set a luminosity search range per
+stellar component.
 
-Next insert the relative paths to the reference images, PSF FWHM and luminosity boundaries. The luminosity boundaries
-should be set relative to the dummy value you have entered. So the actual luminosity of the best fitting frame will be the
-dummy value multiplied by the best fitting value within the given boundaries.
+The example above shows how to add the \f$u\f$-band reference image for this tutorial, using a Gaussian convolution
+kernel with full width at half max (FWHM) of 1.7 pixels and a frame dimension of 6 pixels (the default value). Specify
+a luminosity range from 1 to 100 for each stellar component, because the luminosity units were chosen to obtain this
+range (see \ref TutorialFitNGC4013ModelSki). For the \f$u\f$-band reference image, use a FWHM of 1.6 pixels and the
+same luminosity range (not shown).
+
+\subsection TutorialFitNGC4013SchemeOpt Optimization settings
 
 \verbatim
-Possible choices for the refence images:
-   1. A list of images
-Automatically selected the only choice: 1
-Possible choices for item #1 in the reference images list:
-   1. A reference image
-Automatically selected the only choice: 1
-Enter the path to this reference image: ./reference/u.fits
-Possible choices for the convolution properties:
-   1. Convolution setup
-Automatically selected the only choice: 1
-Enter the full width at half max in pixels [0,1000] (3): 1.7
-Enter the dimension in pixels of the psf frame [0,1000] (6):
-Enter the minimum luminosity boundaries [-..,..]: 1e5
-Enter the maximum luminosity boundaries [-..,..]: 1e7
-Possible choices for item #2 in the reference images list:
-   1. A reference image
-Enter one of these numbers or zero to terminate the list [0,1] (1): 1
-Enter the path to this reference image: ./reference/g.fits
-Possible choices for the convolution properties:
-   1. Convolution setup
-Automatically selected the only choice: 1
-Enter the full width at half max in pixels [0,1000] (3): 1.6
-Enter the dimension in pixels of the psf frame [0,1000] (6):
-Enter the minimum luminosity boundaries [-..,..]: 1e6
-Enter the maximum luminosity boundaries [-..,..]: 1e8
-Possible choices for item #3 in the reference images list:
-   1. A reference image
-Enter one of these numbers or zero to terminate the list [0,1] (1): 0
+   ...
+   Possible choices for the optimization settings:
+      1. The optimization setup
+   Automatically selected the only choice: 1
+ ? Enter the number of individuals in the population [0,1000] (100): 20
+ ? Enter the number of generations to be evaluated  [0,1000] (100): 5
+ ? Enter the mutation probability ]0,1[ (0.03):
+ ? Enter the crossover probability ]0,1[ (0.65):
+   ...
 \endverbatim
 
-The last step is to setup the genetic algorithm parameters. In this case it is advisable to use a population of 200
-individuals and evaluate them for 100 generations. The mutation probability and crossover rate can be set to the
-standard values.
+The last step is to setup the parameters for the genetic algorithm. To limit the computation time for this tutorial,
+specify a limited population size of 20 individuals, to be carried forward for only 5 generations. The mutation and
+crossover probabilities can be left to the default values.
+
+\note It is important to realize that the numbers used in this tutorial are much too low for an actual research
+situation. A good fitting run will need a lot more of everything (photon packages, individuals, and generations). For a
+good quality run, use \f$5\times10^5\f$ photon packages, 200 individuals in a population, and 100 generations.
+
+
+\section TutorialFitNGC4013Run Running FitSKIRT
+
+\subsection TutorialFitNGC4013RunLaunch Launching
+
+By default \c FitSKIRT operates on a single processor. Because a typical fitting run is  computationally expensive,
+it is best to request the use of  multiple processors.  \c FitSKIRT supports two major parallelization modes. If
+\c FitSKIRT is running on a laptop or desktop computer, use shared-memory parallelization (multi-threading).
+For example:
 
 \verbatim
-Possible choices for the optimization properties:
-   1. The optimization setup
-Automatically selected the only choice: 1
-Enter the number of individuals in the population [0,1000] (100): 200
-Enter the number of generations to be evaluated  [0,1000] (100): 100
-Enter the mutation probability [0,1] (0.03):
-Enter the crossover rate [0,1] (0.65):
-Successfully created fski file 'tutorial.fski'.
-To run the fit use the command: fitskirt tutorial
+fitskirt -s 4 SpiralFit
 \endverbatim
 
-\section Results
-
-First of all make sure skirt can run your ski file without errors. It should just ignore the square brackets and use the
-default values. You should only continue if this runs without errors.
-
-In case you want to see if you get the exact same output as this section you should open both the ski and fski file in a
-text editor. In the ski file make sure you set the random seed to 4357 and lower the amount of photon packages to 1e4.
-Notice that this is just a test run and the output should not be considered as a good fitting run. Your actual run
-should need more of everything (photon packages, individuals ,...). In the fski file set the random seed to fixed, change
-the populationsize to 10 and the number of generations to 5 and set the same boundaries for your free parameters. Below
-you can find the complete adjusted ski and fski file.
-
-The ski file
-\verbatim
-<?xml version="1.0" encoding="UTF-8"?>
-<!--SKIRT radiative transfer simulations - © 2012-2014 Astronomical Observatory, Ghent University-->
-<skirt-simulation-hierarchy type="MonteCarloSimulation" format="6.1" producer="SKIRT v7 (git 109-fbb9c3b-dirty built on Oct 21 2014 at 11:12:56)" time="2014-10-21T16:06:44">
-    <OligoMonteCarloSimulation packages="1e4" continuousScattering="false">
-        <random type="Random">
-            <Random seed="4357"/>
-        </random>
-        <units type="Units">
-            <ExtragalacticUnits fluxOutputStyle="Neutral"/>
-        </units>
-        <instrumentSystem type="InstrumentSystem">
-            <InstrumentSystem>
-                <instruments type="Instrument">
-                    <MultiFrameInstrument instrumentName="lol" distance="18.6 Mpc" inclination="[inclination:90 deg]" azimuth="0 deg" positionAngle="0 deg" writeTotal="false" writeStellarComps="true">
-                        <frames type="InstrumentFrame">
-                            <InstrumentFrame pixelsX="790" extentX="14248 pc" pixelsY="144" extentY="2597 pc"/>
-                            <InstrumentFrame pixelsX="790" extentX="14248 pc" pixelsY="144" extentY="2597 pc"/>
-                        </frames>
-                    </MultiFrameInstrument>
-                </instruments>
-            </InstrumentSystem>
-        </instrumentSystem>
-        <wavelengthGrid type="OligoWavelengthGrid">
-            <OligoWavelengthGrid wavelengths="0.354 micron, 0.475 micron"/>
-        </wavelengthGrid>
-        <stellarSystem type="StellarSystem">
-            <StellarSystem>
-                <components type="StellarComp">
-                    <OligoStellarComp luminosities="1e15, 1e15">
-                        <geometry type="Geometry">
-                            <ExpDiskGeometry radialScale="[stellar_length:4400 pc]" axialScale="[stellar_height:500 pc]" radialTrunc="0 pc" axialTrunc="0 pc"/>
-                        </geometry>
-                    </OligoStellarComp>
-                    <OligoStellarComp luminosities="1e15, 1e15">
-                        <geometry type="Geometry">
-                            <SpheroidalGeometry flattening="[flattening:0.5]">
-                                <geometry type="SpheGeometry">
-                                    <SersicGeometry index="[sersic_index:2.5]" radius="[bulge_radius:2500 pc]"/>
-                                </geometry>
-                            </SpheroidalGeometry>
-                        </geometry>
-                    </OligoStellarComp>
-                </components>
-            </StellarSystem>
-        </stellarSystem>
-        <dustSystem type="OligoDustSystem">
-            <OligoDustSystem sampleCount="100" writeConvergence="false" writeDensity="false" writeDepthMap="false" writeQuality="false" writeCellProperties="false" writeCellsCrossed="false">
-                <dustDistribution type="DustDistribution">
-                    <CompDustDistribution>
-                        <components type="DustComp">
-                            <DustComp>
-                                <geometry type="Geometry">
-                                    <ExpDiskGeometry radialScale="[dust_length:6600 pc]" axialScale="[dust_height:250 pc]" radialTrunc="0 pc" axialTrunc="0 pc"/>
-                                </geometry>
-                                <mix type="DustMix">
-                                    <InterstellarDustMix writeMix="false" writeMeanMix="false"/>
-                                </mix>
-                                <normalization type="DustCompNormalization">
-                                    <DustMassDustCompNormalization dustMass="[dust_mass:4e7 Msun]"/>
-                                </normalization>
-                            </DustComp>
-                        </components>
-                    </CompDustDistribution>
-                </dustDistribution>
-                <dustGridStructure type="DustGridStructure">
-                    <LogPowAxDustGridStructure writeGrid="false" radialInnerExtent="10 pc" radialOuterExtent="25000 pc" radialPoints="250" axialExtent="4000 pc" axialRatio="50" axialPoints="250"/>
-                </dustGridStructure>
-            </OligoDustSystem>
-        </dustSystem>
-    </OligoMonteCarloSimulation>
-</skirt-simulation-hierarchy>
-\endverbatim
-
-The fski file
+If \c FitSKIRT is running on a server, and it was built with MPI enabled (see the Installation Guide), use
+distributed-memory parallelization (multi-processing). For example:
 
 \verbatim
-<?xml version="1.0" encoding="UTF-8"?>
-<!--SKIRT radiative transfer simulations - © 2012-2014 Astronomical Observatory, Ghent University-->
-<skirt-simulation-hierarchy type="FitScheme" format="6.1" producer="FitSKIRT v7 (git 109-fbb9c3b-dirty built on Oct 21 2014 at 11:13:01)" time="2014-10-22T16:52:40">
-    <OligoFitScheme fixedSeed="true">
-        <units type="Units">
-            <ExtragalacticUnits fluxOutputStyle="Neutral"/>
-        </units>
-        <simulation type="AdjustableSkirtSimulation">
-            <AdjustableSkirtSimulation skiName="2comp.ski"/>
-        </simulation>
-        <parameterRanges type="ParameterRanges">
-            <ParameterRanges>
-                <ranges type="ParameterRange">
-                    <ParameterRange label="inclination" quantityType="posangle" minimumValue="88" maximumValue="92"/>
-                    <ParameterRange label="stellar_length" quantityType="length" minimumValue="500 pc" maximumValue="8000 pc"/>
-                    <ParameterRange label="stellar_height" quantityType="length" minimumValue="100 pc" maximumValue="1000 pc"/>
-                    <ParameterRange label="flattening" quantityType="dimless" minimumValue="0.01" maximumValue="1"/>
-                    <ParameterRange label="sersic_index" quantityType="dimless" minimumValue="0.51" maximumValue="6.99"/>
-                    <ParameterRange label="bulge_radius" quantityType="length" minimumValue="200 pc" maximumValue="5000 pc"/>
-                    <ParameterRange label="dust_length" quantityType="length" minimumValue="1000 pc" maximumValue="12000 pc"/>
-                    <ParameterRange label="dust_height" quantityType="length" minimumValue="50 pc" maximumValue="800 pc"/>
-                    <ParameterRange label="dust_mass" quantityType="mass" minimumValue="1e6 Msun" maximumValue="1e8 Msun"/>
-                </ranges>
-            </ParameterRanges>
-        </parameterRanges>
-        <referenceImages type="ReferenceImages">
-            <ReferenceImages>
-                <images type="ReferenceImage">
-                    <ReferenceImage path="./reference/u.fits" minLuminosities="1e5, 1e5" maxLuminosities="1e7, 1e7">
-                        <convolution type="Convolution">
-                            <Convolution fwhm="1.7" dimension="6"/>
-                        </convolution>
-                    </ReferenceImage>
-                    <ReferenceImage path="./reference/g.fits" minLuminosities="1e5, 1e5" maxLuminosities="1e7, 1e7">
-                        <convolution type="Convolution">
-                            <Convolution fwhm="1.6" dimension="6"/>
-                        </convolution>
-                    </ReferenceImage>
-                </images>
-            </ReferenceImages>
-        </referenceImages>
-        <optim type="Optimization">
-            <Optimization popsize="10" generations="5" pmut="0.03" pcross="0.65"/>
-        </optim>
-    </OligoFitScheme>
-</skirt-simulation-hierarchy>
+mpirun -n 12 fitskirt SpiralFit
 \endverbatim
 
-Then run fitskirt using the following flags to run using one processor and write the output to a separate folder.
+\subsection TutorialFitNGC4013RunLog The message log
 
 \verbatim
-mkdir sample_output
-fitskirt -t 1 tutorial.fski -o ./sample_output
+   Welcome to FitSKIRT ...
+   ...
+   Number of stellar components in this simulation: 2
+   Number of wavelengths in this simulation: 2
+   The simulation's instrument name is : ins
+   ...
 \endverbatim
 
-You should then get the following output (apart from the elapsed time and version stamp):
+During setup, \c FitSKIRT lists some information about the ski file template in use, most notably the number of stellar
+components and wavelengths.
 
 \verbatim
-11/12/2014 23:03:13.936   Welcome to FitSKIRT v7 (git 284-50f8e69 built on Dec 11 2014 at 22:04:29)
-11/12/2014 23:03:13.962   Constructing a fit scheme from fski file 'tutorial.fski'...
-11/12/2014 23:03:13.968   FitSKIRT v7 (git 284-50f8e69 built on Dec 11 2014 at 22:04:29)
-11/12/2014 23:03:13.968   Starting fit scheme tutorial...
-11/12/2014 23:03:13.969   Starting setup...
-11/12/2014 23:03:13.969   Constructing simulation hierarchy from ski file /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/2comp.ski...
-11/12/2014 23:03:13.971   Performing the simulation with default attribute values...
-11/12/2014 23:03:15.999   Number of frames in this simulation: 2
-11/12/2014 23:03:15.999   Number of stellar components in this simulation: 2
-11/12/2014 23:03:15.999   Instrument name is : lol
-11/12/2014 23:03:15.999   Read reference image at /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/./reference/u.fits
-11/12/2014 23:03:16.049   Frame dimensions: 790 x 144
-11/12/2014 23:03:16.049   Read reference image at /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/./reference/g.fits
-11/12/2014 23:03:16.060   Frame dimensions: 790 x 144
-11/12/2014 23:03:16.060 - Finished setup in 2.1 s.
-11/12/2014 23:03:16.060   Starting fitting...
-11/12/2014 23:03:16.060   Evaluating generation 0
-11/12/2014 23:04:44.061   Setting Scores
-11/12/2014 23:04:44.062   Found new best fit
-11/12/2014 23:04:50.760   Found new best fit
-11/12/2014 23:04:54.947   Found new best fit
-11/12/2014 23:04:59.076   Found new best fit
-11/12/2014 23:05:05.803   removing: /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/sample_output2/tutorial_tmp
-11/12/2014 23:05:05.807   Evaluating generation 0
-11/12/2014 23:05:50.341   Setting Scores
-11/12/2014 23:05:50.341   removing: /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/sample_output2/tutorial_tmp
-11/12/2014 23:05:50.344   Evaluating generation 1
-11/12/2014 23:06:35.037   Setting Scores
-11/12/2014 23:06:35.037   removing: /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/sample_output2/tutorial_tmp
-11/12/2014 23:06:35.039   Evaluating generation 2
-11/12/2014 23:07:11.882   Setting Scores
-11/12/2014 23:07:11.882   removing: /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/sample_output2/tutorial_tmp
-11/12/2014 23:07:11.884   Evaluating generation 3
-11/12/2014 23:07:40.384   Setting Scores
-11/12/2014 23:07:40.384   removing: /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/sample_output2/tutorial_tmp
-11/12/2014 23:07:40.386   Evaluating generation 4
-11/12/2014 23:08:15.040   Setting Scores
-11/12/2014 23:08:15.040   Found new best fit
-11/12/2014 23:08:19.221   removing: /Users/gdgeyter/SKIRT7/run_fitskirt/tutorial/sample_output2/tutorial_tmp
-11/12/2014 23:08:19.223 - Finished fitting in 303 s (5m 3s).
-11/12/2014 23:08:19.223 - Finished fit scheme tutorial in 305 s (5m 5s).
+   ...
+   Evaluating generation 0
+     Slave 1 running SKIRT model for individual 0
+     Slave 2 running SKIRT model for individual 1
+     ...
+   Setting Scores
+   Found new best fit; serial nr 0
+   Writing best fitting frame to ...SpiralFit_best_0_0.fits...
+   ...
 \endverbatim
 
-Notice that the output directory now contains 22 files. Because <tt>FitSKIRT</tt> can create a huge amount of output, it only
-keeps the best fitting frames and deletes any additional files. However, the tutorial_allsimulations.dat file keeps all
-relevant information about all the performed radiative transfer models. The first digit of the line is the generation
-number. The following numbers are the parameter values for that model in the same order as they are given in the .fski
-file. Next is the total chi2-value, the luminosity at the first wavelength (u-band) of the first and second component,
-the luminosity at the second wavelength (g-band) of the first and second component, the chi2-value at the first and
-second component, all respectively in that order.
+\c FitSKIRT then begins evaluating the individuals in the first-generation population. Each evaluation consists of
+running a \c SKIRT simulation with free parameter values corresponding to the genes of the individual. After all
+individuals in the population have been processed and scored, information about the best fitting individual is written
+to disk. The genetic algorithm then replaces part of the individuals in the population, and the process is repeated for
+the next generation. At the end of each generation, if there is an individual representing a better fit than the
+previous best fit, it is recorded.
 
-tutorial_BESTsimulations.dat (see below) contains only the simulations which, at that point, were the best fitting
-models. The model on the first line is therefore the first radiative transfer model done, because by definition it was
-the best model at that point. The last line gives you the final solution. As this is not the clearest way to get an
-overview of your run, make sure to look at the fitskirt_results.py script that comes with the PTS toolkit (see
-http://www.skirt.ugent.be/pts/_fit_s_k_i_r_t_guide.html).
+\subsection TutorialFitNGC4013RunOut Actual output
 
-The best fitting models are given as tutorial_Best_X_Y.fits where X corresponds to the best fitting solution in
-tutorial_BESTsimulations.dat and Y is the wavelength (in this case 0 being u-band and 1 being g-band). These frames are
-adjusted to the best fitting luminosity, convolved with the appropriate beam and have the same masked regions as the reference
-frames. Additionally a corresponding residual frame is created, tutorial_Residual_X_Y.fits, defined as
-abs(reference_frame - tutorial_Best_X_Y.fits)/abs(reference_frame).
+The output of the individual \c SKIRT simulations governed by \c FitSKIRT is stored in a temporary folder called
+<tt>prefix_tmp</tt>. These files are removed after all processing for a generation has been completed. Instead, \c
+FitSKIRT records summary information in its output files. For example, the column text file
+<tt>prefix_all_simulations.dat</tt> records a single summary line for each \c SKIRT simulation performed during the
+run. This information is mostly relevant for debugging purposes.
 
-As a final comparison open the tutorial_BESTsimulations.dat file. If you have used the exact same values as mentioned here
-you should get the following content:
+More importantly, the column text file <tt>prefix_best_simulations.dat</tt> records a single summary line for each new
+best fit found at the end of each generation (if any). Consequently, the last line provides the final solution. The
+contents of the columns is described in the header of the file. The first column is a serial number linking the row to
+the best fitting images and residuals discussed below. Subsequent columns list the best fitting free parameter values,
+including the luminosities. These are followed by the total \f$\chi^2\f$ value and finally the \f$\chi^2\f$ values for
+each wavelength. For ease of reference, there are a few extra spaces just before the total \f$\chi^2\f$ value.
 
-\verbatim
-0 91.1797 7145.96 558.521 0.95842 5.9267 863.562 3933.79 657.367 2.96175e+07 1.8694 3.48103e+06 7.74921e+06 1.13446e+06 2.93517e+06 1.21588 0.653512
-1 91.4654 5219.54 640.2 0.681499 1.47608 3173.66 9080.32 53.0504 4.267e+07 1.81769 2.45057e+06 2.57014e+06 859873 1.06447e+06 1.16867 0.649028
-2 91.6289 3250.48 306.137 0.897166 6.1312 1986.91 6925.8 627.842 3.80441e+07 1.74867 8.74859e+06 4.92384e+06 2.60331e+06 1.83968e+06 1.15344 0.595226
-3 91.3737 3009.58 625.44 0.562385 2.12825 2689.87 2355.36 182.31 8.86875e+06 1.6673 2.91159e+06 2.80387e+06 1.10677e+06 1.13411e+06 1.10956 0.557746
-4 91.3737 3009.58 625.44 0.562385 2.12825 2689.87 1883.33 182.31 8.86875e+06 1.65936 2.80175e+06 2.88786e+06 1.07164e+06 1.1432e+06 1.10263 0.556727
-\endverbatim
+The synthetic images for the sequence of best fitting models are stored as <tt>prefix_best_X_Y.fits</tt> where X is
+replaced by the serial number in the first column of <tt>prefix_best_simulations.dat</tt> and Y is the replaced by the
+wavelength index (in this case 0 being \f$u\f$-band and 1 being \f$g\f$-band). These images are adjusted to the best
+fitting luminosity, are convolved with the appropriate beam, and have the same masked regions as the reference images.
+Additionally corresponding residual images are created, <tt>tutorial_residual_X_Y.fits</tt>, where each pixel is
+calculated as abs((reference - best_fit)/reference).
 
-So in this case your best fitting model is on the fifth line and can be seen in tutorial_Best_4_0.fits and
-tutorial_Best_4_1.fits and corresponding residuals. Again notice that this is not a representative case of a good fit
-and should only be used in the context of this tutorial. If you want to make an actual fit of this galaxy, put off the
-fixed seed, change your photon packages to about 5e5, your population size to 200 and 100 generations. Also notice that, although this tutorial was based on an edge-on spiral galaxy it is not limited to this case. Feel free
-to choose any free parameters or models which suit your case. Also run your
-simulation using more than 1 thread or use mpi to run fitskirt. For example using the following command
+When reviewing the output from this fitting run, keep in mind that the numbers used in this tutorial are much too low
+for an actual research situation (see note at the end of \ref TutorialFitNGC4013SchemeOpt). Furthermore, it is wise to
+perform multiple fitting runs with the same data (and a different random realization of the search). Comparing the
+results from multiple runs allows estimating an error bar on the free parameter values obtained with \c FitSKIRT.
 
-\verbatim
-mpirun -n 20 fitskirt -t 1 -o fit1 tutorial.fski
-\endverbatim
 
 */

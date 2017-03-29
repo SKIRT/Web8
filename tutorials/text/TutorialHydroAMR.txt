@@ -123,7 +123,7 @@ configuration space.
 <tt>SKIRT</tt> expects a luminosity value for each of the wavelengths included in the simulation's wavelength grid.
 These values can be different depending on the intended spectrum or color of the radiation source. For this tutorial,
 specify three identical luminosity values consistent with an artificial background source, for example
-\f$L_\lambda = 10^6~L_\odot/\mu\text{m}\f$.
+\f$L_\lambda = 10^6~\text{L}_\odot/\mu\text{m}\f$.
 
 \section TutorialHydroAmrDust Dust system
 

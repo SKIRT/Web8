@@ -197,7 +197,7 @@ outer truncation. For the stellar spiral structure, specify 2 arms, a pitch angl
 
 Finally, \c SKIRT expects a luminosity value for each of the wavelengths included in the simulation's wavelength grid.
 Since you specified a single wavelength, you need to enter a single luminosity value. For this tutorial, specify a
-value appropriate for a spiral galaxy, for example \f$L_\lambda = 10^{11}~L_\odot/\mu\text{m}\f$.
+value appropriate for a spiral galaxy, for example \f$L_\lambda = 10^{11}~\text{L}_\odot/\mu\text{m}\f$.
 
 \subsection TutorialGridsTreeVoroSpiralDust Dust system
 

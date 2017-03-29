@@ -216,7 +216,7 @@ In an oligochromatic simulation, each stellar component is characterized by a pa
 component luminosity at each wavelength in the simulation's wavelength grid. For the stellar disk geometry, select an
 exponential disk with a scale length of 4 kpc and a scale height of 350 pc, without inner or outer truncation. Further
 specify a luminosity at \f$\lambda=0.55~\mu\text{m}\f$ (the wavelength specified previously) of
-\f$L_\lambda = 5\times10^9~L_\odot/\mu\text{m}\f$.
+\f$L_\lambda = 5\times10^9~\text{L}_\odot/\mu\text{m}\f$.
 
 \verbatim
    Possible choices for item #2 in the stellar components list:
@@ -249,7 +249,7 @@ specify a luminosity at \f$\lambda=0.55~\mu\text{m}\f$ (the wavelength specified
 For the second stellar component, again select the "built-in geometry" stellar component type. For the geometry, select
 a spheroidal variant of the Sersic model with effective radius \f$R_{\text{e}} = 1.6\f$ kpc, Sersic index \f$n=2\f$,
 and flattening parameter \f$q=0.7\f$. Further specify a luminosity of \f$L_\lambda =
-3\times10^9~L_\odot/\mu\text{m}\f$.
+3\times10^9~\text{L}_\odot/\mu\text{m}\f$.
 
 <tt>SKIRT</tt> offers a number of geometry decorators that modify other geometries in various ways, including
 off-center translation, adding clumpiness, and spheroidal or triaxial flattening. You must select the decorator
