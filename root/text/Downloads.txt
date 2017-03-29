@@ -20,11 +20,15 @@ To download a file, right-click or option-click the filename and choose "Save As
 
 <b><tt>FitSKIRT</tt> tutorials:</b>
 
- - <a href="../downloads/match_WCS.tar.gz">match_WCS.tar.gz</a>: Matching WCS with IDL and montage
- - <a href="../downloads/tutorial_NGC4013.tar.gz">tutorial_NGC4013.tar.gz</a>: Input for the NGC4013 tutorial
- - <a href="../downloads/tutorial_NGC4013_complete.tar.gz">tutorial_NGC4013_complete.tar.gz</a>: Intermediate and final results for the NGC4013 tutorial
+ - <a href="../downloads/tutorial_NGC4013_prepared.zip">tutorial_NGC4013_prepared.zip</a>: Prepared images for
+   fitting a model to NGC4013 in the FitSKIRT tutorial
 
 <b><tt>PTS</tt> tutorials:</b>
 
+- <a href="../downloads/match_WCS.tar.gz">match_WCS.tar.gz</a>: Matching WCS with IDL and montage
+- <a href="../downloads/tutorial_NGC4013.tar.gz">tutorial_NGC4013.tar.gz</a>: Input for the NGC4013 data preparation
+  tutorial
+- <a href="../downloads/tutorial_NGC4013_complete.tar.gz">tutorial_NGC4013_complete.tar.gz</a>: Intermediate and final
+  results for the NGC4013 data preparation tutorial
 
 */
