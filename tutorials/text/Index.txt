@@ -13,15 +13,20 @@ corresponding tutorials.
   - \ref TutorialHydroSPH
   - \ref TutorialGridsTreeVoro
 
-<b>For advanced SKIRT, FitSKIRT and PTS users</b>
+<b>For advanced SKIRT and FitSKIRT users</b>
 
   - \ref TutorialParallelization
-  - \ref TutorialMassageData
   - \ref TutorialFitNGC4013
 
 <b>For SKIRT developers</b>
 
   - \ref TutorialDevelopGeom
   - \ref TutorialDevelopDust
+
+<b>For PTS users</b>
+
+- \ref TutorialScaling
+- \ref TutorialMassageData
+- XXX Tutorial NGC4013 data preparation
 
 */

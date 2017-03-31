@@ -1,0 +1,333 @@
+/**
+
+\page TutorialScaling Scaling of SKIRT's parallel performance
+
+In this tutorial you will use the output of a set of \c SKIRT simulations already performed on a computing cluster to
+learn about the scaling behaviour of the performance and memory usage of \c SKIRT. The load balancing and its effect on
+the scaling will also be studied, as well as the the effect of parallelization overheads such as communication.
+
+\section TutorialScalingStart Getting ready
+
+This tutorial assumes that you have completed the <tt>SKIRT</tt> tutorial on parallelization in addition to some of the
+introductory <tt>SKIRT</tt> tutorials. You should have the <tt>SKIRT</tt> project and PTS (the Python Toolkit for
+SKIRT) properly installed on your computer.
+
+We have performed a series of simulations of a basic spiral galaxy model on two different computing clusters that are
+part of the UGent high-performance computing (HPC) infrastructure, partner of the Flemish Supercomputer Center (VSC).
+The 'Delcatty' cluster links 160 nodes, each consisting of two 8-core sockets, by a FDR InfiniBand network. Sockets are
+Intel E5-2670 (2.6 GHz Sandy Bridge architecture). Each node includes 64 GB of memory. The 'Swalot' cluster consists
+of 128 nodes, and a node consists of 2 10-core Intel E5-2660v3 sockets. The amount of memory per node is 128 GB.
+
+Download the archive <tt>tutorial_scaling.zip</tt> from the <a href="../downloads/index.html">SKIRT downloads page</a>
+and extract its contents into your local working directory.
+
+\section TutorialScalingLoadingSimulations Loading the simulations
+
+Navigate to the directory containing the downloaded data. This directory should contain 4 subdirectories:
+
+ - Pure scaling single-node
+ - Hybrid scaling multi-node
+ - Communication
+ - Hybrid scaling single-node
+
+To get an overview of the set of simulations that have been performed, enter the following command:
+
+\verbatim
+pts discover
+\endverbatim
+
+This script will look for any log file present within subdirectories of the current working directory. It groups the
+simulations according to the ski file that was used. You should find 35 simulation that can be identified with the
+spiral.ski file, which is the same model as the one you have run on your laptop. There are 8 simulations for which the
+corresponding ski file was not found, these were created using a slightly altered ski file. You can compare the
+properties of both groups of simulations such as the number of photon packages, the number of wavelengths, the number
+of dust cells, etc. from the terminal output. Also shown is the number of processes and threads that was used for each
+simulation, and whether data parallelization was enabled.
+
+\image html simulations_ski.png
+
+\image html simulations_no_ski.png
+
+\section TutorialScalingSingleNode Single-node scaling
+
+If there are any problems with the output of this command, please let someone of the SKIRT team know as it is crucial
+for the rest of the tutorial.
+
+\subsection TutorialScalingSingleNodePure Pure multithreading and MPI parallelization
+
+To compare the multithreading and multiprocessing, we performed a series of simulations on a single node. For an
+increasing number of cores (up to a full node = 16 cores), we recorded the log files of the simulation in
+multithreading mode, a pure MPI (multiprocessing) and a pure MPI run with data parallelization enabled.
+
+You don't have to worry how the log files and other simulation output are organized within the various subdirectories,
+the PTS command we will use performs the "discover" command under the hood to detect all simulations and gather and
+organize all the relevant data.
+
+To get started with this data, navigate to the "Pure scaling single-node" directory in a Terminal window. Inside this
+directory, create a new directory, e.g. "plot". Then execute the following command:
+
+\verbatim
+pts plot_scaling speedup,efficiency total,stellar,spectra,dust -o plot
+\endverbatim
+
+Ideal scaling happens if increasing the number of cores speeds up the program by the same factor (an effiency of 1).
+Comparing the scaling for the three cases, it is clear that using only multithreading is the least efficient on a full
+node (a speedup of 9 on 16 cores), while the MPI runs reach about the same speedup (around 11).
+
+The speedup as a function of number of cores can be parameterized using an equation that is called \em Amdahl's law. It
+is given by:
+
+\f[
+S(N_c) = \frac{1}{1-p+p/N_c}
+\f]
+
+Where \f$p\f$ is the \em parallel \em fraction:
+
+\f[
+p = \frac{T_p}{T_s + T_p}
+\f]
+
+A plot of the Amdahl relation is shown in the figure below:
+
+\image html amdahl.png
+
+As can be seen from the curve, or from the equation by letting \f$N_c \infty\f$, the speedup reaches a maximum value
+given by:
+
+\f[
+S_\infty = \frac{1}{1-p}
+\f]
+
+This value is the \em theoretical \em maximum \em speedup. Thus, the total runtime of the program will in the best case
+be equal to \f$T_s\f$, the runtime of the serial portion of the program. In this case, the parallel portion of the
+program is executed infinitely fast.
+
+Look at the plots created by the plot_scaling command.
+
+\image html speedups_total_singlenode.png
+
+\image html efficiencies_total_singlenode.png
+
+You can see that for each of the curves, corresponding to the 'pure' parallelization modes (multithreading, MPI task
+and MPI task+data parallelization), a curve has been fitted. These curves are described by Amdahl's law with a specific
+value for the parallel fraction. In the same directory, 4 data files have been created during the fitting:
+
+ - parameters_total.dat
+ - parameters_dust.dat
+ - parameters_spectra.dat
+ - parameters_stellar.dat
+
+These data files contain the value of the parameter \f$p\f$ in the different cases. Compare the parallel fractions for
+the different phases and the parallel fraction of the total simulation. Is this what you expect?
+
+Also inspect the plots of the scaling behaviour (speedup, efficiency) for the individual simulation phases.
+
+\subsection TutorialScalingSingleNodeHybrid Hybridisation schemes
+
+Go to the "Hybrid scaling single-node" directory and create a new "plot" directory.
+
+\verbatim
+pts plot_scaling -o plot
+\endverbatim
+
+You will see that the procedure is aborted with an error:
+
+\image html hybridisationerror.png
+
+It tells that all simulations that were found within this directory were run with the same number of cores, so
+traditional scaling relations cannot be plotted as a function of number of cores. Yet, we want to asses the performance
+of the different hybridisation schemes. For this purpose, the 'hybridisation' mode has been created for the plotting
+routine. To enable it, add the '--hybridisation' flag to the plot_scaling command:
+
+\verbatim
+pts plot_scaling -o plot --hybridisation
+\endverbatim
+
+Now it works. Look at the plot of the runtimes as a function of the number of processes \f$N_p\f$. Note that the
+horizontal axis doesn't correspond to number of cores or any other measure of used resources. The number of cores was
+equal for all data points (16), but what changes is the hybridisation scheme: the combination of the number of
+processes and the number of threads per process.
+
+\image html runtimes_total.png
+
+Also check the timeline. On the horizontal axis is the CPU time, so the total computation time taking into account all
+parallel cores, and on the vertical axis is the number of processes used. In an ideal scaling case, the total CPU time
+remains constant for an increasing number of computing resources, which leads to a linear scaling of the speedup.
+
+\image html timeline_16_cores.png
+
+Evidently, you see that the total CPU time is lowest for the hybridization scheme where the total runtime is also
+lowest, since \f$N_c\f$ is always the same for these tests.
+
+\subsection TutorialScalingSingleNodeCommunication Communication times
+
+In the directory "communication", create a 'plot' directory and execute:
+
+\verbatim
+pts plot_scaling runtime,CPU-time communication -o plot
+\endverbatim
+
+You will get the following warning, indicating that the script could not find log files produced during a serial run (1
+core). This is normally used for the normalization of the speedup and the efficiencies, but in this case it is no
+problem since we are only interested in the runtime and CPU time of the communication phases.
+
+\image html no_serial_timing.png
+
+You see the following plots:
+
+\image html runtimes_communication.png
+
+\image html cpu_communication.png
+
+You see that a curve has been plotted against the timing data points. This curve has the form
+
+\f[
+T = a + b \times N_c + c \times log(N_c)
+\f]
+
+So a function of the number of cores with a constant, a linear and a logarithmic term. Observe the behaviour of the
+curves. The fitted parameters are found in the output file "parameters_timing_communication.dat":
+
+The result is:
+
+- MPI task:
+  * a = 65.1112834857027
+  * b = 0.5084684468332847
+  * c = -42.96716705132733
+- MPI task+data:
+  * a = 7.145341928001205
+  * b = 0.1981899586439446
+  * c = -8.601643600429595
+
+The transpositions from row to column representation and from column to row representation (task+data parallel mode),
+are significantly faster than the summations in task parallel mode. It is clear that in any case, the communication is
+not a bottleneck for the performance at least up to 120 cores (where the total runtime was between 11 and 13 min with
+20 processes and between 2 and 5 min with 120 processes). Compare the communication times seen in the plot with the
+total runtimes (look in the corresponding log files).
+
+\section TutorialScalingMultiNode Multi-node scaling
+
+\subsection TutorialScalingMultiNodeLoadBalancing Load balancing
+
+In the directories "s16n" (not data-parallelized) and the directory "d16n" (data-parallelized), execute the same
+command to plot a timeline of the individual simulations:
+
+\verbatim
+pts plot_timelines
+\endverbatim
+
+This script will create files named timeline.pdf, one in each directory. Compare both timeline plots.
+
+\image html timeline16processes_d.png
+
+\image html timeline16processes.png
+
+Above are the timelines of the simulations on 16 nodes (corresponding to 256 cores and 32 processes) in task+data
+parallel mode (top) and 'plain' task parallel mode (bottom). What is seen as red and yellow bars in these graphs
+represents the time spent in serial parts of the simulation (setup and writing). Green, bright blue and magenta bars
+represent the parallel sections: emission cycles and emission spectrum calculations. It is clear from these timelines
+that the parallelization covers all but a very small part of the simulation runtime. Also seen (mostly in the top
+panel) are dark blue bars, these represent the overhead of the MPI parallelization because of load imbalance (processes
+that wait for other processes to complete their work). For the task parallel mode, these are insignificant, but they
+clearly have a negative effect on the performance in task+data parallel mode. Also note that the MPI overhead of
+communication (plotted in orange) is completely neglegible.
+
+The reason for the large load imbalance is found in the fact that in task+data parallel mode, wavelengths are
+distributed amongst the processes. This explains why the imbalance only occurs in emission phases (green and bright
+blue). What is striking about these timelines is that the waiting time increases with process rank, or that the
+processes with the highest ranks finish their tasks (wavelength) sooner as the processes with the lowest ranks.
+
+Think about a possible reason for this phenomenon. If you don't know the answer or want to verify your guess, ask
+someone from the SKIRT team.
+
+This effect is most prominent with a large number of processes, where the number of wavelengths assigned to each
+process is small. This result shows that there is an upper limit on the number of processes that can be used for a
+particular simulation when data parallel mode is enabled. We usually use \f$N_\lambda > 10 \times N_p\f$ as a golden
+rule.
+
+\subsection TutorialScalingMultiNodeEfficiency Efficiency scaling
+
+Go to the "Hybrid scaling multi-node directory". Create three directories:
+
+ - plot_efficiency
+ - plot_timeline
+ - plot_memory
+
+To asses the scaling of the performance across multiple nodes, execute the following command:
+
+\verbatim
+pts plot_scaling efficiency -o plot_efficiency
+\endverbatim
+
+You will get the following figure:
+
+\image html efficiencies_total_multinode.png
+
+You will see two curves, one for the efficiency of the hybrid task+data parallel mode and one for that of the hybrid
+task parallel mode. Based on what you have learned before, can you now explain the difference in scaling behaviour
+between the two modes?
+
+\subsection TutorialScalingMultiNodeMemory Memory scaling
+
+Execute the following command:
+
+\verbatim
+pts plot_scaling memory,memory-gain,total-memory total,stellar,spectra,dust,writing -o plot_memory
+\endverbatim
+
+This will plot the scaling of the \em peak memory consumption for the total simulation, the stellar emission phase, the
+dust emission spectra calculation, the dust emission phase and the writing phase. It will make plots of the memory
+consumed per process, the memory gain (the memory consumed with respect to that for a serial run with only 1 process),
+and the total memory consumption (the memory summed for all processes).
+
+You can see that for the memory per process plots, curves have been fitted of the following form:
+
+\f[
+M(N_p) = a / N_c + b + c \times N_c
+\f]
+
+This function mixes a constant term (the unparallelizable part of the data) with a linear term (memory overhead because
+of the MPI parallelization), and an inversily proportional term (the parallelized data). Of course the fit is only made
+for the data points created with data parallelized simulations. The memory consumption for the hybrid task mode is also
+plotted, but it is approximately constant per process (as expected) and increasing linearly with the number of
+processes in the plots of the total memory.
+
+Some parameter files will be written resulting from the fitting: parameters_memory_total.dat,
+parameters_memory_spectra.dat, etc. Note that the memory is well-behaved and very predictable, according to the
+proposed equation.
+
+As a verification of the implementation of the data parallelization and the fit to the memory scaling, we can calculate
+the actual memory requirements of the parallelizable part of the data based on the simulation parameters. These
+parallel resources in this simulation are represented by three parallel 2D tables (two for the absorption and one for
+the emission spectra) and one parallel 2D datacube for the instrument.
+
+The number of elements in each of tables amounts to \f$160 \times 256000 = 40960000\f$ or \f$40.96 \times 10^6\f$. The
+number of pixels in the datacube adds up to \f$1024 \times 1024 \times 160 = 167 \times 10^6\f$.
+
+Combining these, the total number of double values necessary to represent the data is \f$287 \times 106\f$, which
+corresponds to \f$2.3 \times 10^9\f$ bytes. Using the fact that the number of bytes per gigabyte is \f$2^30\f$,
+calculate the size of the parallel data in GB. Does this correspond to what was found with the fit? (This is equal to
+2.16 GB, which almost exactly corresponds to the value of 2.15 found with the fit).
+
+The calculation we performed manually can also be done automatically with a PTS script. Navigate to the "Pure scaling
+single-node" directory, where the spiral.ski file resides. In the terminal window, execute:
+
+\verbatim
+pts estimate_memory spiral.ski
+\endverbatim
+
+You will see the following output:
+
+\image html estimate_memory.png
+
+The output will state the estimated size of the serial part of the data and the size of the parallel part of the data
+(in GB). How does it compare to the result of the manual calculation? The output will also show the expected memory
+requirement per process for different numbers of processes.
+
+\subsection TutorialScalingMultiNodePlaying Playing around
+
+Use plot_scaling to make other plots of specific things you want to visualise from the set of log files.
+
+<b><i>Congratulations, you made it to the end of this tutorial!</i></b>
+
+*/
