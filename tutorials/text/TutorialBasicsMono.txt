@@ -464,7 +464,7 @@ selected.
  ? Enter the number of pixels in the horizontal direction [1,10000] (250): 800
  ? Enter the center of the frame in the horizontal direction ]-.. pc,.. pc[ (0 pc):
  ? Enter the total field of view in the vertical direction ]0 pc,.. pc[: 10000
- ? Enter the number of pixels in the vertical direction [1,10000] (250): 400
+ ? Enter the number of pixels in the vertical direction [1,10000] (250): 200
  ? Enter the center of the frame in the vertical direction ]-.. pc,.. pc[ (0 pc):
 \endverbatim
 
