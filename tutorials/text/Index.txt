@@ -25,8 +25,8 @@ corresponding tutorials.
 
 <b>For PTS users</b>
 
-- \ref TutorialScaling
 - \ref TutorialMassageData
+- \ref TutorialScaling
 - XXX Tutorial NGC4013 data preparation
 
 */

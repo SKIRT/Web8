@@ -1,6 +1,6 @@
 /**
 
-\page TutorialScaling Scaling of SKIRT's parallel performance
+\page TutorialScaling Studying the scaling of SKIRT's parallel performance
 
 In this tutorial you will use the output of a set of \c SKIRT simulations already performed on a computing cluster to
 learn about the scaling behaviour of the performance and memory usage of \c SKIRT. The load balancing and its effect on
