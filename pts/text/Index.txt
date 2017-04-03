@@ -1,0 +1,23 @@
+/**
+
+\mainpage PTS documentation index
+
+The <em>Python Toolkit for SKIRT</em> (<tt>PTS</tt>) consists of a set of Python modules offering functionality related
+to working with <tt>SKIRT</tt>, the Monte Carlo radiative transfer code also developed by the Astronomical Observatory
+at the Ghent University.
+
+The <tt>PTS</tt> documentation is structured as follows:
+
+<b>Part I: Guides -- overall guidance and tutorials.</b>
+
+  - The \ref InstallationGuide describes how to install PTS on your computer.
+  - The <a href="../tutorials/index.html">Tutorials</a> introduce certain aspects of <tt>PTS</tt> to new users.
+  - The \ref UserGuide explains the overall philosophy behind PTS and decribes how to use some of its components.
+  - The \ref DeveloperGuide offers guidelines on how to extend or adjust PTS.
+
+<b>Part II: Reference -- documentation on every class, namespace and function.</b>
+
+The reference documentation can be accessed by selecting one of the corresponding tabs in the navigation bar at the top
+of the page.
+
+*/

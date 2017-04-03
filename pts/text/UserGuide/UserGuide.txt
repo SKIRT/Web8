@@ -1,0 +1,17 @@
+/**
+
+\page UserGuide User Guide
+
+This guide explains the overall philosophy behind <tt>PTS</tt> and provides usage guidelines for some components.
+It includes the following topics:
+
+- \subpage UserPhil
+- \subpage UserUse
+- \subpage UserCase
+- \subpage UserEagle
+
+Also check out the tutorials:
+
+- <a href="../tutorials/index.html">Tutorials</a>
+
+*/

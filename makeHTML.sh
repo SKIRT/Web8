@@ -13,11 +13,13 @@
 # Generate html documentation in a temporary folder next to the git folder
 /Applications/Doxygen.app/Contents/Resources/doxygen root/doxygen/root.doxygen
 /Applications/Doxygen.app/Contents/Resources/doxygen skirt/doxygen/skirt.doxygen
+/Applications/Doxygen.app/Contents/Resources/doxygen pts/doxygen/pts.doxygen
 /Applications/Doxygen.app/Contents/Resources/doxygen tutorials/doxygen/tutorials.doxygen
 
 # Copy the 'mouse over' SKIRT logo
 cp root/images/SkirtLogoSmall-home.png ../html/root/SkirtLogoSmall-home.png
 cp root/images/SkirtLogoSmall-home.png ../html/skirt/SkirtLogoSmall-home.png
+cp root/images/SkirtLogoSmall-home.png ../html/pts/SkirtLogoSmall-home.png
 cp root/images/SkirtLogoSmall-home.png ../html/tutorials/SkirtLogoSmall-home.png
 
 # Copy the downloadable data files and publications
