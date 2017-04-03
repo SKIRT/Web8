@@ -21,8 +21,8 @@ cp root/images/SkirtLogoSmall-home.png ../html/skirt/SkirtLogoSmall-home.png
 cp root/images/SkirtLogoSmall-home.png ../html/tutorials/SkirtLogoSmall-home.png
 
 # Copy the downloadable data files and publications
-rsync -hrt ../extras/downloads/ ../html/downloads/
-rsync -hrt ../extras/publications/ ../html/publications/
+rsync -hrt --delete ../extras/downloads/ ../html/downloads/
+rsync -hrt --delete ../extras/publications/ ../html/publications/
 
 # Copy some redirecting index.html files
 cp root/index_root.html ../html/index.html

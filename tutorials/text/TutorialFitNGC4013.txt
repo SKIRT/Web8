@@ -229,8 +229,8 @@ stellar component.
 The example above shows how to add the \f$u\f$-band reference image for this tutorial, using a Gaussian convolution
 kernel with full width at half max (FWHM) of 1.7 pixels and a frame dimension of 6 pixels (the default value). Specify
 a luminosity range from 1 to 100 for each stellar component, because the luminosity units were chosen to obtain this
-range (see \ref TutorialFitNGC4013ModelSki). For the \f$u\f$-band reference image, use a FWHM of 1.6 pixels and the
-same luminosity range (not shown).
+range (see \ref TutorialFitNGC4013ModelSki). For the \f$g\f$-band reference image (<tt>g_norm.fits</tt>), use a FWHM of
+1.6 pixels and the same luminosity range (not shown).
 
 \subsection TutorialFitNGC4013SchemeOpt Optimization settings
 

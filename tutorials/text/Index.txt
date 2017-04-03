@@ -27,6 +27,6 @@ corresponding tutorials.
 
 - \ref TutorialMassageData
 - \ref TutorialScaling
-- XXX Tutorial NGC4013 data preparation
+- \ref TutorialPrepNGC4013
 
 */

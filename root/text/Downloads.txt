@@ -29,8 +29,8 @@ To download a file, right-click or option-click the filename and choose "Save As
   massaging data with PTS
 - <a href="../downloads/tutorial_scaling.zip">tutorial_scaling.zip</a>: \c SKIRT output for studying parallel scaling
   performance
-- <a href="../downloads/tutorial_NGC4013.tar.gz">tutorial_NGC4013.tar.gz</a>: Input for the NGC4013 data preparation
-  tutorial
+- <a href="../downloads/tutorial_NGC4013_input.tar.gz">tutorial_NGC4013_input.tar.gz</a>: Input for the NGC4013 data
+  preparation tutorial
 - <a href="../downloads/tutorial_NGC4013_complete.tar.gz">tutorial_NGC4013_complete.tar.gz</a>: Intermediate and final
   results for the NGC4013 data preparation tutorial
 - <a href="../downloads/match_WCS.tar.gz">match_WCS.tar.gz</a>: Matching WCS with IDL and montage

@@ -14,7 +14,7 @@ mkdir -p ../webhost
 ###mount_smbfs smb://pcamps@webhost.ugent.be/_skirt ../webhost
 
 # Update the web site
-rsync -hrtv ../html/ ../webhost/WWW/
+rsync -hrtv --delete-after ../html/ ../webhost/WWW/
 
 # Unmount the webhost and remove the mount point
 ###umount ../webhost
