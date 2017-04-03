@@ -41,9 +41,8 @@ changes were made to the repository from which you cloned it, use:
 If you plan to make code contributions, you should create an account at <a href="https://github.com">GitHub.com</a>,
 fork the <a href="https://github.com/SKIRT/PTS">PTS repository</a> and then link this forked repository to your local
 <tt>PTS</tt> repository. This allows you to push your modifications to your own fork and initiate a pull request when
-you want to contribute the changes to the project. Refer to the <a
-href="http://www.skirt.ugent.be/skirt/_dev_git.html">Working with git</a> topic of the <tt>SKIRT</tt> documentation for
-more information.
+you want to contribute the changes to the project. Refer to the <a href="../skirt/_dev_git.html">Working with git</a>
+topic of the <tt>SKIRT</tt> documentation for more information.
 
 \section InstallMacPrivate Using the private PTS code
 
@@ -60,8 +59,7 @@ instructions below.
 <i>Step-by-step instructions:</i>
 
 - Since you probably already obtained a copy of <tt>SKIRT</tt>, you probably also have a public SSH key added to your
-  UGent GitHub account. If this is not the case, follow the instructions in <a
-  href="http://www.skirt.ugent.be/skirt/_install_mac_get.html#InstallMacGet__private">the SKIRT documentation</a>.
+  UGent GitHub account. If this is not the case, follow the instructions in the \c SKIRT Installation Guide.
 
 - When your SSH key has been added, you can clone the <tt>PTS</tt> source code from the private repository to your
   computer:
@@ -92,7 +90,7 @@ instructions below.
 If you plan to make code contributions, you should fork the <a href="https://github.com/SKIRT/PTS">private PTS
 repository</a> and then link this forked repository to your local <tt>PTS</tt> repository. This allows you to push your
 modifications to your own fork and initiate a pull request when you want to contribute the changes to the project.
-Refer to the <a href="http://www.skirt.ugent.be/skirt/_dev_git.html">Working with git</a> topic of the <tt>SKIRT</tt>
+Refer to the <a href="../skirt/_dev_git.html">Working with git</a> topic of the <tt>SKIRT</tt>
 documentation for more information.
 
 */
