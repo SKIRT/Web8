@@ -11,10 +11,10 @@
 #
 
 # Generate html documentation in a temporary folder next to the git folder
-/Applications/Doxygen.app/Contents/Resources/doxygen root/doxygen/html.doxygen
-/Applications/Doxygen.app/Contents/Resources/doxygen skirt/doxygen/html.doxygen
-/Applications/Doxygen.app/Contents/Resources/doxygen pts/doxygen/html.doxygen
-/Applications/Doxygen.app/Contents/Resources/doxygen tutorials/doxygen/html.doxygen
+#/Applications/Doxygen.app/Contents/Resources/doxygen root/doxygen/html.doxygen
+#/Applications/Doxygen.app/Contents/Resources/doxygen skirt/doxygen/html.doxygen
+#/Applications/Doxygen.app/Contents/Resources/doxygen pts/doxygen/html.doxygen
+#/Applications/Doxygen.app/Contents/Resources/doxygen tutorials/doxygen/html.doxygen
 /Applications/Doxygen.app/Contents/Resources/doxygen benchmarks/doxygen/html.doxygen
 
 # Copy the 'mouse over' SKIRT logo
