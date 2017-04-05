@@ -5,10 +5,16 @@
 This page provides a list of useful downloads for <tt>SKIRT</tt> or <tt>PTS</tt>.
 To download a file, right-click or option-click the filename and choose "Save As..."
 
-\section DownloadsDoc Documentation
+\section DownloadsExt External resource files
 
- - <a href="../downloads/SKIRT.qch">SKIRT.qch</a>: <tt>SKIRT</tt> (and <tt>FitSKIRT</tt>) manual in Qt help format
- - <a href="../downloads/PTS.qch">PTS.qch</a>: Python Toolkit for <tt>SKIRT</tt> manual in Qt help format
+During setup, \c SKIRT loads built-in SEDs and dust properties from resource data files. Most of these resource files
+are provided as part of the source code repository, and thus are automatically available after obtaining the \c SKIRT
+code. Some resource files, however, are too large for inclusion in the code repository. Instead, they are offered here
+for download. After downloading, extract the contents of the archive and place the resulting files in a newly created
+directory called \c SKIRT/extdat next to the \c SKIRT/git and \c SKIRT/release directories.
+
+ - <a href="../downloads/PolarizationProperties.tar.gz">PolarizationProperties.tar.gz</a>: optical dust properties used
+    by the \c PolarizedSilicateGrainComposition and \c PolarizedGraphiteGrainComposition classes
 
 \section DownloadsData Data files used in the tutorials
 
