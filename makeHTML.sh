@@ -11,20 +11,23 @@
 #
 
 # Generate html documentation in a temporary folder next to the git folder
-/Applications/Doxygen.app/Contents/Resources/doxygen root/doxygen/root.doxygen
-/Applications/Doxygen.app/Contents/Resources/doxygen skirt/doxygen/skirt.doxygen
-/Applications/Doxygen.app/Contents/Resources/doxygen pts/doxygen/pts.doxygen
-/Applications/Doxygen.app/Contents/Resources/doxygen tutorials/doxygen/tutorials.doxygen
+/Applications/Doxygen.app/Contents/Resources/doxygen root/doxygen/html.doxygen
+/Applications/Doxygen.app/Contents/Resources/doxygen skirt/doxygen/html.doxygen
+/Applications/Doxygen.app/Contents/Resources/doxygen pts/doxygen/html.doxygen
+/Applications/Doxygen.app/Contents/Resources/doxygen tutorials/doxygen/html.doxygen
+/Applications/Doxygen.app/Contents/Resources/doxygen benchmarks/doxygen/html.doxygen
 
 # Copy the 'mouse over' SKIRT logo
-cp root/images/SkirtLogoSmall-home.png ../html/root/SkirtLogoSmall-home.png
-cp root/images/SkirtLogoSmall-home.png ../html/skirt/SkirtLogoSmall-home.png
-cp root/images/SkirtLogoSmall-home.png ../html/pts/SkirtLogoSmall-home.png
-cp root/images/SkirtLogoSmall-home.png ../html/tutorials/SkirtLogoSmall-home.png
+cp root/images/SkirtLogoSmall-home.png ../html/root/
+cp root/images/SkirtLogoSmall-home.png ../html/skirt/
+cp root/images/SkirtLogoSmall-home.png ../html/pts/
+cp root/images/SkirtLogoSmall-home.png ../html/tutorials/
+cp root/images/SkirtLogoSmall-home.png ../html/benchmarks/
 
 # Copy the downloadable data files and publications
 rsync -hrt --delete ../extras/downloads/ ../html/downloads/
 rsync -hrt --delete ../extras/publications/ ../html/publications/
+rsync -hrt --delete ../extras/skifiles/ ../html/skifiles/
 
 # Copy some redirecting index.html files
 cp root/index_root.html ../html/index.html
