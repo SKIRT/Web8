@@ -6,7 +6,8 @@
 #
 # Instructions:
 #   - use on Mac OS X only
-#   - SKIRT8 and PTS repos should be checked out next to the SKIRT8website repo
+#   - the SKIRT8 and PTS repos should be checked out next to the SKIRT8website repo
+#   - the "extras" directory should be placed next to the SKIRT8website "git" directory
 #   - run this script with "git" as default directory
 #
 
@@ -27,7 +28,7 @@ cp root/images/SkirtLogoSmall-home.png ../html/benchmarks/
 # Copy the downloadable data files and publications
 rsync -hrt --delete ../extras/downloads/ ../html/downloads/
 rsync -hrt --delete ../extras/publications/ ../html/publications/
-rsync -hrt --delete ../extras/skifiles/ ../html/skifiles/
+rsync -hrt --delete benchmarks/skifiles/ ../html/skifiles/
 
 # Copy some redirecting index.html files
 cp root/index_root.html ../html/index.html

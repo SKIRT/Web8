@@ -4,7 +4,7 @@
 
 \section PascucciIntro Introduction
 
-The Pascucci et al. 2004 benchmark is a 2D continuum radiative transfer benchmark assuming conditions of local thermal
+Pascucci et al. 2004 present a 2D continuum radiative transfer benchmark problem assuming conditions of local thermal
 equilibrium (LTE) with the radiation field. The test configuration is a star embedded in a circumstellar disk with an
 inner cavity free of dust. The authors provide results produced by five different radiative tranfer codes for several
 optical depths and viewing angles.
@@ -13,6 +13,7 @@ optical depths and viewing angles.
 
 <TABLE>
 <TR><TH>Publication</TH>  <TD>Pascucci et al. 2004 <a href="http://adsabs.harvard.edu/abs/2004A%26A...417..793P">[ADS]</a></TD>
+<TR><TH>Web site</TH>  <TD>http://www.mpia.de/PSF/PSFpages/RT/benchmark.html</TD>
 <TR><TH>Ski file</TH>  <TD><a href="../skifiles/pascucci.ski">pascucci.ski</a></TD>
 <TR><TH>Wavelength grid</TH>  <TD><a href="../skifiles/pascucci_wavelengths.dat">pascucci_wavelengths.dat</a></TD>
 </TABLE>
@@ -30,10 +31,10 @@ benchmark solution for the highest optical depth.
 | ![ ](pascucci_logpownew_i12.png)      | ![ ](pascucci_logpownew_i77.png)      |
 
 To perform this benchmark, download the ski file and wavelength grid data file provided above (\ref
-StochasticHeatingRefs). Open the ski file in a text editor to adjust the optical depth normalization to the desired
+PascucciRefs). Open the ski file in a text editor to adjust the optical depth normalization to the desired
 value (look for the \em opticalDepth attribute on the \c EdgeOnDustCompNormalization element). Higher optical depths
 lead to longer simulation run times. Then pass the (name of) the ski file to \c SKIRT as a single command line
 argument. At the end of the simulation run, \c SKIRT outputs data cubes and SEDs which can be compared to the original
-becnhmark results.
+benchmark results.
 
 */
