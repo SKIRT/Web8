@@ -27,14 +27,12 @@ The \c SKIRT team lead this benchmark effort in cooperation with the authors of 
 The figures below show the total emissivities for the full solution (i.e. stochastically heated grains) calculated by
 each of the codes participating in the benchmark and the corresponding reference solution. The input fields are very
 weak for the panel at the left, and moderately strong for the panel at the right. In the upper plot of each panel, the
-reference solution is represented by the dashed curve, while in the difference plot it is represented by the zero-line.
-The vertical dashed lines indicate where the reference solution becomes three orders of magnitude smaller than its peak
-value.
+reference solution is represented by the dashed curve (barely visible), while in the difference plot it is represented
+by the zero-line.
 
 |                                       |                                       |
 |---------------------------------------|---------------------------------------|
 | ![ ](Total_SHG_Mathis_U_1e-03.png)    | ![ ](Total_SHG_Mathis_U_1e+01.png)    |
-
 
 To perform this benchmark, download the ski file provided above (\ref StochasticHeatingRefs) and pass it to \c SKIRT as
 a single command line argument. After about 15 seconds, \c SKIRT produces an output file for each of the input fields
@@ -42,8 +40,5 @@ in the benchmark. The emissivity is listed in a seperate column for each materia
 (in the order Silicates, Graphite, and PAHs, corresponding to the order in which these components are specified in the
 ski file). Thus you need to add those three columns to obtain the total emissivity of the dust mixture as shown in the
 above figures.
-
-For more information, refer to the benchmark web site or the published paper as indicated above (\ref
-StochasticHeatingRefs).
 
 */

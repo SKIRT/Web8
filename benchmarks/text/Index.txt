@@ -4,14 +4,11 @@
 
 \c SKIRT properly performs the major benchmarks published in the field to which the code is applicable, i.e. continuum
 dust radiative transfer for astrophysical systems. In fact, the \c SKIRT team participated in several recent benchmark
-efforts. Here is information on the \c SKIRT results for the following benchmarks:
+efforts. The geometries, source spectra and dust properties needed for these benchmarks are built into \c SKIRT, so you
+can run them without changing the code. The \c SKIRT configuration file (\em ski file) for each benchmark is offered
+for download on the corresponding page:
 
 - \ref StochasticHeating (Camps et al. 2015)
 - \ref Pascucci2004 (Pascucci et al. 2004)
-
-The geometries, source spectra and dust properties needed for these benchmarks are built into \c SKIRT, so you can run
-them without changing the code and without the need for extra data files. The \c SKIRT configuration file (\em ski
-file) for each benchmark is offered for download on the corresponding page (click the appropriate link in the list
-above).
 
 */
