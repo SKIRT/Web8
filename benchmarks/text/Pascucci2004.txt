@@ -6,7 +6,7 @@
 
 Pascucci et al. 2004 present a 2D continuum radiative transfer benchmark problem assuming conditions of local thermal
 equilibrium (LTE) with the radiation field. The test configuration is a star embedded in a circumstellar disk with an
-inner cavity free of dust. The authors provide results produced by five different radiative tranfer codes for several
+inner cavity free of dust. The authors provide results produced by five different radiative transfer codes for several
 optical depths and viewing angles.
 
 \section PascucciRefs References and downloads

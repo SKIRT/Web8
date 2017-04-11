@@ -9,6 +9,7 @@ can run them without changing the code. The \c SKIRT configuration file (\em ski
 for download on the corresponding page:
 
 - \ref StochasticHeating (Camps et al. 2015)
+- \ref Ivezic1997 (Ivezić et al. 1997)
 - \ref Pascucci2004 (Pascucci et al. 2004)
 - \ref Pinte2009 (Pinte et al. 2009)
 
