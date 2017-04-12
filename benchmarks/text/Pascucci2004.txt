@@ -1,6 +1,6 @@
 /**
 
-\page Pascucci2004 Benchmark: axisymmetric circumstellar dust disk in LTE conditions
+\page Pascucci2004 Axisymmetric circumstellar dust disk
 
 \section PascucciIntro Introduction
 
@@ -15,7 +15,7 @@ optical depths and viewing angles.
 <TR><TH>Publication</TH>  <TD>Pascucci et al. 2004 <a href="http://adsabs.harvard.edu/abs/2004A%26A...417..793P">[ADS]</a></TD>
 <TR><TH>Web site</TH>  <TD>http://www.mpia.de/PSF/PSFpages/RT/benchmark.html</TD>
 <TR><TH>Ski file</TH>  <TD><a href="../skifiles/pascucci.ski">pascucci.ski</a></TD>
-<TR><TH>Wavelength grid</TH>  <TD><a href="../skifiles/pascucci_wavelengths.dat">pascucci_wavelengths.dat</a></TD>
+<TR><TH>Wavelength grid</TH>  <TD><a href="../skifiles/pascucci_input_wavelengths.dat">pascucci_input_wavelengths.dat</a></TD>
 </TABLE>
 
 \section PascucciResults SKIRT results

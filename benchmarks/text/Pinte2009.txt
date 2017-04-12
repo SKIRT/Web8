@@ -1,6 +1,6 @@
 /**
 
-\page Pinte2009 Benchmark: polarization and anisotropioc scattering in an axisymmetric dust disk
+\page Pinte2009 Polarization from scattering in an axisymmetric dust disk
 
 \section PinteIntro Introduction
 

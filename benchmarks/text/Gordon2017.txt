@@ -1,0 +1,66 @@
+/**
+
+\page Gordon2017 Dust slab externally illuminated by a star
+
+\section GordonIntro Introduction
+
+Gordon et al. 2017 present a 3D continuum radiative transfer benchmark problem composed of a slab of dust with uniform
+density externally illuminated by a star. The aim is to test dust absorption, scattering, and emission, optionally
+taking into account stochastic heating of dust grains in non-LTE conditions (see \ref StochasticHeating). The authors
+provide results produced by seven different radiative transfer codes, including \c SKIRT, for several optical depths
+and viewing angles. The \c SKIRT team participated in this benchmark effort.
+
+\section GordonRefs References and downloads
+
+<TABLE>
+<TR><TH>Publication</TH>  <TD>Gordon et al. 2017 (in press)</a></TD>
+<TR><TH>Web site</TH>  <TD>http://ipag.osug.fr/RT13/RTTRUST/BM1.php</TD>
+<TR><TH>Ski file</TH>  <TD><a href="../skifiles/gordon.ski">gordon.ski</a></TD>
+<TR><TH>Wavelength grid</TH>  <TD><a href="../skifiles/gordon_input_wavelengths.dat">gordon_input_wavelengths.dat</a></TD>
+<TR><TH>Input SED</TH>  <TD><a href="../skifiles/gordon_input_sed.dat">gordon_input_sed.dat</a></TD>
+</TABLE>
+
+\section GordonResults SKIRT results
+
+The diagram below on the left illustrates the benchmark setup including the viewing angles. The figure on the right
+shows the SEDs calculated taking into account stochastic heating for all optical depth values in the benchmark and for
+selected viewing angles.
+
+|                        |                       |
+|------------------------|-----------------------|
+| ![ ](gordon_setup.png) | ![ ](gordon_seds.png) |
+
+The figure below shows images produced by \c SKIRT for the \f$\tau_z(1~\mu\text{m}) = 0.1\f$ case calculated taking
+into account stochastic heating for two representative wavelengths. Many more results and comparisons between the
+results produced by \c SKIRT and the other participating codes are presented in the paper, and can be consulted on the
+benchmark web site (see \ref GordonRefs).
+
+|                         |
+|-------------------------|
+| ![ ](gordon_images.png) |
+
+To perform this benchmark, download the ski file and input data files provided above (\ref GordonRefs). Open the ski
+file in a text editor to adjust the following parameter values to a particular benchmark configuration:
+
+| Parameter         | XML element                              | XML attribute    |
+|-------------------|------------------------------------------|------------------|
+| Optical depth     | \c ZDustCompNormalization                | \em opticalDepth |
+| Number of dust grid bins along Z-axis     | \c meshZ/LinMesh | \em numBins      |
+| Number of pixels in the instrument frames | \c FullInstrument | \em numPixelsX ; \em numPixelsY |
+
+The dust grid resolution must be increased for the highest optical depth to ensure correct results. Similarly, the
+instrument resolution is increased to properly show the resulting surface brightness gradients. The appropriate values
+are:
+
+| Optical depth | Dust grid bins along Z-axis | Pixels in instrument frames |
+|---------------|-----------------------------|-----------------------------|
+|  0.01 |  31 | 300 |
+|  0.1  |  31 | 300 |
+|  1    |  31 | 300 |
+| 10    | 201 | 600 |
+
+Then pass the (name of) the ski file to \c SKIRT as a single command line argument. Higher optical depths lead to
+longer simulation run times. At the end of the simulation run, \c SKIRT outputs data cubes and SEDs which can
+be compared to the original benchmark results.
+
+*/

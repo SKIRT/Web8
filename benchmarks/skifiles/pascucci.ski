@@ -9,7 +9,7 @@
             <StellarUnits fluxOutputStyle="Neutral"/>
         </units>
         <wavelengthGrid type="PanWavelengthGrid">
-            <FileWavelengthGrid writeWavelengths="false" filename="pascucci_wavelengths.dat"/>
+            <FileWavelengthGrid writeWavelengths="false" filename="pascucci_input_wavelengths.dat"/>
         </wavelengthGrid>
         <stellarSystem type="StellarSystem">
             <StellarSystem emissionBias="0.5">

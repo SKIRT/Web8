@@ -1,6 +1,6 @@
 /**
 
-\page StochasticHeating Benchmark: stochastically heated dust grains
+\page StochasticHeating Stochastically heated dust grains
 
 \section StochasticHeatingIntro Introduction
 
