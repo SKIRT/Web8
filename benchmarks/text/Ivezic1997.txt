@@ -23,12 +23,14 @@ produced by several radiative transfer codes for two dust density profiles and f
 The figures below show the temperature profiles (left column) and normalized SEDs (right column) produced by \c SKIRT
 for this benchmark. The top row shows results for the constant density profile; the bottom row for the more challenging
 \f$\rho(r)\propto\,r^{-2}\f$ profile. Each panel shows the solutions for the different optical depths as indicated in
-the legend. The dashed curves in the right column indicate the reference SEDs taken from the benchmark FTP site.
+the legend. The dashed curves in the right column indicate the reference SEDs taken from the benchmark FTP site. The \c
+SKIRT results match the benchmark results well, except for the case with steep density gradient and very high optical
+depth.
 
-|                                       |                               |
-|---------------------------------------|-------------------------------|
-| ![ ](plot_Ivezic_temperature_p0.png)  | ![ ](plot_Ivezic_SED_p0.png)  |
-| ![ ](plot_Ivezic_temperature_p2.png)  | ![ ](plot_Ivezic_SED_p2.png)  |
+|                                  |                          |
+|----------------------------------|--------------------------|
+| ![ ](Ivezic_temperature_p0.png)  | ![ ](Ivezic_SED_p0.png)  |
+| ![ ](Ivezic_temperature_p2.png)  | ![ ](Ivezic_SED_p2.png)  |
 
 To perform this benchmark, download the ski file provided above (\ref IvezicRefs). Open the ski file in a text editor
 to adjust the following parameter values to a particular benchmark configuration:
