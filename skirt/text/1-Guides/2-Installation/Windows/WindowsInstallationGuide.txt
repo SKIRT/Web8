@@ -1,11 +1,6 @@
-/*//////////////////////////////////////////////////////////////////
-////   SMILE - Simple Metadata Interactive Language Editing     ////
-////       © Astronomical Observatory, Ghent University         ////
-///////////////////////////////////////////////////////////////// */
-
 /**
 
-\page SmileInstallationGuide Installation Guide
+\page InstallWindows Installing the SKIRT project on Microsoft Windows
 
 \section SmileInstallIntro Introduction
 

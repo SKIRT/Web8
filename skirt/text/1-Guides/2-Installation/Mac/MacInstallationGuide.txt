@@ -1,6 +1,6 @@
 /**
 
-\page InstallMac Installing and developing SKIRT on Mac OS X
+\page InstallMac Installing the SKIRT project on Mac OS X
 
 \image html osx.jpg
 \image latex osx.jpg
@@ -24,10 +24,10 @@ If you only want to install <tt>SKIRT</tt> for your radiative transfer problems 
 
 For setting <tt>SKIRT</tt> up for development and building, follow the instructions in:
 
-- \subpage InstallMacComp 
+- \subpage InstallMacComp
 - \subpage InstallMacQt
 - \subpage InstallMacGetDevelop
-- \subpage InstallMacConfigQt 
+- \subpage InstallMacConfigQt
 - \subpage InstallMacBuildQtCreator
 - \subpage InstallMacVerify
 - \subpage InstallMacDoxStyle

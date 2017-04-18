@@ -1,6 +1,6 @@
 /**
 
-\page InstallUbuntu Installing and developing SKIRT on Ubuntu Desktop
+\page InstallUbuntu Installing the SKIRT project on Ubuntu Desktop
 
 \image html ubuntulogo.png
 \image latex ubuntulogo.png
@@ -22,10 +22,10 @@ If you only want to install <tt>SKIRT</tt> for your radiative transfer problems 
 
 For setting <tt>SKIRT</tt> up for development and building, follow the instructions in:
 
-- \subpage InstallUbuntuPacks 
+- \subpage InstallUbuntuPacks
 - \subpage InstallUbuntuQt
 - \subpage InstallUbuntuGetDevelop
-- \subpage InstallUbuntuConfigQt 
+- \subpage InstallUbuntuConfigQt
 - \subpage InstallUbuntuBuildQtCreator
 - \subpage InstallUbuntuVerify
 - \subpage InstallUbuntuDoxStyle

@@ -4,25 +4,61 @@
 
 \section InstallReq System requirements
 
-<tt>SKIRT</tt> has been developed and tested on Mac OS X 10.9 (Mavericks), Mac OS X 10.10 (Yosemite), Mac OS X 10.11 (El Capitan) and on the Linux distributions Ubuntu 12.04 (64-bit) and Ubuntu 14.04 (64-bit).
-However <tt>SKIRT</tt> should be able to run on any Unix system. To perform all but the smallest simulations,
-it must be compiled as a 64-bit application and run on a 64-bit system.
-At this time <tt>SKIRT</tt> does not properly compile or run on Microsoft Windows systems, however should the need arise this
-could probably be supported with only a small effort.
+The \c SKIRT project is intended to be truly cross-platform. It is written in standard C++14, which is supported by all
+recent C++ compilers, and it uses the \c CMake build system, which is widely available. As a result, the \c SKIRT
+project should compile and run on any recent 64-bit version of Unix, Mac OS X, and Microsoft Windows.
 
-<tt>SKIRT</tt> is written in C++11 and is based on the Qt 5.3 development environment. Except for MPI (which is optional), there are no other external dependencies.
-The source code is hosted on GitHub. Thus you will need to install a \em git client, a recent
-C++ compiler and the appropriate Qt libraries. The documentation is generated from the source code through Doxygen.
-You don't need to install Doxygen and the related tools unless you are a substantial contributor to the code.
+The source code for the \c SKIRT project is hosted on GitHub. You can download the code as a ZIP archive, but the
+recommended method is to use a \em git client, which is widely available. The documentation on this web site is
+generated from the source code through \em Doxygen. You don't need to install Doxygen and the related tools unless you
+are a substantial contributor to the code.
+
+The default and most basic build configuration includes a fully-functional version of the \c SKIRT command-line program
+with support for multiple parallel threads in a single process. In this configuration, the project has no external
+dependencies other than the C++ compiler and the \c CMake build tool. Additional capabilities that may depend on
+external components can be enabled through user-configurable build options:
+
+- To enable the multi-processing capabilities of \c SKIRT, the host system must provide an implementation of the
+standard Message Passing Interface (MPI).
+
+- It is possible to build \c FitSKIRT without MPI, i.e. using multi-threading only. In a realistic research setting,
+however, \c FitSKIRT will most likely require the use of multi-processing. Furthermore, if the reference images use
+point-spread functions with a customized form (as apposed to Gaussian), it is recommended to install the third-party
+fast-fourier (FFTW) libary to accelerate the convolution calculations for the simulated images.
+
+- The \c MakeUp utility uses the Qt development environment to implement its graphical user interface, so a recent
+version of the Qt framework must be installed to build this utility.
+
+
+
+
 
 \section InstallTypes Types of installation
 
-Subsequent sections provide detailed installation instructions for three scenarios:
- - use and/or develop on <b>Mac OS X</b>: see \subpage InstallMac
- - use and/or develop on <b>Ubuntu Desktop</b>: see \subpage InstallUbuntu
- - use (with no or minor modifications) on a <b>Unix server</b>: see \subpage InstallSource
+Your approach to installing the \c SKIRT project depends on your usage intentions and computer system.
+We can recognize two main types of environment:
 
-The procedure for other scenarios, e.g. another desktop Unix flavor, can probably (hopefully) be inferred
-by picking and choosing from these instructions.
+- A laptop or desktop computer running Mac OS X, a Linux distribution such as Ubuntu, or Microsoft Windows. In this
+environment you are likely to select tools that offer a graphical user interface. If you'd like to manage \c SKIRT or
+\c FitSKIRT configuration files with the graphical wizard offered by the \c MakeUp tool, then you need to install the
+Qt libraries. In that case, you can just as well use Qt Creator to build the \c SKIRT project. Alternatively, you can
+perform certain tasks on the command line or even skip graphical user interfaces entirely.
+
+- A remote server, most likely running a Linux distribution such as Ubuntu or Scientific Linux, or some proprietary
+Unix flavor. In this environment you are likely to perform most or all tasks on the command line, although it is often
+possible to use graphical interfaces through a remote windowing system.
+
+This guide provides installation instructions for the following concrete scenarios:
+
+- Installing on a desktop system with Qt Creator
+    - see \subpage InstallMac
+    - see \subpage InstallUbuntu
+    - see \subpage InstallWindows
+
+- Installing on a remote Unix server using the command line
+    - see \subpage InstallUnix
+
+The procedure for other scenarios and other operating systems can hopefully be inferred by picking and choosing from
+these instructions.
 
 */

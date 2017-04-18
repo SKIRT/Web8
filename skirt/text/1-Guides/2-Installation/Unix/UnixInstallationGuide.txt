@@ -1,6 +1,6 @@
 /**
 
-\page InstallSource Installing SKIRT on a Unix server 
+\page InstallUnix Installing the SKIRT project on a remote Unix server
 
 \image html unixlogo.png
 \image latex unixlogo.png
@@ -14,7 +14,7 @@ can obviously tweak it using your preferred text editor. For the easiest install
 - \subpage InstallSrcQt
 - \subpage InstallSrcBuild
 
-However if you expect to modify or extend the <tt>SKIRT</tt> code on the Unix sytem in any but the most trivial ways and possibly want to 
+However if you expect to modify or extend the <tt>SKIRT</tt> code on the Unix sytem in any but the most trivial ways and possibly want to
 share your changes with others, you should follow the instructions listed here:
 
 - \subpage InstallSrcPacks
