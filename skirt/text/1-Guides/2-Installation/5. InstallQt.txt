@@ -1,0 +1,6 @@
+/**
+
+\page InstallQt Use Qt Creator to build MakeUp (all platforms)
+
+
+*/

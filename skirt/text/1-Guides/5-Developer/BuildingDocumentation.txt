@@ -5,7 +5,7 @@
 \section DevBuildRefDocs Reference documentation
 
 The reference documentation for the \c SKIRT project is generated from the C++ header files using the freely available
-utility Doxygen. For information on how to install this utility, refer to \ref InstallMacDoxygen.
+utility Doxygen. For information on how to install this utility, refer to \ref InstallDevDoxygen.
 
 When you add or adjust code, it is important to provide proper documentation in the header file, in Doxygen format. To
 verify that everything looks as intended, especially when including formulas in mathematical notation, you should build

@@ -30,9 +30,6 @@ fast-fourier (FFTW) libary to accelerate the convolution calculations for the si
 version of the Qt framework must be installed to build this utility.
 
 
-
-
-
 \section InstallTypes Types of installation
 
 Your approach to installing the \c SKIRT project depends on your usage intentions and computer system.
@@ -48,17 +45,16 @@ perform certain tasks on the command line or even skip graphical user interfaces
 Unix flavor. In this environment you are likely to perform most or all tasks on the command line, although it is often
 possible to use graphical interfaces through a remote windowing system.
 
-This guide provides installation instructions for the following concrete scenarios:
+\section InstallContents Table of contents
 
-- Installing on a desktop system with Qt Creator
-    - see \subpage InstallMac
-    - see \subpage InstallUbuntu
-    - see \subpage InstallWindows
+The installation instructions in this guide are structured in topics as listed below. The procedure for a specific
+scenario and operating system can hopefully be inferred by picking and choosing from these instructions.
 
-- Installing on a remote Unix server using the command line
-    - see \subpage InstallUnix
-
-The procedure for other scenarios and other operating systems can hopefully be inferred by picking and choosing from
-these instructions.
+- \ref InstallUnix
+- \ref InstallWindows
+- \ref InstallMPI
+- \ref InstallFFT
+- \ref InstallQt
+- \ref InstallDev
 
 */

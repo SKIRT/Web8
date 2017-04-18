@@ -1,7 +1,0 @@
-/**
-
-\page InstallSrcGet Getting the SKIRT source code
-
-Proceed as described in \ref InstallUbuntuGet on Ubuntu Desktop.
-
-*/

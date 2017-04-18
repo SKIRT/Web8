@@ -1,0 +1,114 @@
+/**
+
+\page InstallUnix Basic install using the command line (Mac/Unix)
+
+This topic describes how to install and configure the \c SKIRT project using the command line, i.e. without employing
+any graphical user interfaces. While this approach may seem challenging to some, it involves the smallest number of
+dependencies, lowering the complexity and the risk of failure. The instructions in this topic should be applicable to
+any Unix-based system, including Mac OS X, Linux distributions, and other Unix flavors.
+
+\section InstallUnixTools Install build tools
+
+\subsection InstallUnixToolsVersions Versions
+
+The precise operating system version is not so important, as long as it supports 64-bit applications and you can
+install sufficiently recent versions of the build tools as described below (which may be easier on more recent
+operating system versions).
+
+It is important to use a C++ compiler with full support for the C++14 standard:
+  - On Mac OS X, use Apple Clang v8.0.0 or later.
+  - On other Unix systems, use GNU g++ v5.2.1 or later or Intel icc v17.0.2 or later.
+
+Also, you need to use CMake v3.2.2 or later.
+Earlier versions of these tools do \em not successfully compile and build the \c SKIRT project.
+
+\subsection InstallUnixToolsMac Mac OS X
+
+On Mac OS X the C++ compiler and \em git command line tools are provided as part of the Xcode development environment,
+which is freely available from the App Store. Download and install the latest version, and then launch the Xcode
+application at least once to complete the installation of the command line tools.
+
+Verify that the installed compiler has an appropriate version (see \ref InstallUnixToolsVersions) by opening a Terminal
+window and entering the following command:
+
+\verbatim
+$ clang++ --version"
+Apple LLVM version 8.0.0 (clang-800.0.42.1)
+...
+\endverbatim
+
+Download the most recent CMake for Mac OS X (as a disk image or ".dmg" file) from https://cmake.org/download/ and
+perform the installation by opening the disk image and dragging "CMake.app" to the Application folder. Then edit your
+<tt>.bash_profile</tt> login script (or equivalent if you are using a shell other than bash) to add the cmake
+command residing inside "CMake.app" to your system path, e.g.:
+
+\verbatim
+# Setting PATH for cmake
+export PATH="/Applications/CMake.app/Contents/bin:${PATH}"
+\endverbatim
+
+Open a new Terminal window (so that the new login script gets loaded) and verify that the installed build tool
+has an appropriate version (see \ref InstallUnixToolsVersions) by entering the following command:
+
+\verbatim
+$ cmake --version
+cmake version 3.5.1
+...
+\endverbatim
+
+\subsection InstallUnixToolsUbuntu Ubuntu
+
+On Linux distributions such as Ubuntu, you can use <tt>apt-get</tt> to obtain the required tools. Open a
+Terminal window and enter the commands listed below.
+
+\verbatim
+$ sudo apt-get update
+...
+$ sudo apt-get install git
+...
+$ sudo apt-get install cmake
+...
+$ sudo apt-get install g++
+...
+\endverbatim
+
+These commands require root access to modify files in the system directories. The "sudo" command takes care of this
+assuming that the corresponding privileges are enabled for your account. Enter your password (\em not the root
+password!) when asked. Also, for each command, you will be prompted with the question "Do you want to continue? [Y/n]".
+Respond affirmative unless you see a good reason not to.
+
+Once the above commands have completed successfully, verify that the installed tools have an appropriate version (see
+\ref InstallUnixToolsVersions) by entering the following commands:
+
+\verbatim
+$ g++ --version"
+g++ (GCC) 6.3.0
+...
+$ cmake --version
+cmake version 3.5.1
+...
+\endverbatim
+
+\subsection InstallUnixToolsModule Systems using modules
+
+Large multi-node computing systems often use a "module" system that allows each user (or even each batch job) to
+"load" a particular version of the tools installed on the system. Contact your system administrator for details.
+For example, to load the tools for building the \c SKIRT project one might issue commands like these:
+
+\verbatim
+$ module load cmake/3.7.0
+$ module load intel_comp/c5/2017
+$ icc --version
+icc (ICC) 17.0.2 20170213
+...
+\endverbatim
+
+\subsection InstallUnixToolsOther Other Unix systems
+
+Other Unix systems might support variations on or combination of these methods to install the required tools:
+ - Use the standard package manager for your system.
+ - Download and run an installer manually.
+ - Load the appropriate module.
+ - Ask your system manager.
+
+*/

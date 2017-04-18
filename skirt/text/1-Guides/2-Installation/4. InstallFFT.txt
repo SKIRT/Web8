@@ -1,0 +1,6 @@
+/**
+
+\page InstallFFT Enable fast-fourier-transform for FitSKIRT (Mac/Unix)
+
+
+*/

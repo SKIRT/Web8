@@ -1,0 +1,6 @@
+/**
+
+\page InstallMPI Enable multiprocessing (Mac/Unix)
+
+
+*/

@@ -1,0 +1,6 @@
+/**
+
+\page InstallWindows Basic install using graphical interfaces (Windows)
+
+
+*/
