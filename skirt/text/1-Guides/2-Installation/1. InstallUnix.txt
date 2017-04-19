@@ -7,7 +7,14 @@ any graphical user interfaces. While this approach may seem challenging to some,
 dependencies, lowering the complexity and the risk of failure. The instructions in this topic should be applicable to
 any Unix-based system, including Mac OS X, Linux distributions, and other Unix flavors.
 
-\section InstallUnixTools Install build tools
+This topic contains the following sections:
+- \ref InstallUnixTools
+- \ref InstallUnixGet
+- \ref InstallUnixBuild
+- \ref InstallUnixFinal
+
+
+\section InstallUnixTools Install the build tools
 
 \subsection InstallUnixToolsVersions Versions
 
@@ -39,13 +46,14 @@ Apple LLVM version 8.0.0 (clang-800.0.42.1)
 
 Download the most recent CMake for Mac OS X (as a disk image or ".dmg" file) from https://cmake.org/download/ and
 perform the installation by opening the disk image and dragging "CMake.app" to the Application folder. Then edit your
-<tt>.bash_profile</tt> login script (or equivalent if you are using a shell other than bash) to add the cmake
-command residing inside "CMake.app" to your system path, e.g.:
+login script (<tt>.profile</tt> or <tt>.bash_profile</tt> or equivalent if you are using a shell other than \c bash)
+to add the cmake command residing inside "CMake.app" to your system path. For example, add the following line:
 
 \verbatim
-# Setting PATH for cmake
 export PATH="/Applications/CMake.app/Contents/bin:${PATH}"
 \endverbatim
+
+\note On Mac, the <tt>.profile</tt> script is not loaded when there is a <tt>.bash_profile</tt> in your home directory.
 
 Open a new Terminal window (so that the new login script gets loaded) and verify that the installed build tool
 has an appropriate version (see \ref InstallUnixToolsVersions) by entering the following command:
@@ -110,5 +118,152 @@ Other Unix systems might support variations on or combination of these methods t
  - Download and run an installer manually.
  - Load the appropriate module.
  - Ask your system manager.
+
+
+\section InstallUnixGet Get the source code
+
+To install the \c SKIRT project you need to copy the source code to your local file system. First create a directory
+hierarchy that will hold the source code, binaries and runtime information. The top-level directory can have any name
+(for example \c SKIRT) and can be located anywhere, but the subdirectories should be named as indicated below. Execute
+the following commands in a Terminal window to create the \c SKIRT directory in your home directory.
+
+    cd
+    mkdir SKIRT
+    cd SKIRT
+    mkdir release run git
+
+You now need to create a local repository (\em local meaning "on your own computer") by cloning (i.e. copying) one of
+the online \c SKIRT code repositories:
+
+- \ref InstallUnixGetPublic, which contains the most recent stable version, and is accessible without restriction.
+
+- \ref InstallUnixGetPrivate, which contains the current development version of the code. This repository may be ahead
+of the public repository and some of the implemented features may still be experimental. To access the private
+repository you need a UGent login account and specific access rights granted by the core \c SKIRT team.
+
+
+\subsection InstallUnixGetPublic Use the public code repository
+
+The most recent stable version of the <tt>SKIRT</tt> source code is available from the
+<a href="https://github.com/SKIRT/SKIRT">public SKIRT GitHub repository</a> at <a href="https://github.com">GitHub.com</a>.
+While anyone can freely retrieve the code from this repository, only the core \c SKIRT team
+has write access to it. To obtain the code, simply enter the following commands in a Terminal window:
+
+    cd ~/SKIRT
+    git clone https://github.com/SKIRT/SKIRT.git git
+
+To update your local copy of the source code after changes were made to the repository from which you cloned it, use:
+
+    cd ~/SKIRT/git
+    git pull
+
+\subsection InstallUnixGetPrivate Use the private code repository
+
+The current development version of the <tt>SKIRT</tt> source code is stored in a \em private GitHub repository hosted
+on the Ghent University's web servers. You can access this repository only if you have a UGent account \em and the core
+<tt>SKIRT</tt> team has specifically granted you read access to the repository. To obtain this access, first go to the
+<a href="https://github.ugent.be">github.ugent.be</a> webpage and log in with your UGent account name and password.
+This will create your account on the UGent GitHub website. Then ask the <tt>SKIRT</tt> team to grant you access to the
+private repository, providing them with your account name (\em not your password, obviously). After your request has
+been accepted, follow the instructions below.
+
+<b> Check for existing keys </b>
+
+- Type the following in a Terminal window:
+
+      ls -al ~/.ssh
+
+- If there is a key with extension '.pub' present, skip the next step.
+
+<b> Generate a SSH key </b>
+
+- Again in the Terminal window, enter:
+
+      cd
+      ssh-keygen -t rsa -C "yourname@organization.org"
+
+- Accept the default filename (simply press [ENTER])
+- Enter a new password
+- Enter the same password again
+- You should see the following output:
+
+      Your identification has been saved in ~/.ssh/id_rsa.
+      Your public key has been saved in ~/.ssh/id_rsa.pub.
+      ...
+
+<b> Add the SSH key to your github.ugent account </b>
+
+- In a Terminal window, display your public SSH key by entering:
+
+      cd
+      cat ~/.ssh/id_rsa.pub
+
+- Navigate to <a href="https://github.ugent.be">github.ugent.be</a> and log in.
+- Click your username or picture (top right) and select "Your profile" in the dropdown menu.
+- Press 'Edit profile' in the lefthand column.
+- Go to 'SSH and GPG keys'.
+- Press 'New SSH key'.
+- As the Title, enter something that identifies your computer (for example: Personal MacBook).
+- Next, go back to the Terminal window and copy your public SSH key (the complete output of the \c cat command)
+- Back on the website, paste in the 'Key' text field.
+- Click 'Add key'.
+- After adding your key, you should wait a few minutes before continuing with the next step.
+
+<b> Clone the private repository </b>
+
+- In a Terminal window enter the following commands:
+
+      cd ~/SKIRT
+      git clone git@github.ugent.be:SKIRT/SKIRT.git git
+
+- You will see the following output:
+
+      The authenticity of host 'github.ugent.be (XXX.XXX.XXX.XX)' can't be established.
+      RSA key fingerprint is XX:XX:XX:XX:XX ... .
+      Are you sure you want to continue connecting (yes/no)?
+
+- Acknowledge by entering "yes"
+
+To update your local copy of the source code after changes were made to the repository from which you cloned it, use:
+
+      cd ~/SKIRT/git
+      git pull
+
+
+\section InstallUnixBuild Configure and build the project
+
+XXX-TODO:
+- Use shell script makeSKIRT.sh to build default configuration
+- If you use CMake GUI, select the Unix code generator.
+- Configure compilers if needed through configureSKIRT.sh
+- Adjust build options if desired through configureSKIRT.sh (refer to separate topic on build options)
+
+
+\section InstallUnixFinal Finalize the installation
+
+To provide easy access to the executables in the \c SKIRT project, edit your login script (<tt>.profile</tt> or
+<tt>.bash_profile</tt> or equivalent if you are using a shell other than \c bash) to add the appropriate \c SKIRT
+executable paths to your system path. For example, add the following line:
+
+\verbatim
+export PATH="/Users/pcamps/SKIRT/release/SKIRT/main:/Users/pcamps/SKIRT/release/FitSKIRT/main:${PATH}"
+\endverbatim
+
+\note On Mac, the <tt>.profile</tt> script is not loaded when there is a <tt>.bash_profile</tt> in your home directory.
+
+To verify your installation of the \c SKIRT project, close all Terminal windows and launch a new one, so that your
+updated login script gets executed. Enter the command "skirt" without any command-line arguments. If the \c SKIRT
+project has been successfully installed, you should see output similar to this:
+
+\verbatim
+$ skirt
+19/04/2017 11:23:24.073   Welcome to SKIRT v8.0 (git a4a912f built on 12/04/2017 at 11:06:29)
+19/04/2017 11:23:24.073   Running on obiwan.ugent.be for pcamps
+19/04/2017 11:23:24.073   Interactively constructing a simulation...
+19/04/2017 11:23:24.073 ? Enter the name of the ski file to be created:
+\endverbatim
+
+You can follow the instructions in the Terminal window to create a skirt parameter file or press [CTRL] + C to exit the
+program. For more information on using \c SKIRT, please refer to the \ref UserGuide.
 
 */
