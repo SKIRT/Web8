@@ -2,5 +2,27 @@
 
 \page InstallFFT Enable fast-fourier-transform for FitSKIRT (Mac/Unix)
 
+If the reference images provided to \c FitSKIRT use point-spread functions with a customized form (as opposed to
+Gaussian), it is recommended to install a third-party fast-fourier transform (FFT) libary to accelerate the convolution
+calculations for the simulated images.
+
+This topic contains the following sections:
+- \ref InstallFFTInstall
+- \ref InstallFFTEnable
+
+\section InstallFFTInstall Install the FFT library
+
+XXX-TODO
+
+
+\section InstallFFTEnable Enable the FFT build option
+
+Once you have verified that FFT library is properly installed, you need to enable the \c BUILD_WITH_FFT build option
+and rebuild the \c SKIRT project:
+
+- For information about build options, see \ref InstallOptions.
+- For instructions on how to configure build options, see one of:
+   - \ref InstallUnixBuild;
+   - \ref InstallQtBuild.
 
 */

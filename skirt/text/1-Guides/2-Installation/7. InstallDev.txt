@@ -3,18 +3,23 @@
 \page InstallDev Develop using Qt Creator (Mac/Unix)
 
 
+XXX-TODO
 
 \section InstallDevGetPublic Get the public SKIRT code
 
+XXX-TODO
 
 \section InstallDevGetPrivate Get the private SKIRT code
 
+XXX-TODO
 
 \section InstallDevDoxStyle Build and configure DoxStyle
 
+XXX-TODO
 
 \section InstallDevDoxygen Install Doxygen
 
+XXX-TODO
 
 
 */

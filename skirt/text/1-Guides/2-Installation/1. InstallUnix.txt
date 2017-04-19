@@ -14,7 +14,7 @@ This topic contains the following sections:
 - \ref InstallUnixFinal
 
 
-\section InstallUnixTools Install the build tools
+\section InstallUnixTools Install the build tools (Mac/Unix)
 
 \subsection InstallUnixToolsVersions Versions
 
@@ -120,7 +120,7 @@ Other Unix systems might support variations on or combination of these methods t
  - Ask your system manager.
 
 
-\section InstallUnixGet Get the source code
+\section InstallUnixGet Get the source code (Mac/Unix)
 
 To install the \c SKIRT project you need to copy the source code to your local file system. First create a directory
 hierarchy that will hold the source code, binaries and runtime information. The top-level directory can have any name
@@ -230,16 +230,30 @@ To update your local copy of the source code after changes were made to the repo
       git pull
 
 
-\section InstallUnixBuild Configure and build the project
+\section InstallUnixBuild Configure and build the project (Mac/Unix)
+
+The \c SKIRT project code includes two \c bash shell scripts to help configuring and building \c SKIRT
+from the source code in the git directory. Before you use these script for the first time, you may need
+to make them executable:
+
+    cd ~/SKIRT/git
+    chmod +rx configureSKIRT.sh
+    chmod +rx makeSKIRT.sh
+
+To build \c SKIRT for the first time, using default build options, type the following commands:
+
+    cd ~/SKIRT/git
+    ./makeSKIRT.sh
 
 XXX-TODO:
-- Use shell script makeSKIRT.sh to build default configuration
+- Use shell script makeSKIRT.sh to build default configuration (first stab see above)
+- Explain -j argument
 - If you use CMake GUI, select the Unix code generator.
 - Configure compilers if needed through configureSKIRT.sh
 - Adjust build options if desired through configureSKIRT.sh (refer to separate topic on build options)
 
 
-\section InstallUnixFinal Finalize the installation
+\section InstallUnixFinal Finalize the installation (Mac/Unix)
 
 To provide easy access to the executables in the \c SKIRT project, edit your login script (<tt>.profile</tt> or
 <tt>.bash_profile</tt> or equivalent if you are using a shell other than \c bash) to add the appropriate \c SKIRT

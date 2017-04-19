@@ -2,5 +2,138 @@
 
 \page InstallMPI Enable multiprocessing (Mac/Unix)
 
+\note The \c SKIRT and \c FitSKIRT command line programs support multi-threading within a single process without the
+need for any external dependencies other than the C++ compiler. The information below is relevant only if you want to
+run multiple parallel processes, possibly on multiple compute nodes. See also the concept note on \ref Parallelization.
+
+To enable the multi-processing capabilities of the \c SKIRT and/or \c FitSKIRT command line programs, the host
+operating system must provide an implementation of the standard Message Passing Interface (MPI), and the \c SKIRT
+project must be (re)built with the corresponding build option enabled.
+
+This topic contains the following sections:
+- \ref InstallMPIInstall
+- \ref InstallMPIEnable
+
+
+\section InstallMPIInstall Install an MPI implementation
+
+\subsection InstallMPIInstallVersion MPI Version
+
+The \c SKIRT project requires an MPI implementation that supports standard MPI v2.1 or later.
+
+\subsection InstallMPIInstallModule Systems using modules
+
+Large multi-node computing systems will have one or more MPI implementations installed by the system administrator. Use
+the "module" system to load the MPI implementation and version that matches the compiler used for building the \c SKIRT
+project. For example:
+
+\verbatim
+module load cmake/3.7.0
+module load intel_comp/c5/2017
+module load platform_mpi/9.1.2
+\endverbatim
+
+\subsection InstallMPIInstallMac Mac OS X
+
+For testing purposes, it might be useful to run \c SKIRT or \c FitSKIRT in multi-processing mode on a laptop or desktop
+computer. \c OpenMPI (not to be confused with \c OpenMP) is a freely available MPI implementation that is a good choice
+in this case. Follow the instructions below to install \c OpenMPI.
+
+<b> Download the source code </b>
+
+- Navigate to the  <a href="http://www.open-mpi.org/software/">OpenMPI webpage</a>.
+- Download the 'tar.gz' file for the latest stable version.
+- When the download has finished, click on the resulting 'tar' file and it should automatically be unpacked.
+
+<b> Compile and install the source code </b>
+
+- Open a Terminal window and navigate to the newly created folder (replace x.x.x with the appropriate version number)
+with the command:
+
+      cd ~/Downloads/openmpi-x.x.x
+
+- Then, enter:
+
+      ./configure --prefix=/usr/local
+
+- You will see lots of output. If this procedure has finished, enter:
+
+      make all
+
+- Again, many lines of output will appear. Finally, enter:
+
+      sudo make install
+
+  If you are prompted for your password, enter it.
+
+- After again lots of output, check the installation by executing the following commands:
+
+      which mpicxx [ENTER]
+      which mpirun [ENTER]
+
+- If either of these commands does NOT show any output, something is wrong.
+
+\subsection InstallMPIInstallOther Other Unix systems including Ubuntu
+
+\c OpenMPI (not to be confused with \c OpenMP) is a freely available MPI implementation that is a good choice for
+supporting multi-processing on small networks, standalone servers and even desktop computers (although the latter is
+usually less meaningful). Follow the instructions below to install \c OpenMPI on Ubuntu; the procedure for other Unix
+systems is likely very similar.
+
+<b> Download the source code </b>
+
+- Navigate to the  <a href="http://www.open-mpi.org/software/">OpenMPI webpage</a>.
+- Download the 'tar.gz' file for the latest stable version to your Downloads folder.
+
+<b> Compile and install the source code </b>
+
+- Open a Terminal window and unpack the newly downloaded file by entering the following commands (replace x.x.x. with
+  the appropriate version number):
+
+      cd ~/Downloads
+      tar xvfz openmpi-x.x.x.tar.gz
+
+  This will produce lots of output.
+
+- Then, enter:
+
+      cd openmpi-x.x.x
+      ./configure --prefix=/usr/local
+
+- You will see lots of output. After this procedure has finished, enter:
+
+      make all
+
+- Again, many lines of output will appear. Finally, enter:
+
+      sudo make install
+
+  If you are prompted for your password, enter it.
+
+- After again lots of output, check the installation by executing the following commands:
+
+      which mpicxx
+      which mpirun
+
+- If either of these commands does NOT show any output, something is wrong.
+
+<b> Create the necessary links to the OpenMPI library </b>
+
+- In a terminal window, enter the following:
+
+      sudo ldconfig /usr/local/lib
+
+  If you are prompted for your password, enter it.
+
+
+\section InstallMPIEnable Enable the MPI build option
+
+Once you have verified that the host system provides an MPI implementation, you need to enable the \c BUILD_WITH_MPI
+build option and rebuild the \c SKIRT project:
+
+- For information about build options, see \ref InstallOptions.
+- For instructions on how to configure build options, see one of:
+   - \ref InstallUnixBuild;
+   - \ref InstallQtBuild.
 
 */

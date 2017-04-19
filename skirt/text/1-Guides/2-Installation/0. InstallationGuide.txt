@@ -23,11 +23,11 @@ standard Message Passing Interface (MPI).
 
 - It is possible to build \c FitSKIRT without MPI, i.e. using multi-threading only. In a realistic research setting,
 however, \c FitSKIRT will most likely require the use of multi-processing. Furthermore, if the reference images use
-point-spread functions with a customized form (as apposed to Gaussian), it is recommended to install the third-party
-fast-fourier (FFTW) libary to accelerate the convolution calculations for the simulated images.
+point-spread functions with a customized form (as opposed to Gaussian), it is recommended to install a third-party
+fast-fourier transform libary to accelerate the convolution calculations for the simulated images.
 
-- The \c MakeUp utility uses the Qt development environment to implement its graphical user interface, so a recent
-version of the Qt framework must be installed to build this utility.
+- The optional \c MakeUp utility uses the Qt development environment to implement its graphical user interface, so a
+recent version of the Qt framework must be installed to build this utility.
 
 
 \section InstallTypes Types of installation

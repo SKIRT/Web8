@@ -2,6 +2,13 @@
 
 \page InstallWindows Basic install using graphical interfaces (Windows)
 
+This topic contains the following sections:
+- \ref InstallWindowsTools
+- \ref InstallWindowsGet
+- \ref InstallWindowsBuild
+- \ref InstallWindowsFinal
+
+
 XXX-TODO:
 - Install the build tools (Windows 10, GitHub client, CMake v3.5.1, Microsoft Visual Studio 2015 v14)
     - Download Visual Studio Community from https://www.visualstudio.com
@@ -14,7 +21,8 @@ XXX-TODO:
 - Build project using Visual Studio
 - Adjust build options if desired (refer to separate topic on build options)
 
-To install and build the standard components of the SMILE project on Windows (without Qt creator)
+XXX-TODO:
+- To install and build the standard components of the SMILE project on Windows (without Qt creator)
   - use the GitHub GUI client to clone the SMILE source code repository
   - use the CMake GUI application to generate a Visual Studio solution:
     - set the source path to the repository (e.g. ~/SMILE/git)
@@ -23,5 +31,15 @@ To install and build the standard components of the SMILE project on Windows (wi
     - press "Configure" and then "Generate"
   - open the generated solution file "SMILE.sln" in the build directory with Microsoft Visual Studio
   - press the "Build Solution" button or menu item in Visual Studio
+
+
+\section InstallWindowsTools Install the build tools (Windows)
+
+\section InstallWindowsGet Get the source code (Windows)
+
+\section InstallWindowsBuild Configure and build the project (Windows)
+
+\section InstallWindowsFinal Finalize the installation (Windows)
+
 
 */

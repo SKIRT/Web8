@@ -3,6 +3,10 @@
 \page InstallOptions Build options (all platforms)
 
 XXX-TODO:
+ - indicate default value; relevant if
+
+
+XXX-TODO:
 - BUILD_DOX_STYLE
 - BUILD_FIT_SKIRT
 - BUILD_MAKE_UP
