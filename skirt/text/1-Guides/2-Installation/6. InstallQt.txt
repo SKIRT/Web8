@@ -101,8 +101,17 @@ editor/builder called Qt Creator. All of these components can be installed with 
 
   - Press "OK" to accept any changes and close the preferences panel.
 
+<b> Install system libraries if required </b>
+
+On some Unix systems other than Mac OS X, the Qt libraries used by the optional \c MakeUp tool in the \c SKIRT project
+depend on extra system libraries. On Ubuntu these libraries can be installed as follows:
+
+    sudo apt-get install libgl1-mesa-dev
+
 
 \section InstallQtBuild Configure and build the project (Qt Creator)
+
+\subsection InstallQtBuildFirst Building for the first time
 
 <b>Open the SKIRT project file</b>
 
@@ -122,46 +131,42 @@ regular "Edit" mode. However you still need to adjust the project configuration.
 - Select the "Build" item in the lefthand column of the window, just below a "Desktop" header stating your
   Qt and compiler version.
 - In the "Edit build configuration" option list at the top of the window, select "Release".
-- Your window now should look similar to this:
+- Change the "Build directory" to the \c ~/SKIRT/release directory you created earlier (i.e. change the last segment
+  of the path from "build-git-...-Release" to "release", or press "Choose..." to browse to the directory).
+- Verify that the "CMAKE_BUILD_TYPE" setting has the value "Release" (if not, you may have negelected to select the
+  Release" build configuration in the option list at the top of the window).
+- For now, leave the build options to their default values.
 
-XXX-TODO ...
+Your window should now look similar to this:
 
-Select the "Build" subtab. There are two build configurations called "Debug" and "Release",
-  which can be selected through the "Edit build configuration" option list.
-- For the "Debug" configuration, change the "Build directory" to the \c SKIRT/debug directory you created earlier
-  (simply replace the capitcal 'D' by a lower-case 'd').
-- For the "Release" configuration, change the "Build directory" to the \c SKIRT/release directory you created earlier
-  (simply replace the capital 'R' by a lower-case 'r').
-- There is also a "Profile" configuration, but you can ignore this (unless you know what profiling is and you plan on using it during SKIRT development. In that case, make a directory next to the 'release' and 'debug' directories and set the corresponding build directory in the Profile configuration pane).
-- Still in "Projects" mode, now select the "Run" subtab.
-- Search for the option list called "Run configuration" and select the "SKIRTmain" item.
-- Now change the "Working directory" to the \c SKIRT/run directory you created earlier.
-- Turn off the "Run in terminal" option;
-  this causes <tt>SKIRT</tt>'s log messages to appear inside Qt Creator rather than in a separate Terminal window.
-- Finally go back to "Edit" mode (icon in left margin). Here you can browse, view and edit the source tree (see screenshot below).
+\image html InstallQtProjectSettings.png
 
-  \image html sourcetree.png
-  \image latex sourcetree.png
+<b>Build the SKIRT project</b>
 
-\note By default, <tt>SKIRT</tt> will be built together with its graphical component <tt>SKIRT MakeUp</tt> and with MPI enabled (if present on the system). To change
-these settings, see \ref ChangingBuildOptions.
+- Select "Edit" mode in the left margin of the Qt Creator window.
+  In this mode, you can browse, view and edit the source tree of the project.
+- Click the hammer icon in the lower left corner of the Qt Creator window to compile and build the \c SKIRT project
+  with the current build options. To view the build log, select the "Compile Output" tab at the bottom of the
+  Qt Creator window.
 
-<b>Build SKIRT</b>
+Your window should now look similar to this:
 
-To compile and build the complete <tt>SKIRT</tt> code (including <tt>FitSKIRT</tt>), click the hammer icon in the left margin, indicated
-in the screenshot below.
+\image html InstallQtEditBuild.png
 
-\image html compileSKIRTQt.jpeg
-\image latex compileSKIRTQt.jpeg
-
+\subsection InstallQtBuildOptions Adjusting build options
 
 XXX-TODO
   - configure build options
 
+If you have Qt Creator installed, there is no need to
+work directly with CMake. Recent versions of Qt Creator have great built-in support for CMake.
+
 
 \section InstallQtFinal Finalize the installation (Qt Creator)
 
-XXX-TODO
-  - see platform-specific stuff
+As the last step, you need to finalize and verify your installation just like you would if you were not using Qt.
+Follow the instructions appropriate for your operating system:
+  - \ref InstallUnixFinal
+  - \ref InstallWindowsFinal
 
 */

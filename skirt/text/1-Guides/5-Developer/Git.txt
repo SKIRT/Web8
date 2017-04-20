@@ -30,7 +30,7 @@ To facilitate finding the right command, the list below provides a quick access 
 
 \section DevGitFork Forking a repository
 
-This is explained in \ref InstallDevGetPublic.
+This is explained in \ref InstallDevRepo.
 
 \section DevGitClonePublic Cloning a public repository
 
@@ -62,7 +62,7 @@ where <tt>[PASTE]</tt> is to be replaced with the appropriate keyboard shortcut 
 \section DevGitClonePrivate Cloning a personal or private repository
 
 Make sure to add the RSA key of your computer to your GitHub account. This is described in \ref
-InstallDevGetPrivate for a github.ugent.be account, but is analogous for a github.com account. Following the
+InstallUnixGetPrivate for a github.ugent.be account, but is analogous for a github.com account. Follow the
 steps up to and including "Add the SSH key to your github.ugent account".
 
 After you added your RSA key to your GitHub account, use the following commands to clone the repository to a certain

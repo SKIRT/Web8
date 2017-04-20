@@ -2,24 +2,261 @@
 
 \page InstallDev Develop using Qt Creator (Mac/Unix)
 
+You can easily make changes to your local copy of the \c SKIRT project source tree using any text editor, and rebuild
+the project using the procedures described elsewhere in this installation guide (see, e.g., \ref InstallUnixBuild).
+Once you get into substantial development work, however, and especially if you plan to contribute code to the \c SKIRT
+repository, it becomes beneficial to follow the procedures outlined here.
 
-XXX-TODO
+\note Before following the instructions below, install the \c SKIRT project as described in the other topics
+of the installation guide, depending on your operating system:
+- \ref InstallUnix
+- \ref InstallWindows
+- \ref InstallQt
 
-\section InstallDevGetPublic Get the public SKIRT code
+This advanced topic contains the following sections:
+- \ref InstallDevQt
+- \ref InstallDevRepo
+- \ref InstallDevDoxygen
 
-XXX-TODO
 
-\section InstallDevGetPrivate Get the private SKIRT code
+\section InstallDevQt Configure Qt Creator for development
 
-XXX-TODO
+\subsection InstallDevQtGeneral General preferences
 
-\section InstallDevDoxStyle Build and configure DoxStyle
+Before using Qt Creator for substantial \c SKIRT project development, you should adjust its preferences as follows (in
+addition to configuring the build tools as decribed in \ref InstallQtInstall). Launch Qt Creator and open the
+preferences panel. On the various tabs listed below, make the specified adjustments (leaving all other settings
+untouched), and at the end press the OK button to confirm the changes.
 
-XXX-TODO
+- "Text Editor -> Behavior" tab
+    - Tab size: 4
+    - Backspace indentation: Follow Previous Indents
+    - In entire document: On
+    - Default encoding: UTF-8
+    - UTF-8 BOM: Always Delete
 
-\section InstallDevDoxygen Install Doxygen
+- "Text Editor -> Display" tab
+    - Display right margin at column: 120
+    - Highlight current line: On
 
-XXX-TODO
+- "C++ -> Code Style" tab
+    - press the "Import..." button, select the file <tt>~/SKIRT/git/Docs/templates/SkirtCodeStyle.xml</tt>
+      and press the "Open" button
 
+- "C++ -> File Naming" tab
+    - Header suffix: hpp
+    - Lower case filenames: Off
+    - License template: press the "Choose..." button, select the file <tt>~/SKIRT/git/Docs/templates/LicenseTemplate.txt</tt>
+      and press the "Open" button
+
+- "Build & Run -> General" tab
+    - Save all files before build: On
+    - Open Compile Output pane when building: On
+    - Clear old application output on a new run: On
+    - Merge stderr and stdout: On
+    - Default build directory: "../%{CurrentBuild:Name}"
+
+\subsection InstallDevQtDoxstyle The documentation streamliner
+
+If you plan on writing or updating \c SKIRT code documentation, you may wish to configure \c doxstyle,
+a tool to assist with formatting "/ **"-style documentation blocks in .hpp header files.
+The \c doxstyle tool is included as part of the \c SKIRT project and is enabled through a build option.
+
+As the first step, turn on the "BUILD_DOX_STYLE" build option and rebuild the \c SKIRT project.
+For information about build options, see \ref InstallOptions.
+For instructions on how to configure build options, see one of:
+   - \ref InstallUnixBuild;
+   - \ref InstallQtBuild.
+
+To configure Qt Creator so that you can easily use the documentation streamliner, open the preferences panel and make
+the adjustments on the various tabs as listed below. Press the OK button at the end to confirm the changes.
+
+ - "Environment -> External Tools" tab
+   - Add a new category called "DoxStyle"
+   - Add a new item called "Streamline Selection" to this category
+   - Configure the attributes for this item as follows:
+     - Description: "Streamlines the doxygen blocks in the selection"
+     - Executable: path to the DoxStyle executable: ~/SKIRT/release/Docs/doxstyle/doxstyle
+     - Arguments: empty
+     - Working directory: empty
+     - Output: Replace Selection
+     - Error output: Ignore
+     - Modifies current document: off
+     - Input: "%{CurrentDocument:Selection}"
+
+ - "Environment -> Keyboard" tab
+    - In the long item list, select "Tools -> External.Streamline_Selection"
+    - In the "Key sequence" field, enter the shortcut combination <tt>[Alt] + [Cmd + [I]</tt> (on Mac)
+      or <tt>[Alt] + [Ctrl] + [I]</tt> (on Linux)
+
+For information on how to use the documentation streamliner, see \ref DevCodingStyleFormat.
+
+
+\section InstallDevRepo Setup the source code repository for development purposes
+
+\note: also see \ref DevGit.
+
+\subsection InstallDevRepoGit Configure the source control client
+
+Before using the \c git client for committing adjusted or new code, you should configure it with your user name and
+email address. This is especially important if you plan to eventually contribute code to the \c SKIRT repository.
+
+If you are using git on the command line, enter the following commands, replacing the placeholders with your own name
+and email address:
+
+    git config --global user.name "Your Name"
+    git config --global user.email yourname@organization.org
+
+If you are using the graphical GitHub interface, enter this information in the "Advanced" tab of the
+GitHub preferences panel.
+
+\subsection InstallDevRepoPublic Fork the public code repository
+
+Follow the instructions in this section if your local git repository is a clone of the \em public \c SKIRT project
+repository.
+
+<b>Make a GitHub account</b>
+
+- If you already have an account on the <a href="https://github.com">GitHub website</a>, log in and skip the rest of
+  this step.
+- Visit the <a href="https://github.com">GitHub website</a> and enter your e-mail adress and a newly chosen username
+  and password.
+- Press "Sign up for GitHub".
+- On the next page, press "Finish sign up".
+- You will receive an e-mail with a confirmation link. Go to the corresponding webpage and press "Confirm".
+- Stay logged in for the next step.
+
+<b>Fork the public <tt>SKIRT</tt> repository</b>
+
+- In the search bar on top of the page, enter "SKIRT" to find the \c SKIRT repository.
+- Click on the repository listed as "SKIRT/SKIRT".
+- In the top right corner of the page, press "Fork"
+- You are immediately brought to a new repository "username/SKIRT", which is - at that moment - an exact clone of
+  the original "SKIRT/SKIRT" repository.
+
+<b>Link the forked public repository to your local repository</b>
+
+- On the webpage of your forked "username/SKIRT" repository, click the "Clone or download" button on the righthand
+  side of the page.
+- Make sure it states "Clone with HTTPS", and click on the icon to the right of the text box to copy the URL
+  to the clipboard.
+- Go back to Terminal and enter the following commands:
+
+      cd ~/SKIRT/git
+      git remote add forked [PASTE]
+
+  where <tt>[PASTE]</tt> is to be replaced with the URL copied from the GitHub web site, i.e.:
+
+      git remote add forked https://github.com/username/SKIRT.git
+
+  This command adds your forked remote to the list of remotes related to your local repository. It gives this remote
+  the alias "forked", which is how how you will refer to this remote when you are pushing changes. The public \c SKIRT
+  remote from which you originally cloned is automatically given the alias "origin".
+
+- A list of the remotes linked to your local repository can be obtained with the following command:
+
+      git remote
+
+  The output of this command should now include the names of the two remote repositories.
+
+- You can now push your changes to the remote called "forked". To do this, use the following command:
+
+      git push forked master
+
+  where "master" is the name of the main branch of your local repository.
+
+\subsection InstallDevRepoPrivate Fork the private code repository
+
+Follow the instructions in this section if your local git repository is a clone of the \em private \c SKIRT project
+repository.
+
+<b>Fork the private <tt>SKIRT</tt> repository</b>
+
+- Navigate to the github.ugent.be website and log in.
+- Go to the "SKIRT/SKIRT" page on github.ugent.be.
+- In the top right corner of the page, press "Fork".
+- You are immediately brought to a new repository "username/SKIRT", which is - at that moment - an exact clone of
+  the original "SKIRT/SKIRT" repository.
+
+The new (forked) remote repository allows you to store your changes to the code on the github.ugent.be website. Since
+the repository is personal, only you can write to it. Still, you can request for the <tt>SKIRT</tt> team to incorporate
+the changes in your personal remote repository into the original <tt>SKIRT</tt> remote repository. This is called a
+"pull request". See \ref DevGit for more information.
+
+<b>Link the forked private repository to your local repository</b>
+
+- On the webpage of your forked "username/SKIRT" repository, click the "Clone or download" button on the righthand
+  side of the page.
+- Make sure it states "Clone with SSH", and click on the icon to the right of the text box to copy the URL
+  to the clipboard.
+- Next, type the following commands in a Terminal window:
+
+      cd ~/SKIRT/git
+      git remote add personal [PASTE]
+
+  where <tt>[PASTE]</tt> is to be replaced with the URL copied from the web site, i.e.:
+
+      git remote add personal git@github.ugent.be:username/SKIRT.git
+
+  This command adds your personal remote to the list of remotes related to your local repository. It gives this remote
+  the alias "personal", which is how how you will refer to this remote when you are pushing changes. The private
+  <tt>SKIRT</tt> remote from which you cloned is automatically given the alias "origin".
+
+- A list of the remotes linked to your local repository can be obtained with the following command:
+
+      git remote
+
+  The output of this command should include the names of the two remote repositories.
+
+- You can now push your changes to the remote "personal". To do this, use the following command:
+
+      git push personal master
+
+  where "master" is the name of the main branch of your local repository.
+
+
+\section InstallDevDoxygen Install the documentation generator
+
+The reference documentation for the \c SKIRT project is generated from the source code files by the freely available
+application \c Doxygen, which uses the \c dot tool (part of the Graphviz graph visualization software) to generate
+diagrams. Most \c SKIRT users and developers do not need to (re-)generate the documentation. However, if you wish to
+verify that the formatting instructions and formulae in your source code comments are properly rendered in the final
+documentation, you can install the appropriate tools as described in this section.
+
+For information on how to actually generate the documentation for the \c SKIRT project source code after installing
+these tools, see \ref DevBuildDocs.
+
+\subsection InstallDevDoxygenVersion Version info
+
+The documentation on this web site has been generated with Doxygen version 1.8.12 and \c dot - graphviz version 2.36.0
+on Mac OS X 10.12.3 (Sierra). Earlier versions of these tools might not support all options and commands used in the
+documentation.
+
+\subsection InstallDevDoxygenMac Mac OS X
+
+<b> Installing Doxygen </b>
+
+- Navigate to the <a href="http://www.stack.nl/~dimitri/doxygen/download.html">Doxygen download page</a>.
+- Scroll down and download the most recent binary distribution for Mac OS X.
+- After the download completes, open the '.dmg' file to mount the Doxygen installation disk.
+- In the Finder window that appears, drag the DoxyGen application to your applications folder.
+
+<b> Installing the Graphviz Graph Visualization Software </b>
+
+- Navigate to the <a href="http://www.graphviz.org/Download_macos.php">Graphviz download page</a>.
+- Locate the graphviz-2.36.0.pkg package and download it.
+- Open the package and follow the instructions.
+- If the package fails open in response to a double-click, right-click the package file and choose 'Open'.
+  In the warning window that pops up, press 'Open' again to proceed with the installation.
+
+\subsection InstallDevDoxygenOther Other systems
+
+On Ubuntu a version of Doxygen including the Graphviz tools can be installed by entering:
+
+    sudo apt-get install doxygen
+
+On other systems, the package manager might offer similar capabilities. Otherwise, refer to the installation
+instructions on the <a href="http://www.stack.nl/~dimitri/doxygen">Doxygen</a> and
+<a href="http://www.graphviz.org">Graphviz</a> web sites.
 
 */
