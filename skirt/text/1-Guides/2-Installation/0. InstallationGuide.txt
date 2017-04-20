@@ -52,6 +52,7 @@ scenario and operating system can hopefully be inferred by picking and choosing 
 
 - \ref InstallUnix
 - \ref InstallWindows
+- \ref InstallOptions
 - \ref InstallMPI
 - \ref InstallFFT
 - \ref InstallQt
