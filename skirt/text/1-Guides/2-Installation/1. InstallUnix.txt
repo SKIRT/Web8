@@ -232,25 +232,129 @@ To update your local copy of the source code after changes were made to the repo
 
 \section InstallUnixBuild Configure and build the project (Mac/Unix)
 
+\subsection InstallUnixBuildFirst Building for the first time
+
 The \c SKIRT project code includes two \c bash shell scripts to help configuring and building \c SKIRT
 from the source code in the git directory. Before you use these script for the first time, you may need
 to make them executable:
 
     cd ~/SKIRT/git
-    chmod +rx configureSKIRT.sh
+    chmod +rx configSKIRT.sh
     chmod +rx makeSKIRT.sh
 
-To build \c SKIRT for the first time, using default build options, type the following commands:
+To build \c SKIRT for the first time, using default build options, enter the following commands:
 
     cd ~/SKIRT/git
     ./makeSKIRT.sh
 
-XXX-TODO:
-- Use shell script makeSKIRT.sh to build default configuration (first stab see above)
-- Explain -j argument
-- If you use CMake GUI, select the Unix code generator.
-- Configure compilers if needed through configureSKIRT.sh
-- Adjust build options if desired through configureSKIRT.sh (refer to separate topic on build options)
+If all goes well, you should see output similar to this:
+
+\verbatim
+Using /Applications/CMake.app/Contents/bin/cmake to generate build files
+
+-- The C compiler identification is AppleClang 8.0.0.8000042
+-- The CXX compiler identification is AppleClang 8.0.0.8000042
+...
+BUILD_DOX_STYLE:BOOL=OFF
+BUILD_FIT_SKIRT:BOOL=OFF
+BUILD_MAKE_UP:BOOL=OFF
+BUILD_SKIRT:BOOL=ON
+BUILD_SMILE_SHAPES:BOOL=OFF
+BUILD_SMILE_TOOL:BOOL=OFF
+BUILD_WITH_MPI:BOOL=OFF
+CMAKE_BUILD_TYPE:STRING=Release
+CMAKE_INSTALL_PREFIX:PATH=/usr/local
+GIT_EXECUTABLE:FILEPATH=/usr/bin/git
+
+Scanning dependencies of target timestamp
+[  0%] Built target timestamp
+Scanning dependencies of target build
+[  0%] Building CXX object SMILE/build/CMakeFiles/build.dir/BuildInfo.cpp.o
+[  0%] Linking CXX static library libbuild.a
+[  0%] Built target build
+Scanning dependencies of target fundamentals
+[  1%] Building CXX object SMILE/fundamentals/CMakeFiles/fundamentals.dir/BooleanExpression.cpp.o
+[  1%] Building CXX object SMILE/fundamentals/CMakeFiles/fundamentals.dir/CommandLineArguments.cpp.o
+...
+Scanning dependencies of target skirt
+[100%] Building CXX object SKIRT/main/CMakeFiles/skirt.dir/SkirtCommandLineHandler.cpp.o
+[100%] Building CXX object SKIRT/main/CMakeFiles/skirt.dir/SkirtMain.cpp.o
+[100%] Linking CXX executable skirt
+[100%] Built target skirt
+\endverbatim
+
+If things do not go so well, you'll need to take corrective action depending on the problem. The table below
+provides some hints; if the problem persists please contact the \c SKIRT team.
+
+<TABLE>
+<TR><TH>Problem</TH>  <TH>Cause and corrective action</TH></TR>
+<TR><TD>There is no cmake in the default path</TD>
+    <TD>The \c CMake build tool is not installed, or its location has not been added to the default system PATH;
+        see \ref InstallUnixTools</TD> </TR>
+<TR><TD>CMake version is too old</TD>
+    <TD>The default system PATH points to an older version of the \c CMake build tool; verify the installation
+        with "which cmake" and "cmake --version"</TD> </TR>
+<TR><TD>No compiler is found, or compiler identification is not what you expected</TD>
+    <TD>\c CMake looks for compilers in the default system PATH in some complicated order, it might find an old
+        compiler version, or it might choose the GNU compiler while you want to use the Intel compiler;
+        in this case explicitly specify the compiler; see \ref InstallUnixBuildSelectComp</TD> </TR>
+<TR><TD>Compiler reports an error on one or more source files</TD>
+    <TD>Verify that your compiler version fully supports C++14; see \ref InstallUnixToolsVersions.
+        If the compiler is sufficiently recent, there might be a platform-specific issue with the code.</TD> </TR>
+</TABLE>
+
+\subsection InstallUnixBuildSelectComp Selecting the compiler
+
+If the compiler identification listed at the start of the \c makeSKIRT procedure does not match your expectations,
+or no compiler is found at all, you need to specify the compiler explicitly through the \c configSKIRT script.
+
+The first step is to figure out the full absolute path of the appropriate compiler executable. Sometimes this is easy.
+For example, on systems that have the Intel compiler installed in addition to the GNU compiler, \c CMake will usually
+select the GNU compiler while you may want it to use the Intel compiler. To discover the path of the Intel compiler,
+enter the command "which icc". In other cases, you may need to browse around on your file system to locate the
+compiler executable.
+
+Once you have the compiler path, you can resolve the problem by entering the following commands, where you replace
+\<path\> by the full absolute path of the compiler executable:
+
+\verbatim
+cd ~/SKIRT/git
+./configSKIRT.sh CMAKE_C_COMPILER=<path> CMAKE_CXX_COMPILER=<path>
+./makeSKIRT.sh
+\endverbatim
+
+\note You need to configure both the plain C compiler and the C++ compiler, although in most cases you can use the
+same path (most modern compilers automatically deduce the correct language flavor).
+
+This should cause \c CMake to select the specified compiler and list the corresponding compiler identification.
+The configuration state is stored as a file residing in the \c SKIRT/release directory. As long as you don't remove
+that file, the configuration state remains persistent. Conversely, if the configuration state gets messed up, you
+can reset things by removing the complete contents of the \c SKIRT/release directory.
+
+\subsection InstallUnixBuildOptions Adjusting build options
+
+By default, the procedure described above builds just the \c SKIRT command line program. To build additional programs
+such as \c FitSKIRT, or to enable capabilities such as multi-processing, you need to adjust the corresponding
+build options through the \c configureSKIRT script. For a list of build options, see \ref InstallOptions.
+
+For example, to build \c FitSKIRT in addition to \c SKIRT, enter the following command (still in the \c git directory):
+
+    ./configSKIRT.sh BUILD_FIT_SKIRT=ON
+
+In some cases, you need to repeat this process:
+
+  - A new option may appear because you enabled the options on which it depends. For example, after you enable the
+    BUILD_FIT_SKIRT option, the BUILD_WITH_FFT appears with default value OFF. To enable this dependent option,
+    you need a second round of adjustment.
+
+  - \c CMake may fail to locate the appropriate paths for an option you enabled. To stay with the same example,
+    after you enable the BUILD_WITH_FFT option, two new variables (FFT_INCLUDES and FFT_LIBRARIES) appear. If
+    there is a problem with the paths suggested by \c CMake, you need yet another round of adjustment to override
+    these values manually.
+
+The configuration state is stored as a file residing in the \c SKIRT/release directory. As long as you don't remove
+that file, the configuration state remains persistent. Conversely, if the configuration state gets messed up, you
+can reset things by removing the complete contents of the \c SKIRT/release directory.
 
 
 \section InstallUnixFinal Finalize the installation (Mac/Unix)

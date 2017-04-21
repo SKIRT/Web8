@@ -2,6 +2,10 @@
 
 \page InstallWindows Basic install using graphical interfaces (Windows)
 
+This topic describes how to install and configure the \c SKIRT project on Microsoft Windows, using the
+graphical user interfaces offered by the various tools involved. Note that you still need the command line
+to actually run the \c SKIRT and \c FitSKIRT command line programs.
+
 This topic contains the following sections:
 - \ref InstallWindowsTools
 - \ref InstallWindowsGet
@@ -9,37 +13,58 @@ This topic contains the following sections:
 - \ref InstallWindowsFinal
 
 
-XXX-TODO:
-- Install the build tools (Windows 10, GitHub client, CMake v3.5.1, Microsoft Visual Studio 2015 v14)
-    - Download Visual Studio Community from https://www.visualstudio.com
-    - Select a custom install to include Visual C++ and the git/github GUI clients
-    - Install CMake for Windows downloaded from https://cmake.org/download/
-    - In CMake, use the Visual Studio Win64 code generator
-    - Use Visual Studio to build the project and to edit source code
-- Get the source code with GitHub client
-- Generate default configuration using CMake GUI
-- Build project using Visual Studio
-- Adjust build options if desired (refer to separate topic on build options)
-
-XXX-TODO:
-- To install and build the standard components of the SMILE project on Windows (without Qt creator)
-  - use the GitHub GUI client to clone the SMILE source code repository
-  - use the CMake GUI application to generate a Visual Studio solution:
-    - set the source path to the repository (e.g. ~/SMILE/git)
-    - set the build path to the repository (e.g. ~/SMILE/build)
-    - select the generator "Visual Studio 14 2015 Win64"
-    - press "Configure" and then "Generate"
-  - open the generated solution file "SMILE.sln" in the build directory with Microsoft Visual Studio
-  - press the "Build Solution" button or menu item in Visual Studio
-
-
 \section InstallWindowsTools Install the build tools (Windows)
+
+The \c SKIRT project has been tested with CMake v3.5.1 and Microsoft Visual Studio 2015 v14 running on Windows 10.
+Earlier versions of these tools and operating system may not support all the required capabilities. In general, later
+versions should work fine.
+
+- Download the latest version of the freely available Microsoft Visual Studio Community edition
+  from https://www.visualstudio.com and launch the installer.
+
+- Select a custom install to include Visual C++ and the git and GitHub GUI clients.
+
+- Download the latest version of CMake for Windows from https://cmake.org/download/ and perform the installation.
+
 
 \section InstallWindowsGet Get the source code (Windows)
 
+To get the \c SKIRT project source code:
+
+- Launch the GitHub GUI client and login to your github.com account (to access the public repository) and/or your
+  "enterprise" account at github.ugent.be (to access the private repository).
+
+- Clone the \c SKIRT project source code from the corresponding online repository into a local \c ~/SKIRT/git directory.
+
+
 \section InstallWindowsBuild Configure and build the project (Windows)
+
+To build the \c SKIRT project for the first time:
+
+- Launch the CMake GUI application.
+- Set the source path to the repository (e.g. \c ~/SKIRT/git).
+- Set the build path to a new directory next to the repository (e.g. \c ~/SKIRT/build).
+- Select the generator "Visual Studio 14 2015 Win64" (assuming you have version 14 of Visual Studio).
+- Press "Configure" and then "Generate" to generate a Visual Studio solution.
+- Launch Visual Studio and open the solution file generated in the previous step (filename extension ".sln").
+- Press the "Build Solution" button to build the \c SKIRT project with the current build options.
+
+To adjust build options -- for a list see \ref InstallOptions:
+
+- Launch the CMake GUI application and set build path if needed (e.g. \c ~/SKIRT/build).
+- Use the checkboxes and text fields in the central panel to adjust one or more values in the list.
+- Press the "Configure" button at the bottom of the list to integrate the changes into the configuration
+  and update the list of variables accordingly. In some cases, you need to repeat this process.
+- Press the "Generate" button to update the Visual Studio solution
+- In Visual Studio, press the "Build Solution" button to rebuild the \c SKIRT project with the new build options.
+
 
 \section InstallWindowsFinal Finalize the installation (Windows)
 
+To verify your installation of the \c SKIRT project:
+
+- Launch a command line window and change the current directory to your working directory (e.g. \c ~/SKIRT/run).
+- Enter the command "..\build\.....\skirt.exe" without any command-line arguments.
+  If the \c SKIRT project has been successfully installed, you should see the \c SKIRT welcome message.
 
 */

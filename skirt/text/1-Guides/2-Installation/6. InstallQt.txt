@@ -155,11 +155,34 @@ Your window should now look similar to this:
 
 \subsection InstallQtBuildOptions Adjusting build options
 
-XXX-TODO
-  - configure build options
+By default, the procedure described above builds just the \c SKIRT command line program. To build additional programs
+such as \c FitSKIRT, or to enable capabilities such as multi-processing, you need to adjust the corresponding
+build options. For a list of build options, see \ref InstallOptions.
 
-If you have Qt Creator installed, there is no need to
-work directly with CMake. Recent versions of Qt Creator have great built-in support for CMake.
+Qt Creator offers built-in support for configuring build options and passing them on to the \c CMake build tool.
+To use this feature:
+
+  - Select the "Projects" mode in the left margin of the Qt Creator window, and then select the
+    "Build" item in the lefthand column of the window, just as you did before (refer to the first screen shot above).
+
+  - Qt Creator shows a list of \c CMake variables that control the build. Use the checkboxes or the "Edit" button to
+    adjust one or more values in the list. For example, to build the \c MakeUp utility, enable the checkbox next to
+    the BUILD_MAKE_UP option.
+
+  - Press the wide "Apply Configuration Changes" button at the bottom of the list. This causes the changes to be
+    integrated into the \c CMake configuration, and the list of variables shown to be updated accordingly.
+
+  - In some cases, you need to repeat this process:
+     - A new option may appear because you enabled the options on which it depends. For example, after you enable the
+       BUILD_FIT_SKIRT option, the BUILD_WITH_FFT appears with default value OFF. To enable this dependent option,
+       you need a second round of adjustment.
+     - \c CMake may fail to locate the appropriate paths for an option you enabled. To stay with the same example,
+       after you enable the BUILD_WITH_FFT option, two new variables (FFT_INCLUDES and FFT_LIBRARIES) appear. If
+       there is a problem with the paths suggested by \c CMake, you need yet another round of adjustment to override
+       these values manually.
+
+  - After all changes to the configuration have been applied, go back to "Edit" mode and press the Hammer icon to
+    build the project.
 
 
 \section InstallQtFinal Finalize the installation (Qt Creator)

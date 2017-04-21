@@ -61,7 +61,7 @@ hopefully guide you to the answer.
         <TD>The path to the C++ compiler used for the project</TD></TR>
 <TR><TD>CMAKE_C_COMPILER</TD>   <TD>\em auto (*)</TD> <TD></TD>
         <TD>The path to the "plain" C compiler used for the project</TD></TR>
-<TR><TD>CMAKE_INSTALL_PREFIX</TD>   <TD>\em auto (*)</TD> <TD></TD>
+<TR><TD>CMAKE_INSTALL_PREFIX</TD>   <TD>\em auto</TD> <TD></TD>
         <TD>This variable is not used for the \c SKIRT project</TD></TR>
 <TR><TD>FFT_INCLUDES</TD>   <TD>\em auto (*)</TD> <TD>BUILD_WITH_FFT</TD>
         <TD>The path to the include directory(ies) for the fast-fourier transform library headers</TD></TR>
@@ -83,6 +83,8 @@ hopefully guide you to the answer.
         <TD>The path to the directory for the Qt5Widgets module</TD></TR>
 </TABLE>
 
-(*) \em auto means that \c CMake usually finds the appropriate value for this variable without user intervention.
+(*) \em auto means that \c CMake usually finds the appropriate path without user intervention. In case \c CMake fails
+(e.g. the proposed path is empty, contains a string such as "NOTFOUND", or points to the wrong executable or library),
+you can manually override the value of the variable with the correct path.
 
 */

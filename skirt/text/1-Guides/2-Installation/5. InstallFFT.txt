@@ -12,8 +12,10 @@ This topic contains the following sections:
 
 \section InstallFFTInstall Install the FFT library
 
-XXX-TODO
-
+\c FitSKIRT can work with the open-source "FFTW" library available from the www.fftw.org web site. To install this
+library, go to the <a href="http://www.fftw.org/download.html">FFTW download page</a>. Check the platform-specific
+notes on the download page, and download the source code tarball for the latest stable release. After unpacking the
+tarball, follow the instructions in the \c README file to compile and install the library on your system.
 
 \section InstallFFTEnable Enable the FFT build option
 
