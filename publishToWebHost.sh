@@ -11,10 +11,13 @@
 
 # Mount the webhost at a local mount point
 mkdir -p ../webhost
-mount_smbfs smb://pcamps@webhost.ugent.be/_skirt ../webhost
+mount -t smbfs //pcamps@webhost.ugent.be/_skirt ../webhost
+if [ $? -ne 0 ]
+  then exit
+fi
 
 # Update the web site
-rsync -hrtv --delete-after ../html/ ../webhost/WWW/
+rsync -chrtvz --delete-after ../html/ ../webhost/WWW/
 
 # Unmount the webhost and remove the mount point
 umount ../webhost
