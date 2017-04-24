@@ -1,0 +1,127 @@
+/**
+
+\page ReleaseNotes SKIRT 8 release notes
+
+\section ReleaseNotesIntro Introduction
+
+\subsection ReleaseNotesIntroOverview Overview
+
+Version 8.0 represents a substantial overhaul of the \c SKIRT project, especially to the code "under the hood" and to
+the build system. The actual radiative transfer implementation has changed only superficially. The main objectives for
+this new version include:
+- To remove the dependency on the Qt development environment for the \c SKIRT and \c FitSKIRT command line programs.
+- To further streamline the code using modern design principles, facilitating the addition of new features in the
+  future.
+
+The first item is an important benefit for installations on remote servers and multi-node computing systems, where
+providing the Qt development environment is often non-trivial. On the other hand, to replace the Qt functionality, the
+\c SKIRT project now requires a compiler that support the C++14 language standard and a fairly recent version of the \c
+CMake build tool. While these tools are available for essentially all operating systems, they might not yet be
+installed on the specific computing system you'd like to use. Fortunately, this situation should improve as time
+progresses.
+
+\subsection ReleaseNotesIntroAvail Availability
+
+To allow for a smooth transition, the private and public GitHub code repositories for the \c SKIRT project now exist
+in two versions:
+
+- \c SKIRT7: the previous version of the \c SKIRT project.
+- \c SKIRT8: the current version of the \c SKIRT project.
+
+Except for urgent and important bug fixes, SKIRT7 will no longer be maintained. New features will be added to SKIRT8.
+If you are in the middle of a project, it is best to continue using SKIRT7 for that project. For new projects you
+should definitely consider using SKIRT8.
+
+\subsection ReleaseNotesIntroUpgrade Upgrading your ski files
+
+The updated \c SKIRT and \c FitSKIRT command line programs will produce an error message when you attempt to run an
+older ski file. You have two options (other than reverting to the older version of the code):
+
+- recreate the desired ski file by going through the Q&A or \c MakeUp session or all over again.
+- use the automated upgrade procedure provided in PTS (Python Toolkit for SKIRT).
+
+The first option may be acceptable if you have only a couple of ski files. Otherwise, you should consider
+using the automated upgrade procedure. Proceed as follows:
+
+- install PTS if you haven't already done so, following the instructions in the
+  [PTS installation guide](../pts/_installation_guide.html).
+- update to the latest version of the PTS source code by executing "git pull" in the \c ~/PTS/pts directory; this is
+  important to ensure that your PTS version includes the upgrade procedure for the recent changes to the ski file
+  format.
+- go to the directory that holds your ski file(s) and enter "pts upgrade".
+
+
+\section ReleaseNotesUser Changes from a user perspective
+
+\subsection ReleaseNotesUserMajor Major changes
+
+- requires a compiler that supports the C++14 standard and a recent version of the \c CMake build tool
+- Qt is no longer needed except to build the \c MakeUp GUI wizard
+- runs on Microsoft Windows in addition to Mac OS X, Linux and other Unix systems
+- parameter files (.ski and .fski) need upgrading
+
+\subsection ReleaseNotesUserOther Other changes
+
+- build system
+  - external dependencies (e.g. Qt, MPI, FFT library) are optional and turned off by default
+  - documentation is no longer available in Qt help format; only online on the web site
+
+- SKIRT changes
+  - memory allocation logging and the corresponding command line option -l are no longer supported
+  - tex version of parameter file is no longer generated; use smiletool instead
+  - out-of-range attribute values cause a fatal error rather than being silently brought into range
+  - choice of units must be present at the beginning of the ski file
+  - OligoStellarComp uses regular input units (rather than depending on solar luminosity at that wavelength)
+  - BolLuminosityStellarCompNormalization uses regular input units (rather than being fixed to Lsun)
+  - BruzualCharlotSED and MarastonSED use regular input units for age of SSP (rather than being fixed to Gyr)
+  - CubBackgroundGeometry now takes edge length, which is twice the value of the previous extent
+  - MGEGeometry now exits with fatal error if an MGE component cannot be de-projected
+  - DustCompNormalization classes now exit with fatal error when attempting to normalize on zero surface density
+  - LuminosityStellarCompNormalization has been removed (can't implement properly without integrating over bands)
+  - SolarPatchGeometry has been removed (was a specialty geometry for a project that didn't happen)
+  - many ski file attributes have been renamed for consistency; see list in ~/PTS/pts/core/prep/upgradeskifile.py
+  - mean intensity cuts through oligochromatic dust system use the proper output units (rather than internal units)
+  - columns in text output files for cell properties, temperatures and ISRF changed (see "new features")
+  - errors that occur while constructing a simulation are now also logged to the simulation log file
+
+- SKIRT new features
+  - spheroidal and triaxial decorators allow flattening parameter values above unity
+  - new dust mix and geometry classes support Pinte 2009 polarization benchmark
+  - new Starburst99SEDFamily and Starburst99SED classes support Starburst99 SED templates for Kroupa IMF
+  - columns in text output files for cell properties, temperatures and ISRF are more consistent
+    - rows for all cells are always included (even if there is no dust); first column always indicates cell index
+    - intrinsic properties (central position, mass) are included in cell properties file and not repeated elsewhere
+    - ISRF file includes bolometric absorption in each cell
+  - new optional text output file with density of a single stellar component discretized over the dust grid
+
+- FitSKIRT
+  - luminosities in the ski file are now in Lsun/micron
+    - up to 100 times different in UV/optical/NIR range; see conversion plot
+    - this affects the chi2 weighting of the fits at various wavelengths
+  - the fixedSeed property on FitScheme has been removed
+  - many fski file attributes have been renamed for consistency with ski file naming conventions
+  - throws a fatal error for several configuration problems that previously went undetected
+  - order of columns changed in summary data files (columns now described in header of the file)
+  - writes at most one new best solution per generation
+  - default number of threads per simulation is now one (which is almost always what you want)
+  - improved logging
+
+- MakeUp (compared to SkirtMakeUp)
+  - can work with any SMILE schema; by default uses the SKIRT/FitSKIRT schemas automatically generated during build
+  - scalar properties are often grouped on a single wizard pane
+  - right-click shows context-menu with links to on-line help
+
+
+\section ReleaseNotesDev Changes from a developer perspective
+
+\subsection ReleaseNotesDevMajor Major changes
+
+- Strings and containers (lists, vectors, hash tables, ...) are now represented by classes in the standard template
+  library (STL) instead of a mixture of Qt and STL classes. All strings are UTF-8 encoded.
+- Properties of discoverable simulation items are now defined using custom macros (instead of the Q_CLASS_INFO macros).
+  These new macros automatically define a data member for the property and the corresponding setters and getters.
+- The coding guidelines have become stricter to increase clarity and facilitate maintenance.
+
+For more information, please refer to the \ref DeveloperGuide.
+
+*/

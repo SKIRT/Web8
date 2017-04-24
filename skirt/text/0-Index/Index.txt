@@ -4,6 +4,8 @@
 
 The <tt>SKIRT</tt> documentation is structured as follows:
 
+- The \ref ReleaseNotes list the changes relative to earlier versions.
+
 <b> Part I: Guides -- overall guidance and tutorials. </b>
 
   - The \ref ProjectOverview describes the various components of the <tt>SKIRT</tt> project.

@@ -12,6 +12,7 @@ This topic contains the following sections:
 - \ref InstallUnixGet
 - \ref InstallUnixBuild
 - \ref InstallUnixFinal
+- \ref InstallUnixResource
 
 
 \section InstallUnixTools Install the build tools (Mac/Unix)
@@ -383,5 +384,20 @@ $ skirt
 
 You can follow the instructions in the Terminal window to create a skirt parameter file or press [CTRL] + C to exit the
 program. For more information on using \c SKIRT, please refer to the \ref UserGuide.
+
+\section InstallUnixResource Downloading additional SKIRT resource files
+
+As a general rule, the \c SKIRT code repository includes the resource data files used by any of its classes. However,
+in some cases, the size of the file(s) prohibits including the resource in the code repository. For example, the files
+specifying the optical dust properties with support for polarization (i.e. the scattering matrix coefficients) are
+about 250 MB each.
+
+To download these additional "external" resources from the \c SKIRT web site, go to your \c SKIRT/git directory
+and execute the "downloadextdat.sh" bash shell script:
+
+    cd ~/SKIRT/git
+    ./downloadextdat.sh
+
+The resource files will be downloaded and placed in the \c SKIRT/extdat directory next to your \c SKIRT/git directory.
 
 */
