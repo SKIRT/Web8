@@ -163,7 +163,7 @@ You can now scroll through the list of functions by pressing ENTER.
 Another basic component that has been implemented in PTS is the <tt>Filter</tt> class. Import it in the following way:
 
 \verbatim
-from pts.core.basics.filter import Filter
+from pts.core.filter.filter import parse_filter
 \endverbatim
 
 The Filter class represents a photometric filter with a certain tranmission curve. The specifications of all of the
@@ -173,7 +173,7 @@ recognized: "IRAC.I1", "IRAC I1", "IRAC 3.6", "IRAC 3.6um", "IRAC 3.6mu", "I1", 
 "Spitzer 3.6", "IRAC_I1", "Spitzer_3.6", "IRAC_3.6". Specify one of these string as follows to create the filter:
 
 \verbatim
-irac_i1 = Filter.from_string("IRAC_I1")
+irac_i1 = parse_filter("IRAC_I1")
 \endverbatim
 
 Many other filters are possible. These include the GALEX filters, SDSS, all Spitzer bands, MIPS filters, Herschel (Pacs
