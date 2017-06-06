@@ -67,7 +67,7 @@ The source code for the <tt>SKIRT</tt> and <tt>PTS</tt> projects is publicly ava
 section \ref LegalInfo. The projects are hosted at <a href="https://github.com">GitHub.com</a> in the following
 repositories:
 
- - <a href="https://github.com/SKIRT/SKIRT">the <tt>SKIRT</tt> repository</a>
+ - <a href="https://github.com/SKIRT/SKIRT8">the <tt>SKIRT</tt> repository</a>
  - <a href="https://github.com/SKIRT/PTS">the <tt>PTS</tt> repository</a>
 
 This web site offers the documentation for the <tt>SKIRT</tt> and <tt>PTS</tt> projects, and is structured as follows:

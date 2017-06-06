@@ -146,12 +146,12 @@ repository you need a UGent login account and specific access rights granted by 
 \subsection InstallUnixGetPublic Use the public code repository
 
 The most recent stable version of the <tt>SKIRT</tt> source code is available from the
-<a href="https://github.com/SKIRT/SKIRT">public SKIRT GitHub repository</a> at <a href="https://github.com">GitHub.com</a>.
+<a href="https://github.com/SKIRT/SKIRT8">public SKIRT GitHub repository</a> at <a href="https://github.com">GitHub.com</a>.
 While anyone can freely retrieve the code from this repository, only the core \c SKIRT team
 has write access to it. To obtain the code, simply enter the following commands in a Terminal window:
 
     cd ~/SKIRT
-    git clone https://github.com/SKIRT/SKIRT.git git
+    git clone https://github.com/SKIRT/SKIRT8.git git
 
 To update your local copy of the source code after changes were made to the repository from which you cloned it, use:
 
@@ -215,7 +215,7 @@ been accepted, follow the instructions below.
 - In a Terminal window enter the following commands:
 
       cd ~/SKIRT
-      git clone git@github.ugent.be:SKIRT/SKIRT.git git
+      git clone git@github.ugent.be:SKIRT/SKIRT8.git git
 
 - You will see the following output:
 

@@ -129,10 +129,10 @@ repository.
 <b>Fork the public <tt>SKIRT</tt> repository</b>
 
 - In the search bar on top of the page, enter "SKIRT" to find the \c SKIRT repository.
-- Click on the repository listed as "SKIRT/SKIRT".
+- Click on the repository listed as "SKIRT/SKIRT8".
 - In the top right corner of the page, press "Fork"
 - You are immediately brought to a new repository "username/SKIRT", which is - at that moment - an exact clone of
-  the original "SKIRT/SKIRT" repository.
+  the original "SKIRT/SKIRT8" repository.
 
 <b>Link the forked public repository to your local repository</b>
 
@@ -173,10 +173,10 @@ repository.
 <b>Fork the private <tt>SKIRT</tt> repository</b>
 
 - Navigate to the github.ugent.be website and log in.
-- Go to the "SKIRT/SKIRT" page on github.ugent.be.
+- Go to the "SKIRT/SKIRT8" page on github.ugent.be.
 - In the top right corner of the page, press "Fork".
 - You are immediately brought to a new repository "username/SKIRT", which is - at that moment - an exact clone of
-  the original "SKIRT/SKIRT" repository.
+  the original "SKIRT/SKIRT8" repository.
 
 The new (forked) remote repository allows you to store your changes to the code on the github.ugent.be website. Since
 the repository is personal, only you can write to it. Still, you can request for the <tt>SKIRT</tt> team to incorporate
