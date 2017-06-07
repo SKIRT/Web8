@@ -1,0 +1,349 @@
+/**
+
+\page TutorialPolarization Dust scattering polarization signatures of spiral galaxies
+
+In this tutorial you will build a basic spiral galaxy model that includes the effects of polarization caused by the
+scattering of stellar radiation by spherical dust grains. You will discover a signature of the spiral arms in the
+polarization degree of the observed radiation, at least for this simplified model.
+
+\section TutorialPolarizationPre Getting ready
+
+This tutorial assumes that you have completed the introductory \c SKIRT tutorials titled "Monochromatic simulation of a
+dusty disk galaxy" and "Panchromatic simulation of a dust torus", or that you have otherwise acquired the working
+knowlegde introduced there. At the very least, before starting this tutorial, you should have installed the \c SKIRT
+code and a FITS file viewer (preferably DS9). If you have \c PTS installed (optional), you can also experiment with the
+visualization options it offers.
+
+To avoid spending time creating yet another \c SKIRT configuration file from scratch, the \c SKIRT web site offers a
+fully configured \em ski file that will serve as a basis for this advanced tutorial. Download the file \c
+tutorial_polarization_parameters.xml from the <a href="../downloads/index.html">SKIRT downloads page</a> and put it
+into your local working directory.
+
+
+\section TutorialPolarizationIntro Polarization background
+
+\subsection TutorialPolarizationIntroStokes Stokes vector
+
+The polarization state of electromagnetic radiation is commonly described by the Stokes vector, \f$\boldsymbol{S}\f$,
+
+\f[
+\boldsymbol{S} = \begin{pmatrix} I \\ Q \\ U \\ V \end{pmatrix},
+\f]
+
+where \f$I\f$ represents the intensity of the radiation, \f$Q\f$ and \f$U\f$ describe linear polarization, and \f$V\f$
+describes circular polarization. The degree of linear polarization,\f$P_{\text{L}}\f$, can be
+written as a function of the Stokes parameters,
+
+\f[
+P_{\text{L}} = \frac{\sqrt{Q^2+U^2}}{I}.
+\f]
+
+The (linear) polarization angle, \f$\gamma\f$, can be written as
+
+\f[
+\gamma = \frac12\arctan_2\left(\frac{U}{Q}\right),
+\f]
+
+where \f$\arctan_2\f$ denotes the inverse tangent function that preserves the quadrant. Combining these equations,
+we can also write
+
+\f[
+Q = I P_{\text{L}} \cos2\gamma,\\
+U = I P_{\text{L}} \sin2\gamma.
+\f]
+
+The values of \f$Q\f$ and \f$U\f$ depend on the polarization angle \f$\gamma\f$, which describes the angle between the
+direction of linear polarization and a given reference direction in the plane orthogonal to the propagation direction.
+The angle is measured counter-clockwise when looking at the source. The reference direction can be chosen arbitrarily
+as long as it is well defined and perpendicular to the propagation direction. However, when the polarization state
+changes as a result of an interaction (e.g., a scattering event), most recipes for properly adjusting the Stokes vector
+require the reference direction to have a specific orientation (e.g., lying in the scattering plane). Before applying
+the recipe, the existing reference direction must be rotated about the propagation direction to match this requirement.
+This is accomplished by multiplying the Stokes vector by a rotation matrix, \f${\bf{R}}(\varphi)\f$,
+
+\f[
+\boldsymbol{S}_\text{new} = {\bf{R}}(\varphi)\,\boldsymbol{S}.
+\f]
+
+A rotation about the direction of propagation by an angle \f$\varphi\f$, counter-clockwise when looking toward the
+source of the beam, is described by the matrix
+
+\f[
+{\bf{R}}(\varphi)
+=
+\begin{pmatrix}
+1 & 0 & 0 & 0 \\
+0 & \cos2\varphi & \sin2\varphi & 0 \\
+0 & -\sin2\varphi & \cos2\varphi & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}.
+\f]
+
+To record the polarization state change for a scattering event, the Stokes vector is multiplied by the Müller matrix,
+\f${\bf{M}}\f$, corresponding to the event, assuming that the reference direction lies in the scattering plane (as well
+as in the plane orthogonal to the propagation direction). The Müller matrix components depend on the geometry of the
+scattering event and the physical properties of the scatterer, and they often depend on the wavelength. In general, the
+Müller matrix is
+
+\f[
+{\bf{M}(\theta,\lambda)}
+=
+\begin{pmatrix}
+S_{11} & S_{12} & S_{13} & S_{14} \\
+S_{21} & S_{22} & S_{23} & S_{24} \\
+S_{31} & S_{32} & S_{33} & S_{34} \\
+S_{41} & S_{42} & S_{43} & S_{44}
+\end{pmatrix},
+\f]
+
+where \f$\theta\f$ is the angle between the propagation directions before and after the scattering event, and \f$\lambda\f$ is
+the wavelength of the radiation. For clarity of presentation, we drop the dependencies from the notation for the
+individual Müller matrix components. Including the reference direction adjustments before and after the actual
+scattering event, \f$\varphi\f$ and \f$\varphi_\text{new}\f$, the transformation of a Stokes vector for a scattering event can
+thus be written as
+
+\f[
+\boldsymbol{S}_\text{new} = \bf{R}(\varphi_\text{new})\,\bf{M}(\theta,\lambda)\,\bf{R}(\varphi)\,\boldsymbol{S}.
+\f]
+
+For scattering by spherical particles, the Müller matrix simplifies to
+\f[
+{\bf{M_\mathrm{Sph}}}(\theta,\lambda)
+=
+\begin{pmatrix}
+S_{11} & S_{12} & 0 & 0 \\
+S_{12} & S_{11} & 0 & 0 \\
+0 & 0 & S_{33} & S_{34} \\
+0 & 0 & -S_{34} & S_{33}
+\end{pmatrix},
+\f]
+again assuming that the reference direction lies in the scattering plane.
+The Müller matrices for a particular grain size and material can be calculated using Mie theory.
+
+For scattering by electrons, also called Thomson scattering, the Müller matrix is wavelength-independent and can be
+expressed analytically as a function of the scattering angle,
+
+\f[
+{\bf{M_\mathrm{Th}}}(\theta)
+=\frac12
+\begin{pmatrix}
+\cos^2\theta +1 & \cos^2\theta -1 & 0 & 0 \\
+\cos^2\theta -1 & \cos^2\theta +1 & 0 & 0 \\
+0 & 0 & 2\cos\theta & 0 \\
+0 & 0 & 0 &  2\cos\theta
+\end{pmatrix}.
+\f]
+
+\subsection TutorialPolarizationIntroConventions Conventions
+
+\image html TutorialPolarizationStokes.png
+
+<i>Illustration above</i>: The Stokes vector conventions recommended by the IAU and used in \c SKIRT. The radiation
+beam travels along its propagation direction, \f$\boldsymbol{k}\f$, out of the page. The electric field vector
+describes an ellipse over time. The linear polarization angle, \f$\gamma\f$, is given by the angle between the primary
+axis of the ellipse (green line) and the reference direction, \f$\boldsymbol{k}\f$. The position angle of the electric
+field vector increases with time, the beam has right-handed circular polarization.
+
+In \c SKIRT we define the Stokes vector following the recommendations of the International Astronomical Union, as
+presented in the previous subsection and illustrated in the figure above. Historically, however, authors have used
+various conventions for the signs of the Stokes parameters \f$U\f$ and \f$V\f$. For example, the polarization angle
+\f$\gamma\f$ is sometimes measured while looking toward the observer rather than toward the source, flipping the sign
+of both $U$ and $V$. Reversing the definition of circular polarization handedness also flips the sign of $V$. Assuming
+that the adopted conventions are properly documented, translating the values of the Stokes parameters from one
+convention into another is straightforward by flipping the signs appropriately.
+
+
+\section TutorialPolarizationSpiral Configuring a spiral galaxy with support for polarization
+
+\subsection TutorialPolarizationSpiralBase The basic configuration
+
+Rather than spending time creating yet another \c SKIRT configuration file from scratch, you can start from a
+preconfigured \em ski file offered for download on the \c SKIRT web site (see \ref TutorialPolarizationPre).
+As a second step you will then enable polarization in this configuration.
+
+Rename the downloaded file from \c tutorial_polarization_parameters.xml to a (shorter) name of your liking ending with
+the ".ski" filename extension, for example \c Spiral.ski. Run this \em ski file with \c SKIRT. While it is running
+(this will take several minutes), open the ski file in a text editor and examine its contents. You should recognize the
+following configuration elements (not necessarily in this order):
+
+ - a panchromatic simulation that uses one million photon packages for each wavelength
+ - a wavelength grid with a limited, optical range, and only three wavelength points
+ - a spatial geometry with four components:
+     - a flattened Sérsic bulge consisting of evolved stars (3500 K)
+     - a thicker exponential disk consisting of evolved stars (3500 K), with spiral arm structure
+     - a thinner exponential disk consisting of young stars (10000 K), with spiral arm structure
+     - an exponential dust disk with spiral arm structure (the arms in the young stellar disk and the dust disk trail
+       those in the evolved stellar population by varying the phase zero-points)
+ - a dust mixture called \c TrustMeanDustMix, which represents the dust properties used in the Gordon et. al 2017
+   \c TRUST benchmark (see <a href="../benchmarks/index.html">SKIRT benchmarks</a>)
+ - an adaptive octree grid
+ - six instruments at various inclinations and azimuth angles
+
+Also note the omission of a dust emission type and library, which means that there will be no dust emission stage in
+the simulation (in other words, dust emission is ignored). This ties in to the limited wavelength range and number of
+wavelength grid points. These choices were made to limit the runtime and can easily be adjusted if needed.
+
+After the \c SKIRT simulation completes, examine the output. View the total and scattered data frames at various
+inclinations and wavelengths until you are satisfied that the results are as expected.
+
+\subsection TutorialPolarizationSpiralEnab Enabling polarization
+
+Enabling polarization in this configuration is strikingly simple. Duplicate the \em ski file and rename the copy,
+for example to \c PolSpiral.ski. Open the new file in your text editor and look for the name of the dust mixture,
+i.e. \c TrustMeanDustMix. Replace \c TrustMeanDustMix by \c TrustPolarizedMeanDustMix. Done!
+
+Run the updated \em ski file with \c SKIRT, and read on while the simulation is running.
+
+As indicated in the introduction, \c SKIRT supports polarization of radiation by scattering of spherical dust grains.
+This feature is automatically enabled if the dust mixture(s) in the configuration offer the appropriate optical
+properties (i.e., essentially, the Müller matrix). In that case, the radiation's polarization properties (i.e., the
+Stokes vector) are tracked as the photon packages move through the dusty medium, and the FullInstrument records these
+properties as photon packages get detected. There is one important caveat: only the FullInstrument supports
+polarization. Note also that there is no support for polarized emission, although this could probably be implemented
+fairly easily.
+
+The \c TrustPolarizedMeanDustMix class implements optical and calorimetric properties for a "representative grain" of
+the grain population, i.e. integrated over the size distribution. This is fine for a treatment of scattering in the
+optical range, but when including dust emission the calculation requires specific information for multiple grain size
+bins. This is especially true for small grains that are not in local thermal equilibrium.
+
+For this purpose, \c SKIRT includes the \c PolarizedGraphiteGrainComposition and \c PolarizedSilicateGrainComposition
+classes that provide optical properties (including the Müller matrix) for graphite and silicate grains as a function of
+grain size. These classes are intended to be configured through the \c ConfigurableDustMix class. For example, one
+might configure a version of the \c MRNDustMix (Mathis, Rumpl & Nordsieck 1977) with polarization support as follows.
+
+\verbatim
+<mix type="DustMix">
+    <ConfigurableDustMix writeMix="true" writeMeanMix="true" writeSize="true">
+        <populations type="DustMixPopulation">
+            <DustMixPopulation numGrainSizes="3">
+                <composition type="GrainComposition">
+                    <PolarizedGraphiteGrainComposition/>
+                </composition>
+                <sizeDistribution type="GrainSizeDistribution">
+                    <PowerLawGrainSizeDistribution proportionalityFactor="7.413102413e-31"
+                        minSize="0.005 micron" maxSize="0.25 micron" exponent="3.5"/>
+                </sizeDistribution>
+            </DustMixPopulation>
+            <DustMixPopulation numGrainSizes="4">
+                <composition type="GrainComposition">
+                    <PolarizedSilicateGrainComposition/>
+                </composition>
+                <sizeDistribution type="GrainSizeDistribution">
+                    <PowerLawGrainSizeDistribution proportionalityFactor="7.762471166e-31"
+                        minSize="0.005 micron" maxSize="0.25 micron" exponent="3.5"/>
+                </sizeDistribution>
+            </DustMixPopulation>
+        </populations>
+    </ConfigurableDustMix>
+</mix>
+\endverbatim
+
+These classes load the optical dust properties with support for polarization from resource files that are not included
+in the code repository. These additional resource files can be downloaded fron the \c SKIRT web site as explained
+in the Installation Guide. Look for the section "Downloading additional SKIRT resource files" at the end of the topic
+"Basic install using the command line".
+
+Finally, \c SKIRT also includes the class \c ElectronDustMix, which implements wavelength-independent Thomson
+scattering. This class was implemented as part of the test scheme for the polarization features in \c SKIRT.
+
+
+\section TutorialPolarizationVisual Visualizing the results
+
+After the SKIRT simulation with polarization support completes, examine the output directory. For each instrument,
+there now are three extra FITS files containing the Stokes Q, U, and V components, in addition to the "totals" file
+containing the intensity (i.e. the Stokes I component).
+
+Open the Q and U components for an instrument with face-on inclination in a FITS file viewer, and open an inspector
+showing a histogram of the pixel values (DS9->Scale->Parameters). In contrast to the intensity, the other Stokes
+components can have negative values. To enhance visualization of the spatial structure, you may need to play with the
+color bar scheme, scale and range. It might help to clip the values at zero (i.e. only showing positive values) to
+avoid problems with typical color scales such as the log scale.
+
+Compare the 2D structure of the Q and U components. Examine the differences as you browse through the wavelengths.
+
+While the Stokes components correspond to the output of an actual observation, it is much easier to interprete
+quantities such as the polarization degree and angle, which can easily be calculated from the Stokes vector.
+
+\subsection TutorialPolarizationVisualPTS Using PTS
+
+If you have the Python Toolkit for \c SKIRT (PTS) installed, you can easily generate plots of polarization degree and
+angle for the output of a SKIRT simulation. To generate a default polarization map per instrument and per wavelength,
+simply perform (the PDF plot files are placed in a subdirectory called \c _polarization):
+
+\verbatim
+$ cd <SKIRT-output-directory>
+$ pts plotpolarization
+\endverbatim
+
+To get a list of options for the plotpolarization command, enter:
+
+\verbatim
+$ pts plotpolarization --help
+\endverbatim
+
+For example, to generate a plot of the linear polarization degree averaged over the Y-axis (in addition to the
+polarization map), for a particular instrument and wavelength, you might enter:
+
+\verbatim
+$ pts plotpolarization -sim PolSpiral -i i090a120 -w 1 --polAvY
+\endverbatim
+
+\subsection TutorialPolarizationVisualScript Using your own scripts
+
+Alternatively, you can use plain Python (or any other scripting language or system that supports FITS files)
+to process the SKIRT output to your liking. For example:
+
+\verbatim
+import numpy as np
+import astropy.io.fits as pyfits
+
+I = pyfits.getdata("PolSpiral_i000a120_total.fits")
+Q = pyfits.getdata("PolSpiral_i000a120_stokesQ.fits")
+U = pyfits.getdata("PolSpiral_i000a120_stokesU.fits")
+V = pyfits.getdata("PolSpiral_i000a120_stokesV.fits")
+
+PL = np.sqrt(Q*Q + U*U) / I
+GAMMA = 0.5 * (np.arctan2(U,Q) + np.pi)
+
+pyfits.writeto("PolSpiral_i000a120_PL.fits", PL)
+pyfits.writeto("PolSpiral_i000a120_GAMMA.fits", GAMMA)
+\endverbatim
+
+
+\section TutorialPolarizationInterp Interpreting the results
+
+\image html TutorialPolarizationSpirals.jpg
+
+The above figure shows surface brightness maps (color scale) overlaid with linear polarization maps (line segments) for
+variations on the spiral galaxy model built in this tutorial, observed at a wavelength of \f$1 \mu\mathrm{m}\f$. The
+top row shows the model face-on, the second row inclined (\f$53^\circ\f$), and the third row edge-on. The panels in the
+bottom row plot the linear polarization degree for the edge-on view, averaged over the vertical axis. This average is
+obtained by summing each individual component of the Stokes vector and calculating the polarization degree from these
+totals.
+
+The leftmost column shows the reference model (i.e. using the instrument with a zero azimuth). The polarization degree
+is up to 1\% around the central part of the models. The orientation of the polarization is circular around the central
+bulge, and for the inclined view the polarization degree left and right of the center increases, while it decreases
+behind and in front of it. There is a clear spiral structure in the polarization map. The linear polarization degree is
+higher in the arm regions and disappears in the interarm region. The maximum polarization degree is slightly inward
+from the regions of the arms with the highest flux. Regions with higher linear polarization (up to 2\%) clearly trace
+the spiral arms and are prominent at all inclinations, including the edge-on view. The maxima in the polarization
+signature of the edge-on view match the positions of the spiral arms along the line of sight.
+
+To verify this, the middle column of the figure shows the same model using the instrument with an azimuth angle of
+\f$120^\circ\f$. The peaks in the polarization signature align with the tangent points of the spiral arms, which are
+now farther out from the center of the galaxy.
+
+The rightmost column of the figure shows a model that has no spiral arm perturbations in the stellar disks. The
+polarization signature remains essentially unchanged; the maxima are slightly higher (by a factor of up to 1.2), but
+the structure is the same. This seems to confirm that the polarization signature is created by the distribution of the
+dust and not by the distribution of the sources.
+
+These results imply that polarization measurements could be used, at least in principle, to study the spiral structure of
+edge-on spiral galaxies, where intensity measurements alone have limited diagnostic power.
+
+
+<b><i>Congratulations, you made it to the end of this tutorial!</i></b>
+
+*/

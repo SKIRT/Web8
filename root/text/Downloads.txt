@@ -23,6 +23,8 @@ directory called \c SKIRT/extdat next to the \c SKIRT/git and \c SKIRT/release d
  - <a href="../downloads/eagle_stars.dat">eagle_stars.dat</a>: Star particles from EAGLE SPH simulation
  - <a href="../downloads/eagle_gas.dat">eagle_gas.dat</a>: Gas particles from EAGLE SPH simulation
  - <a href="../downloads/kh_amr.dat">kh_amr.dat</a>: Kelvin-Helmholtz instability in MPI-AMRVAC output format
+ - <a href="../downloads/tutorial_polarization_parameters.xml">tutorial_polarization_parameters.xml</a>:
+            Configuration file to serve as a basis for the tutorial on polarization
 
 <b><tt>FitSKIRT</tt> tutorials:</b>
 
