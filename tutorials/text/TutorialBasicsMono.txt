@@ -407,7 +407,7 @@ For this tutorial simulation, select a 2D axisymmetric dust grid in cylindrical 
 the radial direction and a symmetric power-law mesh in the vertical direction. Choosing a symmetric vertical mesh
 ensures that the grid cells are small in the center of the mesh and larger to the top and bottom of the mesh. The
 radial mesh is by automatically symmetric relative to the origin (by definition). Here we want the grid cells to be
-small near \f$R=0\f$, i.e. at the lower coordinate of the mesh. Specify a grid radius of 25 kpc and grid height of 10
+small near \f$R=0\f$, i.e. at the lower coordinate of the mesh. Specify a grid radius of 20 kpc and grid height of 10
 kpc centered on the origin. This grid size should be sufficient to contain the vast majority of the dust. Specify 100
 cells in each direction, so that there are 10000 cylindrical cells in total. Further specify a ratio of the width of
 the outermost to the innermost bin of 20 in the radial and 30 in the vertical direction; the ratio is somewhat larger

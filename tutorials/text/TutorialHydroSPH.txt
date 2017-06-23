@@ -258,12 +258,11 @@ must be adjusted to the configuration space of the input data. For the \c eagle_
 specify a cube of 40 kpc in each direction, centered on the origin.
 
 For this tutorial simulation, acceptable values for the grid refinement level are a minimum of 3 and a maximum of 7.
-For high-quality simulations, you will need to raise the maximum level to 10 or more, so that the resulting octtree
-contains more and smaller cells. Of course this strongly increases the execution time. For this tutorial simulation,
-the maximum fraction of dust mass in each cell may be set to a value of \f$2\times 10^{-5}\f$. For high-quality
-simulations, this parameter should be set at higher (and thus less stringent) values, resulting in an octtree with less
-cells, which lowers accuracy as well as execution time. Leave the other parameters (some of which are not shown) to
-their default values.
+The maximum fraction of dust mass in each cell may be set to a value of \f$2\times 10^{-5}\f$. For high-quality
+simulations, you will need to raise the maximum level to 10 or more, and the maximum fraction of dust mass should be
+set to a smaller (and thus more stringent) value. This will result in an octtree with more and smaller cells,
+increasing accuracy as well as execution time. Leave the other parameters (some of which are not shown) to their
+default values.
 
 \verbatim
    ...
