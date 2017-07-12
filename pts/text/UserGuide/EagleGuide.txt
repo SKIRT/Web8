@@ -1,17 +1,19 @@
 /**
 
-\page UserEagle Using PTS and SKIRT to postprocess galaxies from the EAGLE suite of simulations
+\page UserEagle Post-processing EAGLE galaxies with PTS and SKIRT
 
 \section EagleIntro Introduction
 
-EAGLE is a cosmological hydrodynamical simulation conducted by the VIRGO consortium. The simulation
-includes detailed recipes for star formation, gas cooling, stellar evolution, and feedback from supernovae and AGN.
-Using more than 10 billion particles, it numerically resolves thousands of galaxies in a representative cosmological
-volume that also contains groups and clusters.
+The EAGLE project (<a href="http://adsabs.harvard.edu/abs/2015MNRAS.446..521S">Schaye et al. 2015</a>) consists of a
+suite of SPH simulations that follow the formation of galaxies and large-scale structure in cosmologically
+representative volumes. EAGLE employs sub-grid recipes for radiative cooling, star formation, stellar mass loss, and
+feedback from stars and acccreting black holes. The reference simulation numerically resolves thousands of galaxies in
+a 100 Mpc box that also contains groups and clusters.
 
-The EAGLE simulation output is stored in a (large) set of HDF5 data files on the Cosma high-performance
-computer in Durham, where the simulation was performed. The output is organized in \em snapshots, where
-each snapshot represents the state of the universe at a particular time (or equivalently, redshift).
+The EAGLE simulation output is available through the <a href="http://icc.dur.ac.uk/Eagle/database.php">EAGLE data web
+interface</a>. Integrated EAGLE galaxy properties can be obtained through SQL queries, and full particle data can be
+downloaded for further processing. The particle data are stored in a (large) set of HDF5 data files organized in \em
+snapshots, where each snapshot represents the state of the universe at a particular time (or equivalently, redshift).
 
 SKIRT is a Monte Carlo dust radiative transfer code developed by the Astronomical Observatory at the Ghent University.
 It is ideally suited to post-process the results of the EAGLE simulation to calculate observable properties
@@ -19,10 +21,11 @@ It is ideally suited to post-process the results of the EAGLE simulation to calc
 
 The Python toolkit for SKIRT (PTS) offers functionality related to working with SKIRT, including tools to
 import data, visualize results, and run test cases. This page provides an overview of the portion of PTS that
-is dedicated to the EAGLE-SKIRT cooperation. Functionality offered by PTS in this area includes:
+is dedicated to post-processing EAGLE galaxies with SKIRT. Specific functionality offered in this area includes:
   - extracting relevant information from the EAGLE output in a format that can be used in SKIRT
   - scheduling large numbers of SKIRT simulations and managing/retrieving the results
-  - visualizing the SKIRT results in meaningful ways
+  - processing and visualizing the SKIRT results in meaningful ways
+
 
 \section EagleBasic The basics
 
@@ -31,44 +34,89 @@ is dedicated to the EAGLE-SKIRT cooperation. Functionality offered by PTS in thi
 For an overview of the PTS directory structure at large, refer to \ref DevDirs.
 For information on how to use PTS command line scripts, refer to \ref UserUseDo.
 
-The source code for the EAGLE-dedicated classes and functions is grouped into the \c eagle directory. This
-code can freely use the functionality offered by the classes and functions in the \c pts directory.
+The source code for the EAGLE-dedicated classes and functions is grouped into the \c pts/eagle directory. This code can
+freely use the functionality offered by the classes and functions in any of the other \c pts subdirectories.
 
-The EAGLE-dedicated command-line scripts share the \c do directory with the other PTS command-line scripts,
-but their file names start with the \c "eagle_" prefix. The do.__main__ package in the \c do directory implements
-a special trick to avoid the need for typing this prefix on the command line. For example, to run a script
-called "eagle_run.py" you can simply type "pts run", as long as there are no name clashes with other scripts.
+The EAGLE-dedicated command line scripts reside in the \c pts/do/eagle directory. Assuming you have added the proper
+commands to your shell login script (see \ref InstallMacSetUp_path ore \ref InstallUbuntuSetUp_path), you can execute
+the EAGLE script called \c show.py by entering "pts eagle/show".
 
-\subsection EagleBasicPins The underpinnings
+The directory paths for input and output files used by the PTS EAGLE tools are defined in \c pts/eagle/config.py and
+can be easily adjusted to the local environment.
 
-The eagle.config package defines configuration settings for the EAGLE-SKIRT tools, including user name, host name
-and relevant directory paths. All other packages import these centralized configuration settings.
+\subsection EagleBasicRuns SKIRT runs
 
-To help manage literally thousands of SKIRT simulations and their results, the EAGLE-SKIRT tools rely
-on a simple SQL database implemented with SQLite (from within Python). Each record in the database represents
-a single SKIRT simulation and holds information on the current status of the simulation, the EAGLE data fed to
-the simulation, and some basic characteristics of the galaxy being simulated. Refer to the eagle.database package
-for a description of the fields maintained for each record in this SKIRT-runs database.
+To help manage many thousands of SKIRT simulations and their results, the PTS EAGLE tools rely on a simple SQL database
+implemented from within Python. Each record in the database represents a single SKIRT simulation called a "SKIRT run".
+The record contains some basic information on the EAGLE galaxy being simulated, on the SKIRT parameters being used, and
+on the current status of the simulation. Refer to the \c pts.eagle.database package for a description of the fields
+maintained for each record in this SKIRT-runs database.
 
-The eagle.database.Database class offers a number of important primitive operations on the SKIRT-runs database.
-Some of these functions are intended for interactive use during database maintenance operations (e.g. adding an
-extra field) and thus serve as an example rather than as a polished tool. Many other functions (e.g. selecting
-records in the database or updating the value of a field) are intented for use in production code and are invoked
-often from the other packages.
+Each record in the SKIRT-runs database, and thus each SKIRT simulation run, is automatically assigned a unique integer
+identifier, called a "run-id". One consequence is that, when a particular EAGLE galaxy is post-processed multiple times,
+perhaps with a different SKIRT parameter file, each simulation run is assigned a different run-id. The run-id also
+determines the location of the SKIRT input/output files related to this run
+inside a subdirectory of the results directory configured in the \c pts.eagle.config
+script.
 
-Each record in the SKIRT-runs database is automatically assigned a unique integer identifier, called \em run-id.
-The run-id is used as the name of a directory containing the SKIRT in/out data for this run. These directories
-are located in the results directory configured in the the eagle.config package.
-An instance of the eagle.skirtrun.SkirtRun class manages the files related to a particular SKIRT run,
-and provides access to corresponding pts.skirtsimulation.SkirtSimulation and pts.skirtexec.SkirtExec objects.
+Specifically, the files for a SKIRT run are placed in a two-level subdirectory hierarchy with names based on the
+run-id. The bottom-level directories are named according to the pattern "r-nnnn-nnn" where the literal \em r stands for
+"run" and the \em n stand for the consecutive digits of the run-id. The dashes are included for readability. The
+top-level directories are named according to the pattern "g-nnnn" where the literal \em r stands for "group" and the
+\em n stand for the most significant digits of the run-id. Each top-level directory contains the 1000 bottom-level
+directories with corresponding most-significant digits.
 
-The eagle.scheduler package offers functions to schedule EAGLE-SKIRT jobs according to the specifications
-defined in the SKIRT-run database. When used on the Durham Cosma cluster, these functions create and submit
-jobs to the cluster's queueing system. The eagle.runner package offers a function to actually perform a
-SKIRT simulation on an EAGLE galaxy according to the specifications defined in a particular SKIRT-runs database record.
-This function is typically invoked as part of a queued cluster job, but it can be used on a regular computer as well.
+Inside each run directory the data is organized as follows:
+  - the SKIRT parameter file (ski file) is placed immediately inside the run directory
+  - input data for SKIRT is placed in the "in" subdirectory
+  - output data from SKIRT is placed in the "out" subdirectory
+  - data derived from the SKIRT results (e.g. for visualization) are placed in the "vis" subdirectory
 
-\section EagleFlow EAGLE-SKIRT workflow
+\subsection EagleBasicFlow Workflow
+
+The workflow implemented by the EAGLE PTS tools and tracked in the SKIRT-runs database includes a number of \em stages,
+i.e. workflow steps that need to be accomplished. The most important stages are:
+  - insert: add the record to the SKIRT-runs database, properly completing all of its fields.
+  - extract: extract the particle data for the galaxy to be simulated from the appropriate EAGLE snapshot.
+  - simulate: perform the SKIRT simulation for the galaxy.
+  - observe: calculate the desired observables such as broadband magnitudes or images from the SKIRT results.
+
+These operations are performed in separate stages because the resource requirements differ substantially. For example,
+extraction uses only a single thread/core, while a SKIRT simulation can (and should) be heavily parallelized. Also,
+this setup allows adjusting and re-running, say, the observe stage without having to rerun the SKIRT simulation.
+
+Within each workflow stage, the database also tracks the \em status of the operation, which is one of the following:
+  - scheduled: the operation is ready to proceed (this assumes the previous stages have been completed successfully).
+  - running: the operation is currently being performed.
+  - failed: the operation failed.
+  - succeeded: the operation has been completed successfully.
+
+This workflow is supported by the various scripts in the \c pts/do/eagle folder. The most important ones are :
+  - \c show: list a selection of SKIRT-run records.
+  - \c status: list a summary of the workflow status for a set of SKIRT-run records.
+  - \c update: update a given field in a selection of SKIRT-run records (for manual tweaks or corrections).
+  - \c insert: insert SKIRT-run records for EAGLE galaxies selected from the public EAGLE database.
+  - \c advance: advance SKIRT-runs with "succeeded" status to the next workflow stage.
+  - \c perform: interactively perform a workflow stage for scheduled SKIRT-runs (not for stages that need parallel execution)
+  - \c submit: submit batch jobs to perform a workflow stage for scheduled SKIRT-runs
+  - \c build: build one of several visualization options for a given set of SKIRT-runs (assumes the observe stage has completed).
+  - \c collect: collect results for a set of SKIRT-runs into a single file (assumes the observe stage has completed).
+
+The following section presents the usage of these scripts as part of a typical workflow. For more specific details,
+refer to the documentation of each script.
+
+
+\section EagleFlow The EAGLE PTS workflow
+
+\subsection EagleFlowConfig Configuration
+
+Before using the EAGLE PTS tools, you need to:
+  - download or otherwise ensure access to the relevant EAGLE snapshot data files (see \ref EagleIntro).
+  - install SKIRT and PTS (see the respective installation guides).
+  - optionally create and checkout a new git branch so that your changes are not in the master branch
+    (this is not important if you do not plan to contribute code to the PTS repository).
+  - update the path definitions in \c pts/eagle/config.py to values appropriate for your operating environment
+    (see pts.eagle.config).
 
 \subsection EagleFlowStart Getting started
 
