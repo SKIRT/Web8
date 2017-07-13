@@ -26,6 +26,10 @@ is dedicated to post-processing EAGLE galaxies with SKIRT. Specific functionalit
   - scheduling large numbers of SKIRT simulations and managing/retrieving the results
   - processing and visualizing the SKIRT results in meaningful ways
 
+These tools implement the procedures described in <a href="http://adsabs.harvard.edu/abs/2016MNRAS.462.1057C">Camps et
+al. 2016</a> and <a href="http://adsabs.harvard.edu/abs/2017MNRAS.470..771T">Trayford et al. 2017</a>, and were used to
+produce the results presented in <a href="">Camps et al. in prep</a>
+
 
 \section EagleBasic The basics
 
@@ -74,7 +78,7 @@ Inside each run directory the data is organized as follows:
 
 \subsection EagleBasicFlow Workflow
 
-The workflow implemented by the EAGLE PTS tools and tracked in the SKIRT-runs database includes a number of \em stages,
+The workflow implemented by the PTS EAGLE tools and tracked in the SKIRT-runs database includes a number of \em stages,
 i.e. workflow steps that need to be accomplished. The most important stages are:
   - insert: add the record to the SKIRT-runs database, properly completing all of its fields.
   - extract: extract the particle data for the galaxy to be simulated from the appropriate EAGLE snapshot.
@@ -106,191 +110,379 @@ The following section presents the usage of these scripts as part of a typical w
 refer to the documentation of each script.
 
 
-\section EagleFlow The EAGLE PTS workflow
+\section EagleFlow The PTS EAGLE workflow
 
-\subsection EagleFlowConfig Configuration
+\subsection EagleFlowConf Configuration
 
-Before using the EAGLE PTS tools, you need to:
-  - download or otherwise ensure access to the relevant EAGLE snapshot data files (see \ref EagleIntro).
-  - install SKIRT and PTS (see the respective installation guides).
-  - optionally create and checkout a new git branch so that your changes are not in the master branch
-    (this is not important if you do not plan to contribute code to the PTS repository).
-  - update the path definitions in \c pts/eagle/config.py to values appropriate for your operating environment
-    (see pts.eagle.config).
+Before using the PTS EAGLE tools, you need to install and configure the relevant components as follows:
 
-\subsection EagleFlowStart Getting started
+  - Download or otherwise ensure access to the relevant EAGLE snapshot data files (see \ref EagleIntro).
+  - Install SKIRT and PTS (see the respective installation guides).
+  - Optionally create and checkout a new git branch in the PTS repository so that your changes to the Python code
+    are not in the master branch (this is only important if you plan to contribute code to the PTS repository).
+  - Update the path definitions in \c pts/eagle/config.py to values appropriate for your operating environment
+    (see pts.eagle.config). This includes paths to the EAGLE snapshots that you will be using, and to directories
+    for storing the files used and produced by the EAGLE PTS workflow.
+  - Create a text file called \c public_eagle_database_account_info.txt in your database directory (configured
+    per the previous item) that contains your public EAGLE database account name and password (on a single line,
+    separated by a space). For security reasons, change the access rights of this file so that it is not readable
+    by other users.
 
-Setting up the EAGLE-SKIRT workflow for the first time on a new computer involves:
-  - editing the \em config.py source file in the \c eagle directory to include the path definitions
-    and other settings appropriate for the platform (see eagle.config);
-  - creating the SKIRT-runs database from an interactive Python session by invoking the
-    eagle.database.Database.createtable() function:
+\subsection EagleFlowCrea Create the SKIRT-runs database
+
+As a final step in preparing the PTS EAGLE workflow, you need to create and initialize the SKIRT-runs database that
+will track all operations. There is no ready-made script to accomplish this, since it usually needs to happen only once
+(unless you want to start over at some point, erasing all workflow history). You can copy the following lines into an
+ad-hoc Python script and execute the script, or simply enter (copy/paste) the lines in an interactive Python session:
 
 \verbatim
-import eagle.database
-db = eagle.database.Database()
+from pts.eagle.database import Database
+db = Database()
 db.createtable()
 db.close()
 \endverbatim
 
-When requirements and functionalities evolve, it is possible to add extra fields to the database records
-throught the eagle.database.Database.addfield() function, or perform other database maintenance tasks by executing
-"raw" SQL statements through the eagle.database.Database.execute() function.
-See <a href="http://www.sqlite.org/lang.html">www.sqlite.org</a> for information on the SQL dialect supported by
-the SQLite library version 3.7.3.
+This creates the SKIRT-runs database file in your database directory (configured in \c pts/eagle/config.py) and
+adds a single table with the appropriate fields for tracking SKIRT-runs. A description of the fields is provided
+in the pts.eagle.database package.
 
-Before making these kind of changes
-to the database, always make a backup through the eagle.database.backup() function.
-
-\subsection EagleFlowCat Snapshots and catalogs
-
-After configuring a new default EAGLE snapshot (see eagle.config) for the first time, you need to construct a catalog
-for the galaxies in the snapshot. To do this, run the \em eagle_catalog script:
-
-\verbatim
-$ pts catalog
-Opening the snapshot...
-Directory: /Users/pcamps/EAGLE/Snapshots/L0012N0188REF
-...
-Do you want to build the catalog for Ref12 at redshift 0? (y/n) yes
-Building catalog...
-...
-done.
-\endverbatim
+\note If and when the requirements and functionalities of your workflow would evolve, it is possible to add extra fields to
+the database records throught the pts.eagle.database.Database.addfield() function, or perform other database
+maintenance tasks by executing "raw" SQL statements through the pts.eagle.database.Database.execute() function. See <a
+href="http://www.sqlite.org/lang.html">www.sqlite.org</a> for information on the SQL dialect supported by the SQLite
+library. Before making these kind of changes to the SKIRT-runs database, always make a backup through the
+pts.eagle.database.backup() function.
 
 \subsection EagleFlowSki SKIRT parameter files
 
-You need to provide one or more ski files (SKIRT parameter files) in the directory specified in eagle.config
-to serve as a template for controlling the actual SKIRT simulations. Attributes that vary with the
-galaxy being simulated will be automatically replaced in the ski file before the simulation is started.
-These include for example the input filenames for star and gas particles, the extent of the dust grid and the
-instruments, and the number of photon packages.
+You need to provide one or more SKIRT parameter files (\em ski files) in the templates directory configured in \c
+pts/eagle/config.py to serve as a template for controlling the actual SKIRT simulations. Below is an example ski file
+that can be used in the context of the PTS EAGLE workflow.
+
+\code{.xml}
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A SKIRT parameter file © Astronomical Observatory, Ghent University -->
+<skirt-simulation-hierarchy type="MonteCarloSimulation" format="6.1" producer="SKIRT v8.0">
+    <PanMonteCarloSimulation numPackages="5e5" minWeightReduction="1e4" minScattEvents="0" scattBias="0" continuousScattering="false">
+        <random type="Random">
+            <Random seed="4357"/>
+        </random>
+        <units type="Units">
+            <ExtragalacticUnits fluxOutputStyle="Frequency"/>
+        </units>
+        <wavelengthGrid type="PanWavelengthGrid">
+            <FileWavelengthGrid writeWavelengths="true" filename="pan_v6_wavelengths.dat"/>
+        </wavelengthGrid>
+        <stellarSystem type="StellarSystem">
+            <StellarSystem emissionBias="0.5">
+                <components type="StellarComp">
+                    <SPHStellarComp filename="galaxy_stars.dat" importVelocity="false" writeLuminosities="false">
+                        <sedFamily type="SEDFamily">
+                            <BruzualCharlotSEDFamily/>
+                        </sedFamily>
+                    </SPHStellarComp>
+                    <SPHStellarComp filename="galaxy_hii.dat" importVelocity="false" writeLuminosities="false">
+                        <sedFamily type="SEDFamily">
+                            <MappingsSEDFamily/>
+                        </sedFamily>
+                    </SPHStellarComp>
+                </components>
+            </StellarSystem>
+        </stellarSystem>
+        <dustSystem type="PanDustSystem">
+            <PanDustSystem numSamples="100" writeConvergence="true" writeDensity="false" writeDepthMap="false"
+                           writeQuality="false" writeCellProperties="true" writeCellsCrossed="false" writeStellarDensity="false"
+                           includeSelfAbsorption="true" writeTemperature="false" emissionBias="0" emissionBoost="1"
+                           numCycles="0" writeEmissivity="false" writeISRF="false">
+                <dustDistribution type="DustDistribution">
+                    <SPHDustDistribution filename="galaxy_gas.dat" dustFraction="0.3" maxTemperature="8000 K">
+                        <dustMix type="DustMix">
+                            <ZubkoDustMix writeMix="false" writeMeanMix="false" writeSize="false"
+                                          numGraphiteSizes="15" numSilicateSizes="15" numPAHSizes="10"/>
+                        </dustMix>
+                    </SPHDustDistribution>
+                </dustDistribution>
+                <dustGrid type="DustGrid">
+                    <OctTreeDustGrid writeGrid="false" minX="-3e4 pc" maxX="3e4 pc" minY="-3e4 pc" maxY="3e4 pc" minZ="-3e4 pc" maxZ="3e4 pc"
+                                     minLevel="4" maxLevel="10" searchMethod="Neighbor" numSamples="100"
+                                     maxOpticalDepth="0" maxMassFraction="3e-6" maxDensityDispersion="0" useBarycentric="false"/>
+                </dustGrid>
+                <dustEmissivity type="DustEmissivity">
+                    <TransientDustEmissivity/>
+                </dustEmissivity>
+                <dustLib type="DustLib">
+                    <AllCellsDustLib/>
+                </dustLib>
+            </PanDustSystem>
+        </dustSystem>
+        <instrumentSystem type="InstrumentSystem">
+            <InstrumentSystem>
+                <instruments type="Instrument">
+                    <SEDInstrument instrumentName="xy" distance="20 Mpc" inclination="0 deg" azimuth="0 deg" positionAngle="90 deg"/>
+                    <SEDInstrument instrumentName="xz" distance="20 Mpc" inclination="90 deg" azimuth="-90 deg" positionAngle="0 deg"/>
+                    <SEDInstrument instrumentName="rn" distance="20 Mpc" inclination="0 deg" azimuth="0 deg" positionAngle="0 deg"/>
+                </instruments>
+            </InstrumentSystem>
+        </instrumentSystem>
+    </PanMonteCarloSimulation>
+</skirt-simulation-hierarchy>
+\endcode
+
+The ski file should specify three SPH input files (one for stellar particles, one for star-forming regions, and one for
+gas particles, from which the distribution of diffuse dust is derived) and three instruments with the names "xy", "xz"
+and "rn" (for random). Attributes that vary with the galaxy being simulated will be automatically replaced in the ski
+file before the simulation is started. These include the number of photon packages, the three SPH input filenames, the
+extent of the dust grid, and the viewing angles of the random instrument.
+
+The wavelength grid referred to in the ski file (\c pan_v6_wavelengths.dat in the example) must also be placed in the
+templates directory. This file is automatically copied to the SKIRT input folder for each simulation.
+
+Refer to the SKIRT documentation and tutorials for more information on how to create ski files and select appropriate
+parameters.
 
 \subsection EagleFlowPop Populating the database
 
 The first step in a typical workflow is to populate the SKIRT-runs database with records describing the SKIRT
-simulations you'd like to perform. This process involves selecting a number of galaxies (identified by halo group and
-subgroup numbers) in the EAGLE snaphot for a particular redshift, and identifying the ski file template that will
-be used to control the actual simulation.
+simulations you'd like to perform. This process involves selecting a number of galaxies in a particular EAGLE model,
+and identifying the ski file template that will be used to control the simulations.
 
-The \c eagle_insert command-line script offers a (currently quite primitive) implementation of this workflow step.
-The script expects exactly five command-line arguments specifying respectively:
+The \c eagle/insert command (pts.do.eagle.insert) offers an example implementation of this workflow step.
+The script expects five command-line arguments specifying respectively:
+ - label: a label that will identify the set of inserted records in the SKIRT-runs database
+ - eaglesim: the name identifying the EAGLE simulation or model from which to extract galaxies
+ - minstarmass: minimum stellar mass within 30kpc aperture, in log10 of solar mass units
+ - maxstarmass: maximum stellar mass within 30kpc aperture, in log10 of solar mass units
+ - skitemplate: the name of the ski file template (without extension) to be used for these runs
 
- - a label that will identify the set of inserted records in the database
- - the name of the ski file template (without extension) to be used for these runs
- - a minimum number of particles for stars and gas (same minimum for each particle type)
- - a minimum stellar mass (in solar mass units)
- - a maximum stellar mass (in solar mass units)
-
-The script shows the records that will be inserted into the database, and offers the user a chance
-to accept or reject the additions. For example:
+The script shows the number of records that will be inserted into the database, and offers the user a chance
+to accept or reject the operation. For example:
 
 \verbatim
-$ pts insert MyTest oligo 20000 1e9 1e10
-Executing: MyTest oligo 20000 1e9 1e10
-Opening the snaphot...
-Box size:  100.0 Mpc
-Redshift:  0.000
-Expansion: 100.0%
-Files:     256
-Star particles: 170,562,276
-Gas particles:  909,733,923
-['runid', 'username', 'label', 'runstatus', ... 'groupnr', 'subgroupnr', ..., 'skitemplate']
-(10, 'pcamps', 'MyTest', 'inserted', ..., 1110, 0, 20344, 21261, ..., 'oli')
-(11, 'pcamps', 'MyTest', 'inserted', ..., 1192, 0, 20116, 20449, ..., 'oli')
-...
-(16, 'pcamps', 'MyTest', 'inserted', ..., 1495, 0, 20363, 20591, ..., 'oli')
---> Would you like to commit these 7 new records to the database? [y/n]: y
-New records were committed to the database
+$ pts eagle/insert testA RefL0100N1504 10.0 10.1 sed_v4
+Executing: eagle/insert.py testA RefL0100N1504 10.0 10.1 sed_v4
+Querying public EAGLE database...
+Selected 7784 galaxies from RefL0100N1504 with stellar mass 10^10.0 to 10^10.1
+SKIRT-runs will be inserted with label testA and ski template sed_v4
+--> Would you like to insert 7784 new SKIRT-runs? [y/n]: y
+7784 new SKIRT-runs were inserted with run-ids 1-7784
 $
 \endverbatim
 
-The label field (here set to 'MyTest') serves to identify related records so that they can be managed as a group.
+\note It should be straightforward to adjust the \c eagle/insert script to accomodate other types of galaxy selections.
+Refer to the documentation for the public EAGLE database for information on how to craft an appropriate SQL query for
+your purposes.
 
-The \c eagle_show command-line script lists selected records in the database, using a general SQL query.
-For example the following command would list the records just inserted:
+\subsection EagleFlowShow Showing SKIRT-run records
 
-\verbatim
-$ pts show "label='MyTest'"
-...
-\endverbatim
-
-The \c eagle_update command-line script similarly allows updating the value of a particular field in selected records.
-Just as with insertion of new record, the update script shows the records that will be updated, and offers the user
-a chance to accept or reject the modifications.
-For example the following command would update the value of the 'skitemplate' field for records in the 'MyTest'
-set that have not yet been scheduled for execution:
+You can display a selection of the inserted records through the \c eagle/show command (pts.do.eagle.show), which
+accepts the relevant portion of an SQL query, i.e. a boolean expression using any of the fields in the SKIRT-run
+records. Put double quotes around the query (so that your shell command interpreter doesn't get confused) and use
+single quotes to delimit constant string values within the query. For example, the following query lists the SKIRT-runs
+within the just inserted set that involve a high-redshift galaxy:
 
 \verbatim
-$ pts update "label='MyTest' and runstatus='inserted'" skitemplate panchro
-...
-\endverbatim
-
-\subsection EagleFlowSched Scheduling SKIRT simulations
-
-The \c eagle_schedule command-line script schedules jobs for selected records in the SKIRT-runs database.
-When invoked without command line arguments, the script schedules a job for each record that has a run-status
-of 'inserted' and a username equal to the current user. After the script exits, these records will have a run-status
-of 'scheduled'.
-
-Alternatively the script accepts a single command line argument specifying the run-id for a database record.
-A job will be scheduled for the specified record regardless of its original run-status, and the record's run-status
-will be updated to 'scheduled'. This is handy to reschedule jobs that did not complete successfully.
-
-If the script is executed on the Cosma cluster, it creates and submits an actual job to the queuing system to
-perform the SKIRT simulation. For example:
-
-\verbatim
-$ pts sched 11
-Executing: eagle_schedule 11
-Submitting job for run-id 11 to queue cosma5
-Job accepted for project dp004-eagle for user pcamps.
-Job <660888> is submitted to queue <cosma5>.
-pcamps@cosma-a:~$ bjobs -w
-JOBID   USER    STAT  QUEUE   FROM_HOST  EXEC_HOST   JOB_NAME     SUBMIT_TIME
-660888  pcamps  RUN   cosma5  cosma-a    m5049:...   SKIRT-run-11 Feb 15 15:01
+$ pts eagle/show "label='testA' and snaptag<=6"
+Executing: eagle/show.py label='testA' and snaptag<=6
+['runid', 'label', 'stage', 'status', 'statusdate', 'eaglesim', 'snaptag', 'galaxyid', ..., 'skitemplate', ...]
+(4304, 'testA', 'insert', 'succeeded', '2017-07-13--11-36-32', 'RefL0100N1504', 5, 10680876, ..., 'sed_v4', ...)
+(5382, 'testA', 'insert', 'succeeded', '2017-07-13--11-36-32', 'RefL0100N1504', 6, 13921582, ..., 'sed_v4', ...)
+(7090, 'testA', 'insert', 'succeeded', '2017-07-13--11-36-32', 'RefL0100N1504', 6, 18646079, ..., 'sed_v4', ...)
+(7228, 'testA', 'insert', 'succeeded', '2017-07-13--11-36-32', 'RefL0100N1504', 6, 19908055, ..., 'sed_v4', ...)
+4 records were shown
 $
 \endverbatim
 
-For more information on the queuing system refer to
-<a href="http://icc.dur.ac.uk/index.php?content=Computing/Batch#section1.1">Job Scheduling on
-the Durham COSMA machines</a>.
+The workflow \em stage and \em status fields are set to "insert" and "succeeded", as expected for records that were
+just inserted. The \em statusdate field contains a time stamp which is automatically updated whenever the workflow
+stage or status changes. The fields \em eaglesim, \em snaptag, and \em galaxyid identify the galaxy in the public EAGLE
+data base. The subsequent fields (not shown in the example above) contain information extracted from the public EAGLE
+database for use during the SKIRT post-processing workflow. Near the end of the list, the \em skitemplate field
+specifies the filename (without extension) for the ski file that will be used for the SKIRT simulation controlled by
+this record. The final fields (not shown in the example above) specify some parameters that will be replaced in the ski
+template, such as the number of photon packages. Refer to the \c pts.eagle.database package for a description of all
+fields in the SKIRT-runs database.
 
-If the \c eagle_schedule script is executed on a regular computer, its asks the user to perform the job by hand.
-For example:
+The \em label field (here set to 'testA') serves to identify related records so that they can be managed as a group.
+For example, the \c eagle/status command (pts.do.eagle.status) summarizes the workflow status of all records with a
+given label:
 
 \verbatim
-$ pts sched 11
-Executing: eagle_schedule 11
-Please manually execute scheduled job for run-id 11
-$ pts run 11
-Executing: eagle_run 11
-Exporting galaxy (2164,0) from 2 files...
-Welcome to SKIRT v6 (...)
-...
+$ pts eagle/status testA
+Executing: eagle/status.py testA
+testA insert succeeded : 7784
 $
 \endverbatim
 
-The \c eagle_run command-line script actually executes a SKIRT simulation on an EAGLE galaxy,
-according to the specifications defined in the specified SKIRT-runs database record.
-It extracts the relevant particle data from the EAGLE snapshot files, adjusts the ski file template appropriately,
-calls SKIRT to perform the radiative transfer simulation, and creates relevant visualizations in png or pdf files.
-The script is invoked from the batch jobs created by the eagle_schedule script, and it can also be run manually.
+\subsection EagleFlowMan Managing SKIRT-run records
 
-The run-status of the specified record must be 'scheduled'; if not the script fails.
-The script sets the run-status to 'running' while it is running, and it finally
-updates the run-status to 'completed' or 'failed' before exiting.
+Freshly inserted records are in the "insert/succeeded" workflow state. To activate a record so that it enters the
+automated workflow, it must be advanced to the next workflow stage and be put in the "scheduled" state. The easiest
+way to accomplish this for all eligible records with a shared label is through the \c eagle/advance command
+(pts.do.eagle.advance) :
 
-\subsection EagleFlowVis Visualizing the results
+\verbatim
+$ pts eagle/advance testA
+Executing: eagle/advance.py testA
+There are 7784 successful SKIRT-runs with label testA at stage insert.
+--> Would you like to advance these to stage extract? [y/n]: y
+Advancing 7784 SKIRT-runs from stage insert to extract
+$
+$ pts eagle/status testA
+Executing: eagle/status.py testA
+testA extract scheduled : 7784
+$
+\endverbatim
 
-The results of an EAGLE-SKIRT simulation are stored in a directory hierarchy as described in eagle.skirtrun.SkirtRun.
-The root path is configured in eagle.config.
+As shown by the output of the \c eagle/status command, the workflow status for all records with label 'testA' has
+changed to extract/scheduled, which means that the records will be picked up by the workflow tools that perform the
+extract operation.
 
-The \c eagle_run command-line script automatically produces some visualizations that pertain to each individual
-simulation. For example a plot for the SED produced by each instrument, or an RGB image for the total flux.
-Visualizations involving the results of multiple simulations (e.g. scaling relations) can be produced as a
-separate process by specialized scripts. These scripts can use the eagle.database.Database class to select and
-access SKIRT-run records in the target set or with the desired characteristics, and the
-eagle.skirtrun.SkirtRun and pts.skirtsimulation.SkirtSimulation classes to access SKIRT simulation results.
+In some cases it becomes necessary to adjust the value of one or more fields for a particular selection of records.
+For example, assume that a small number of \em extract operations have failed (the next section will discuss how you
+can perform this operation for all scheduled records). After fixing the source of the problem, you need to reset the
+workflow status for these records so the extract operation can be rescheduled. This can be accomplished with the
+\c eagle/update command (pts.do.eagle.update) as follows:
+
+\verbatim
+$ pts eagle/update "label='testA' and stage='extract' and status='failed'" status scheduled
+Executing: eagle/update.py label='testA' and stage='extract' and status='failed' status scheduled
+['runid', 'label', 'stage', 'status', 'statusdate', 'eaglesim', 'snaptag', 'galaxyid', ...]
+(34, 'testA', 'extract', 'scheduled', '2017-07-13--13-29-39', 'RefL0100N1504', 27, 52523, ...)
+(3467, 'testA', 'extract', 'scheduled', '2017-07-13--13-29-39', 'RefL0100N1504', 20, 10210430, ...)
+(5672, 'testA', 'extract', 'scheduled', '2017-07-13--13-29-39', 'RefL0100N1504', 22, 15061027, ...)
+3 records were shown
+--> Would you like to commit this update to the database? [y/n]: y
+Update was committed to the database
+\endverbatim
+
+The \c eagle/update command accepts three command-line arguments: a query similar to the \c pts/show command,
+the name of the field to be updated, and the new value for the field. The command displays the selected records
+with the updated field value, and asks for confirmation. If you respond affirmatively, the records are updated in
+the database. Otherwise the database remains unchanged.
+
+\subsection EagleFlowPerf Performing operations (stages)
+
+The PTS EAGLE tools include two commands to actually perform the operation corresponding to the current stage of a
+scheduled SKIRT-run record. In most cases you will use the \c eagle/submit command to submit batch jobs to an
+applicable queue of a multi-node computing system. The \c eagle/submit command is invoked as follows:
+
+\verbatim
+pts eagle/submit <stage> loop <numjobs>
+\endverbatim
+
+where \<stage\> is one of "extract", "simulate", or "observe"; and \<numjobs\> is the number of jobs to submit as a job
+array (or 1 for a single job). Once it is running, each batch job repeatedly performs the specified stage for a
+SKIRT-run record that is at the corresponding workflow stage and has the 'scheduled' status, until there are no more
+such records, or until the wall-time allocation of the job runs out.
+
+Whenever a particular record is selected for execution, the record's status field is set to "running". If and when the
+operation completes successfully, the status field is set to "succeeded". If the operation fails, the status field is
+set to "failed". In some (rare) circumstances the operation may abort in such a way that the status field remains stuck
+in the "running" state, in which case manual intervention is required to reschedule the record.
+
+\note The implementation of the \c eagle/submit command prepares jobs for the cosma6 queue (using the SLURM workload
+manager) on the computing system in Durham where these procedures were first developed. It should be fairly
+straightforward to adjust the script to accommodate other queueing systems. Incidentally, even if you happen to use the
+computing system in Durham, you might need to adjust details such as the project accounting code.
+
+Under the hood, the batch jobs produced by the \c eagle/submit command invoke the \c eagle/perform command to do their
+work. The latter command can also be invoked directly to perform an operation on the computer or node where the command
+is issued. This is useful for testing and/or for performing a small number of fast operations. In fact, the \c
+eagle/perform command supports a "force" mode that performs the specified stage for one or more specific SKIRT-run
+records, regardless of the stage and status of those records. For example, the following invocation performs the
+observe operation for a single SKIRT-run, regardless of the initial workflow stage and status of the record (i.e. it is
+your responsibilioty to ensure that the previous stages were successfully completed):
+
+\verbatim
+$ perform observe force 19010
+Executing: eagle/perform.py observe force 19010
+Performing observe in force mode ...
+Processing observe for SKIRT-run 19010...
+Created PDF SED plot file .../Results/g-0019/r-0019-010/vis/RefL0100N1504_2894730_v12_sed_sed.pdf
+Created info file .../Results/g-0019/r-0019-010/vis/RefL0100N1504_2894730_v12_sed_info.txt
+Finished performing.
+$
+\endverbatim
+
+Refer to the documentation of the respective commands (pts.do.eagle.submit and pts.do.eagle.perform) for more
+information.
+
+\subsection EagleFlowVis Visualizing results
+
+As mentioned in section \ref EagleBasicRuns, all files for a particular SKIRT run are placed inside a directory that
+is part of a two-level directory hierarchy with names based on the run-id. Within each SKIRT-run directory,
+  - the output of the \em extract stage is placed inside the \c in subdirectory ("SKIRT input");
+  - the output of the \em simulate stage is placed inside the \c out subdirectory ("SKIRT output");
+  - the output of the \em observe stage is placed inside the \c vis subdirectory ("Visualization").
+
+In addition to the text info file discussed in the next section, the observe stage creates a basic SED plot in PDF
+format. If the SKIRT instruments generated a full data cube, it also creates an RGB thumbnail in PNG format for
+each instrument using optical SDSS colors. These files are intended for quick visual inspection of the simulation
+results.
+
+Other types of per-galaxy visualization files can be generated on demand using the \c eagle/build command, which
+expects two command-line arguments. The first argument specifies what type of files to build, and it
+should be one of the following strings (it is sufficient to specify an unambiguous portion of the string):
+  - bandimages: band-integrated optical and augmented RGB images for each of the frame instruments
+  - densities: a plot with histograms of stellar, gas and dust densities in function of the galaxy radius
+  - fastimages: a fast optical RGB image for each of the frame instruments (same as produced by observe stage)
+  - greybodyfit: a plot showing a modified blackbody fit to the dust continuum emission and listing the temperature
+  - infofile: a text info file with statistics on the simulation results (see next section)
+  - particles: a 3D plot of the gas particles indicating star forming, cold and hot gas in different colors
+  - seds: a plot combining the SEDs for all of the instruments (same as produced by observe stage)
+  - temperature: a plot with a histogram of dust mass versus dust temperature
+
+The second argument specifies the SKIRT-runs for which the operation should be performed. It is a comma-seperated list
+of run-ids and/or run-id ranges (expressed as two run-ids with a dash in between). For example:
+
+\verbatim
+$ build greybodyfit 1001-1002
+Executing: eagle/build.py greybodyfit 1001-1002
+Building grey body fits for 2 SKIRT-runs
+Building grey body fit for SKIRT-run 1001...
+Created PDF plot file .../Results/g-0001/r-0001-001/vis/RefL0100N1504_93855_v12_sed_dust_body_fit.pdf
+Building grey body fit for SKIRT-run 1002...
+Created PDF plot file .../Results/g-0001/r-0001-002/vis/RefL0100N1504_93856_v12_sed_dust_body_fit.pdf
+Done...
+$
+\endverbatim
+
+\subsection EagleFlowCol Collecting results
+
+While the visualization files discussed in the previous section can be very helpful to evaluate the SKIRT results for a
+few specific galaxies, other mechanisms are needed to process the results for a large number of galaxies. To this end,
+the observe stage produces a text info file that includes information derived from the the SKIRT simulation results.
+Each line in the info file has the format "key = value", and the keys are fairly self-descriptive. The provided
+information includes:
+  - rest-frame absolute magnitudes for a range of frequently used wavelength bands;
+  - rest-frame broad-band fluxes at the distance of the SKIRT instruments;
+  - redshifted and scaled fluxes taking into account the redshift and luminosity distance of the galaxy;
+  - statistics on the sets of SPH particles used as input for SKIRT (number of particles, masses, ...);
+  - statistics on the SKIRT operation (dust grid convergence, wall time, ...).
+
+The \c eagle/collect command (pts.do.eagle.collect) provides a way to collect this information for an arbitrary number
+of galaxies into a single file. The \c
+eagle/collect command expects one or more command line arguments, which are used as possible values for the label and
+eaglesim fields in the SKIRT-runs database. For example,
+
+\verbatim
+$ pts eagle/collect testA testB RefL0100N1504
+\endverbatim
+
+will in practice collect all SKIRT-runs that have a label value of "testA" or "testB" and an eaglesim value of
+"RefL0100N1504". The resulting collection file is placed in the collections directory configured in pts.eagle.config.
+It can be easily copied between systems, and its content can be easily loaded by any Python script, even if PTS is not
+installed.
+
+\note One can envision an alternate mechanism where the PTS EAGLE worflow has an additional \em store stage that is
+responsible for moving the relevant results for each SKIRT-run to their final destination. The store operation could
+simply copy the individual text info files to a central location, or it could add records to a central SQL database.
+Implementing such a mechanism should be fairly straightforward.
+
+XXX
+
+Loading and using a collection
+Pointers of where to change things for your own purposes
+Other stuff?
 
 */
