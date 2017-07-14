@@ -28,7 +28,7 @@ is dedicated to post-processing EAGLE galaxies with SKIRT. Specific functionalit
 
 These tools implement the procedures described in <a href="http://adsabs.harvard.edu/abs/2016MNRAS.462.1057C">Camps et
 al. 2016</a> and <a href="http://adsabs.harvard.edu/abs/2017MNRAS.470..771T">Trayford et al. 2017</a>, and were used to
-produce the results presented in <a href="">Camps et al. in prep</a>
+produce the results presented in <a href="">Camps et al. in prep</a>.
 
 
 \section EagleBasic The basics
@@ -135,12 +135,12 @@ will track all operations. There is no ready-made script to accomplish this, sin
 (unless you want to start over at some point, erasing all workflow history). You can copy the following lines into an
 ad-hoc Python script and execute the script, or simply enter (copy/paste) the lines in an interactive Python session:
 
-\verbatim
+\code{.py}
 from pts.eagle.database import Database
 db = Database()
 db.createtable()
 db.close()
-\endverbatim
+\endcode
 
 This creates the SKIRT-runs database file in your database directory (configured in \c pts/eagle/config.py) and
 adds a single table with the appropriate fields for tracking SKIRT-runs. A description of the fields is provided
@@ -461,9 +461,8 @@ information includes:
   - statistics on the SKIRT operation (dust grid convergence, wall time, ...).
 
 The \c eagle/collect command (pts.do.eagle.collect) provides a way to collect this information for an arbitrary number
-of galaxies into a single file. The \c
-eagle/collect command expects one or more command line arguments, which are used as possible values for the label and
-eaglesim fields in the SKIRT-runs database. For example,
+of galaxies into a single file. The command expects one or more command line arguments, which are used as possible
+values for the label and eaglesim fields in the SKIRT-runs database. For example,
 
 \verbatim
 $ pts eagle/collect testA testB RefL0100N1504
@@ -472,17 +471,26 @@ $ pts eagle/collect testA testB RefL0100N1504
 will in practice collect all SKIRT-runs that have a label value of "testA" or "testB" and an eaglesim value of
 "RefL0100N1504". The resulting collection file is placed in the collections directory configured in pts.eagle.config.
 It can be easily copied between systems, and its content can be easily loaded by any Python script, even if PTS is not
-installed.
+installed. Indeed, the collection file is a "pickle" dump of a Python dictionary that can be loaded as follows:
+
+\code{.py}
+import pickle
+infilepath = ".../testA_testB_RefL0100N1504_info_collection.dat"
+info = pickle.load(open(infilepath))
+numgalaxies = len(info["galaxy_id"])
+print numgalaxies
+\endcode
+
+The dictionary keys are the same as those in the individual info files. Each dictionary value is a numpy array with
+an element for each galaxy in the collection. For example, \c info["galaxy_id"] lists all galaxy ids and
+\c info["instr_rn_magnitude_johnson_v"] the corresponding absolute rest-frame magnitudes.
+
+The \c pts.eagle.collection.Collection class in the \c pts.eagle.collection package offers an additional layer of
+functionality for loading and retrieving data from a collection file.
 
 \note One can envision an alternate mechanism where the PTS EAGLE worflow has an additional \em store stage that is
 responsible for moving the relevant results for each SKIRT-run to their final destination. The store operation could
 simply copy the individual text info files to a central location, or it could add records to a central SQL database.
-Implementing such a mechanism should be fairly straightforward.
-
-XXX
-
-Loading and using a collection
-Pointers of where to change things for your own purposes
-Other stuff?
+Implementing such an additional workflow stage should be fairly straightforward.
 
 */
