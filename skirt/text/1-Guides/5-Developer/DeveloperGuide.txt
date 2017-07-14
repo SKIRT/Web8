@@ -7,7 +7,7 @@ This guide offers guidelines on how to extend or adjust the code in the <tt>SKIR
 The <tt>SKIRT</tt> proje3ct code will never be finished. Fundamental changes and additions will probably be developed
 by the core <tt>SKIRT</tt> team at the Ghent University. Other changes, such as introducing a new spectral energy
 distribution for the sources or a new function describing the geometrical distribution of the dust, can easily be
-contributed by any heavy-duty <tt>SKIRT</tt> user. In fact, when you plan to use <tt>SKIRT</tt> for a particular
+contributed by any <tt>SKIRT</tt> user. In fact, when you plan to use <tt>SKIRT</tt> for a particular
 radiative transfer problem, chances are that you will want to adapt or extend it to suit your needs.
 
 You should start learning about <tt>SKIRT</tt> development by performing the development-related tutorials offered

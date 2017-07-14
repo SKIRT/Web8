@@ -40,7 +40,7 @@ Verify that the installed compiler has an appropriate version (see \ref InstallU
 window and entering the following command:
 
 \verbatim
-$ clang++ --version"
+$ clang++ --version
 Apple LLVM version 8.0.0 (clang-800.0.42.1)
 ...
 \endverbatim
@@ -365,7 +365,7 @@ To provide easy access to the executables in the \c SKIRT project, edit your log
 executable paths to your system path. For example, add the following line:
 
 \verbatim
-export PATH="/Users/pcamps/SKIRT/release/SKIRT/main:/Users/pcamps/SKIRT/release/FitSKIRT/main:${PATH}"
+export PATH="${HOME}/SKIRT/release/SKIRT/main:${HOME}/SKIRT/release/FitSKIRT/main:${PATH}"
 \endverbatim
 
 \note On Mac, the <tt>.profile</tt> script is not loaded when there is a <tt>.bash_profile</tt> in your home directory.
