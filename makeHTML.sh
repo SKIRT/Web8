@@ -12,6 +12,7 @@
 #
 
 # Generate html documentation in a temporary folder next to the git folder
+mkdir -p ../html
 /Applications/Doxygen.app/Contents/Resources/doxygen root/doxygen/html.doxygen
 /Applications/Doxygen.app/Contents/Resources/doxygen skirt/doxygen/html.doxygen
 /Applications/Doxygen.app/Contents/Resources/doxygen pts/doxygen/html.doxygen
