@@ -1,0 +1,17 @@
+/**
+
+\page ChangeNotes Changes since SKIRT 8.0
+
+This page lists the new features introduced in SKIRT since version 8.0 became publicly available. The features are
+listed in approximate chronological order of becoming available in the public repository. For information on the
+changes from SKIRT 7 to SKIRT 8, please refer to the \ref ReleaseNotes.
+
+
+|Feature | Date |
+|:-------|:-----|
+| Add %SED family for stellar populations with variable IMF (FSPSVariableIMFSEDFamily class) | Sep 2017 |
+| Update DustEM dust properties folder to version of files shipped with DustEM 4.0 | Sep 2017 |
+| Update Themis dust model to version defined in Jones et al. 2017 (requires ski file update) | Sep 2017 |
+
+
+*/

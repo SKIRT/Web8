@@ -4,7 +4,8 @@
 
 The <tt>SKIRT</tt> documentation is structured as follows:
 
-- The \ref ReleaseNotes list the changes relative to earlier versions.
+- The \ref ReleaseNotes list the changes from SKIRT 7 to SKIRT 8.
+- The \ref ChangeNotes list the new features introduced in SKIRT 8 since it became publicly available.
 
 <b> Part I: Guides -- overall guidance and tutorials. </b>
 

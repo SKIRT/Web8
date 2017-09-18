@@ -4,6 +4,21 @@
 
 \section PubTechnical Technical papers
 
+<b>TRUST I. A 3D externally illuminated slab benchmark for dust radiative transfer</b><br>
+Gordon et al., A&A, 603, A114, July 2017<br>
+<a href="http://adsabs.harvard.edu/abs/2017A%26A...603A.114G">[ADS]</a>
+<a href="../publications/technical/T2017_Gordon_Slab.pdf">[PDF]</a>
+
+<b>SKIRT: Hybrid parallelization of radiative transfer simulations</b><br>
+Verstocken et al., Astronomy and Computing, Volume 20, 16-33, July 2017<br>
+<a href="http://adsabs.harvard.edu/abs/2017A%26C....20...16V">[ADS]</a>
+<a href="../publications/technical/T2017_Verstocken_Parallelization.pdf">[PDF]</a>
+
+<b>Polarization in Monte Carlo radiative transfer and dust scattering polarization signatures of spiral galaxies</b><br>
+Peest et al., A&A, 601, A92, May 2017<br>
+<a href="http://adsabs.harvard.edu/abs/2017A%26A...601A..92P">[ADS]</a>
+<a href="../publications/technical/T2017_Peest_Polarization.pdf">[PDF]</a>
+
 <b>Composite biasing in Monte Carlo radiative transfer</b><br>
 M. Baes, K. D. Gordon, T. Lunttila, et al., A&A, 590:A55 (2016)<br>
 <a href="http://adsabs.harvard.edu/abs/2016A%26A...590A..55B">[ADS]</a>
@@ -70,6 +85,16 @@ Baes M., Davies J. I., Dejonghe H., et al., MNRAS, 343, 1081 (2003) <br>
 <a href="../publications/technical/000.pdf">[PDF]</a>
 
 \section PubApplications Applications
+
+<b>Optical colours and spectral indices of z = 0.1 EAGLE galaxies with the 3D dust radiative transfer code SKIRT</b><br>
+Trayford et al., MNRAS, 470, 771-799, Sep 2017<br>
+<a href="http://adsabs.harvard.edu/abs/2017MNRAS.470..771T">[ADS]</a>
+<a href="../publications/applications/A2017_Trayford_EAGLE.pdf">[PDF]</a>
+
+<b>The Herschel Exploitation of Local Galaxy Andromeda (HELGA). VII. A SKIRT radiative transfer model and insights on dust heating</b><br>
+Viaene et al., A&A, 599, A64, March 2017<br>
+<a href="http://adsabs.harvard.edu/abs/2017A%26A...599A..64V">[ADS]</a>
+<a href="../publications/applications/A2017_Viaene_M31.pdf">[PDF]</a>
 
 <b>Far-infrared and dust properties of present-day galaxies in the EAGLE simulations</b><br>
 P. Camps, J. W. Trayford, M. Baes, et al., MNRAS, 462, 1057-1075 (2016)<br>
