@@ -13,10 +13,11 @@ code. Some resource files, however, are too large for inclusion in the code repo
 for download. After downloading, extract the contents of the archive and place the resulting files in a newly created
 directory called \c SKIRT/extdat next to the \c SKIRT/git and \c SKIRT/release directories.
 
- - <a href="../downloads/PolarizationProperties.tar.gz">PolarizationProperties.tar.gz</a>: optical dust properties used
-    by the \c PolarizedSilicateGrainComposition and \c PolarizedGraphiteGrainComposition classes
- - <a href="../downloads/FSPSVariableIMFSED.tar.gz">FSPSVariableIMFSED.tar.gz</a>: template data for the SED families
-   with variable initial mass function used by the \c FSPSVariableIMFSEDFamily class
+ - <a href="http://sciences.ugent.be/skirtextdat/PolarizationProperties.tar.gz">PolarizationProperties.tar.gz</a>:
+   optical dust properties used by the \c PolarizedSilicateGrainComposition and \c PolarizedGraphiteGrainComposition
+   classes
+ - <a href="http://sciences.ugent.be/skirtextdat/FSPSVariableIMFSED.tar.gz">FSPSVariableIMFSED.tar.gz</a>:
+   template data for the SED families with variable initial mass function used by the \c FSPSVariableIMFSEDFamily class
 
 \section DownloadsData Data files used in the tutorials
 
