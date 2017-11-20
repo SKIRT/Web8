@@ -11,7 +11,8 @@ changes from SKIRT 7 to SKIRT 8, please refer to the \ref ReleaseNotes.
 |:-------|:-----|
 | Add %SED family for stellar populations with variable IMF (FSPSVariableIMFSEDFamily class) | Sep 2017 |
 | Update DustEM dust properties folder to version of files shipped with DustEM 4.0 | Sep 2017 |
-| Update Themis dust model to version defined in Jones et al. 2017 (requires ski file update) | Sep 2017 |
+| Update Themis dust model to version defined in Jones et al. 2017 (requires ski file upgrade) | Sep 2017 |
+| Simplify and optimize dust self-absorption iteration (requires ski file upgrade) | Nov 2017 |
 
 
 */
