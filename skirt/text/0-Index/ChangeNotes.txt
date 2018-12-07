@@ -16,5 +16,7 @@ changes from SKIRT 7 to SKIRT 8, please refer to the \ref ReleaseNotes.
 | Add ConicalPointGeometry anisotropic point source | Mar 2018 |
 | Add FileTreeDustGrid to load grid structure saved by OctTree/BinTreeDustGrid | Mar 2018 |
 | Add AllSkyInstrument to view the sky from inside a model | Mar 2018 |
+| Add option to output the absorption spectrum for all dust cells in a data file | Jul 2018 |
+| Add dust model for SMC to WeingartnerDraineDustMix | Dec 2018 |
 
 */
