@@ -8,7 +8,9 @@
 # Instructions:
 #   - use on Mac OS X only
 #   - you need write access to the public server
+#   - the "Resources8" directory should be placed next to the Web8 repo
+#     and include the "skirtextdat" directory
 #   - run this script with "git" as default directory
 
 # Update the data
-rsync -hrtvz --delete-after -e "ssh -p 2935" ../extras/skirtextdat/ pcamps@sciences.ugent.be:skirtextdat/
+rsync -hrtvz --delete-after -e "ssh -p 2935" ../../Resources8/skirtextdat/ pcamps@sciences.ugent.be:skirtextdat/

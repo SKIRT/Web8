@@ -1,13 +1,14 @@
 #!/bin/bash
 # (use "chmod +rx scriptname" to make script executable)
 #
-# This script builds the HTML pages for the complete SKIRT web site,
-# including the documentation derived from the code for SKIRT and PTS.
+# This script builds the HTML pages for the complete SKIRT 8 web site,
+# including the documentation derived from the code for SKIRT 8 and PTS.
 #
 # Instructions:
 #   - use on Mac OS X only
-#   - the SKIRT8 and PTS repos should be checked out next to the SKIRT8website repo
-#   - the "extras" directory should be placed next to the SKIRT8website "git" directory
+#   - the SKIRT8 and PTS repos should be checked out next to the Web8 repo
+#   - the "Resources8" directory should be placed next to the Web8 repo
+#     and include the "downloads" and "publications" directories
 #   - run this script with "git" as default directory
 #
 
@@ -27,8 +28,8 @@ cp root/images/SkirtLogoSmall-home.png ../html/tutorials/
 cp root/images/SkirtLogoSmall-home.png ../html/benchmarks/
 
 # Copy the downloadable data files and publications
-rsync -hrt --delete ../extras/downloads/ ../html/downloads/
-rsync -hrt --delete ../extras/publications/ ../html/publications/
+rsync -hrt --delete ../../Resources8/downloads/ ../html/downloads/
+rsync -hrt --delete ../../Resources8/publications/ ../html/publications/
 rsync -hrt --delete benchmarks/skifiles/ ../html/skifiles/
 
 # Copy some redirecting index.html files
