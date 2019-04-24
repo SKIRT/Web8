@@ -13,5 +13,6 @@ Main entry points into the documentation included here:
 - \ref PTS
 - \ref Tutorials
 - \ref Benchmarks
+- \ref Downloads
 
 */
