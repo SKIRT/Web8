@@ -1,0 +1,17 @@
+/**
+
+\mainpage Introduction
+
+\image html SkirtLogoSmall.png
+
+These pages offer documentation for the SKIRT project other than the reference material derived from the source code.
+For more information, please visit the <tt>SKIRT</tt> website at <a href="http://www.skirt.ugent.be">www.skirt.ugent.be</a>.
+
+Main entry points into the documentation included here:
+
+- \ref SKIRT
+- \ref PTS
+- \ref Tutorials
+- \ref Benchmarks
+
+*/

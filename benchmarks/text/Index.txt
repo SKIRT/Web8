@@ -1,6 +1,6 @@
 /**
 
-\mainpage Benchmarks
+\page Benchmarks
 
 \c SKIRT properly performs the major benchmarks published in the field to which the code is applicable, i.e. continuum
 dust radiative transfer for astrophysical systems. In fact, the \c SKIRT team participated in several recent benchmark

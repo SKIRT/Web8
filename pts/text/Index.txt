@@ -1,6 +1,6 @@
 /**
 
-\mainpage PTS documentation index
+\page PTS PTS documentation index
 
 The <em>Python Toolkit for SKIRT</em> (<tt>PTS</tt>) consists of a set of Python modules offering functionality related
 to working with <tt>SKIRT</tt>, the Monte Carlo radiative transfer code also developed by the Astronomical Observatory

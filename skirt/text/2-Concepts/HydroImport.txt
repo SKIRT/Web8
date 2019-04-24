@@ -440,13 +440,11 @@ box. In this case, the calculation uses the analytical properties of the scaled 
 box. The advantage of this kernel is that the integration over a box can be written in terms of the error function,
 
 \f[
-\begin{multline}
   \int_{x_1}^{x_2} \int_{y_1}^{y_2}\int_{z_1}^{z_2}
   W(\sqrt{x^2+y^2+z^2}\,,h) \,\mathrm{d}x \,\mathrm{d}y\,\mathrm{d}z = \tfrac18
-  \left(\mathrm{erf}(\frac{a\,x_2}{h}) - (\mathrm{erf}(\frac{a\,x_1}{h})\right) \\
+  \left(\mathrm{erf}(\frac{a\,x_2}{h}) - (\mathrm{erf}(\frac{a\,x_1}{h})\right)
   \times \left(\mathrm{erf}(\frac{a\,y_2}{h}) - (\mathrm{erf}(\frac{a\,y_1}{h})\right)
   \times \left(\mathrm{erf}(\frac{a\,z_2}{h}) - (\mathrm{erf}(\frac{a\,z_1}{h})\right)
-\end{multline}
 \f]
 
 Assuming the error function can be calculated quickly or, more likely, is tabulated at sufficient resolution, this

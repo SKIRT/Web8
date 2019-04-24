@@ -30,7 +30,7 @@ fast-fourier transform libary to accelerate the convolution calculations for the
 recent version of the Qt framework must be installed to build this utility.
 
 
-\section InstallTypes Types of installation
+\section InstallTypesSKIRT Types of installation
 
 Your approach to installing the \c SKIRT project depends on your usage intentions and computer system.
 We can recognize two main types of environment:

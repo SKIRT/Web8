@@ -14,7 +14,7 @@ install it. You can get the <tt>SKIRT</tt> source code and build the executable 
 SKIRT documentation. If you just use <tt>PTS</tt> to pre- or post-process <tt>SKIRT</tt> related files without actually
 running <tt>SKIRT</tt>, you don't need to install <tt>SKIRT</tt>.
 
-\section InstallTypes Types of installation
+\section InstallTypesPTS Types of installation
 
 Subsequent sections provide detailed installation instructions for two scenarios:
 

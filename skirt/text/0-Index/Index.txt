@@ -1,6 +1,6 @@
 /**
 
-\mainpage SKIRT documentation index
+\page SKIRT SKIRT documentation index
 
 The <tt>SKIRT</tt> documentation is structured as follows:
 
