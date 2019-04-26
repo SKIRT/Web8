@@ -13,7 +13,7 @@ The main entry points into the documentation for SKIRT and PTS version 8 are:
 - \ref Tutorials
 - \ref Benchmarks
 - \ref Downloads
-- <a href="../skirt/_s_k_i_r_t.html"><b>SKIRT</b></a>
-- <a href="../pts/_p_t_s.html"><b>PTS</b></a>
+- <a href="../skirt8/_s_k_i_r_t.html"><b>SKIRT</b></a>
+- <a href="../pts8/_p_t_s.html"><b>PTS</b></a>
 
 */
