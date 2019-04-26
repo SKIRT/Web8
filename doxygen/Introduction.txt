@@ -7,12 +7,13 @@
 These pages offer documentation for the SKIRT project other than the reference material derived from the source code.
 For more information, please visit the <tt>SKIRT</tt> website at <a href="http://www.skirt.ugent.be">www.skirt.ugent.be</a>.
 
-Main entry points into the documentation included here:
+The main entry points into the documentation for SKIRT and PTS version 8 are:
 
-- \ref SKIRT
-- \ref PTS
+- \ref Version8
 - \ref Tutorials
 - \ref Benchmarks
 - \ref Downloads
+- <a href="../skirt/_s_k_i_r_t.html"><b>SKIRT</b></a>
+- <a href="../pts/_p_t_s.html"><b>PTS</b></a>
 
 */
