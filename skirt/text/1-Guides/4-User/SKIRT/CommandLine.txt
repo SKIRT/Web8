@@ -180,7 +180,7 @@ Two "standard" files are always generated for every simulation (assuming a ski f
    extension. However the file can be renamed (possibly after manual editing) to serve as a regular ski file.
 
 Many of the other output files are described in the tutorials offered in the
-<a href="../tutorials/index.html">Tutorials</a> section on this web site.
+<a href="../version8/_tutorials.html">Tutorials</a> section on this web site.
 
 \section UserSkirtCmdLineEmul Emulation mode
 

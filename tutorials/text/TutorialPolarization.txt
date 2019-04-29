@@ -16,7 +16,7 @@ visualization options it offers.
 
 To avoid spending time creating yet another \c SKIRT configuration file from scratch, the \c SKIRT web site offers a
 fully configured \em ski file that will serve as a basis for this advanced tutorial. Download the file \c
-tutorial_polarization_parameters.xml from the <a href="../downloads/index.html">SKIRT downloads page</a> and put it
+tutorial_polarization_parameters.xml from the <a href="../version8/_downloads.html">SKIRT downloads page</a> and put it
 into your local working directory.
 
 
@@ -175,7 +175,7 @@ following configuration elements (not necessarily in this order):
      - an exponential dust disk with spiral arm structure (the arms in the young stellar disk and the dust disk trail
        those in the evolved stellar population by varying the phase zero-points)
  - a dust mixture called \c TrustMeanDustMix, which represents the dust properties used in the Gordon et. al 2017
-   \c TRUST benchmark (see <a href="../benchmarks/index.html">SKIRT benchmarks</a>)
+   \c TRUST benchmark (see <a href="../version8/_benchmarks.html">SKIRT benchmarks</a>)
  - an adaptive octree grid
  - six instruments at various inclinations and azimuth angles
 

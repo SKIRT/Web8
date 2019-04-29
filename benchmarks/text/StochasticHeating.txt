@@ -15,10 +15,9 @@ fields.
 \section StochasticHeatingRefs References and downloads
 
 <TABLE>
-<TR><TH>Publication</TH>  <TD>Camps et al. 2015 <a href="http://adsabs.harvard.edu/abs/2015A%26A...580A..87C">[ADS]</a>
-                                                <a href="../publications/technical/010.pdf">[PDF]</a> </TD>
+<TR><TH>Publication</TH>  <TD>Camps et al. 2015 <a href="http://adsabs.harvard.edu/abs/2015A%26A...580A..87C">[ADS]</a></TD>
 <TR><TH>Web site</TH>  <TD>http://www.shg.ugent.be</TD>
-<TR><TH>Ski file</TH>  <TD><a href="../skifiles/shg.ski">shg.ski</a></TD>
+<TR><TH>Ski file</TH>  <TD><a href="http://sciences.ugent.be/skirtextdat/SKIRT8/Benchmarks/shg.ski">shg.ski</a></TD>
 </TABLE>
 
 \section StochasticHeatingResults SKIRT results

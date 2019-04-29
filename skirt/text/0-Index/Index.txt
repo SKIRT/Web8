@@ -11,7 +11,7 @@ The <tt>SKIRT</tt> documentation is structured as follows:
 
   - The \ref ProjectOverview describes the various components of the <tt>SKIRT</tt> project.
   - The \ref InstallationGuide provides installation instructions for the <tt>SKIRT</tt> project.
-  - The <a href="../tutorials/index.html">Tutorials</a> introduce <tt>SKIRT</tt> and/or <tt>FitSKIRT</tt>
+  - The <a href="../version8/_tutorials.html">Tutorials</a> introduce <tt>SKIRT</tt> and/or <tt>FitSKIRT</tt>
     through a number of detailed usage examples; highly recommended for new users.
   - The \ref UserGuide offers additional, more structured information on the various components in the <tt>SKIRT</tt>
     project.

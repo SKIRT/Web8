@@ -19,7 +19,7 @@ and have the same pixelscale and matching astrometry. The frames therefore have 
 will be partially filled with zeros) and dimension. This can be accomplished through the IDL routine hastrom.pro or
 using the open-source software Montage. An example of how to accomplish this has been added to the files used in the
 tutorial. For more information, download the archive <tt>match_WCS.tar.gz</tt> from the <a
-href="../downloads/index.html">SKIRT downloads page</a>, extract its contents and open the \c README.txt file in the
+href="../version8/_downloads.html">SKIRT downloads page</a>, extract its contents and open the \c README.txt file in the
 top-level directory.
 
 Astrometry can be added to most images automagically using http://nova.astrometry.net/upload, either online or by
@@ -30,7 +30,7 @@ setting the scales, plotting contours, creating and storing regions will not be 
 used at some point.
 
 To obtain the observational data used as input in the hands-on part of this tutorial, download the archive
-<tt>tutorial_NGC4013_input.tar.gz</tt> from the <a href="../downloads/index.html">SKIRT downloads page</a> and extract
+<tt>tutorial_NGC4013_input.tar.gz</tt> from the <a href="../version8/_downloads.html">SKIRT downloads page</a> and extract
 its contents into your local working directory.
 
 

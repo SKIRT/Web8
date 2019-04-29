@@ -16,7 +16,7 @@ will use data for a single galaxy extracted from the present-day snapshot of an 
 snapshot data includes information on stellar particles, representing the radiation sources, and on gas particles, from
 which a dust distribution can be derived.
 
-The <a href="../skirt/_concepts.html">SKIRT concepts section</a> includes a concept note that provides a more general
+The <a href="../skirt8/_concepts.html">SKIRT concepts section</a> includes a concept note that provides a more general
 overview of <tt>SKIRT</tt>'s capabilities for postprocessing (magneto-)hydrodynamical simulation results.
 
 \section TutorialHydroSphPre Getting ready
@@ -28,7 +28,7 @@ before starting this tutorial, you should have installed the <tt>SKIRT</tt> code
 
 To complete this tutorial, you need the files containing the data extracted from the EAGLE snapshot in a format
 appropriate for importing into SKIRT. Download the files \c eagle_stars.dat and \c eagle_gas.dat from the <a
-href="../downloads/index.html">SKIRT downloads page</a> and put them into your local working directory.
+href="../version8/_downloads.html">SKIRT downloads page</a> and put them into your local working directory.
 
 \section TutorialHydroSphSki Creating the ski file
 

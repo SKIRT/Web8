@@ -25,7 +25,7 @@ is just a single executable.
 
 As a first step, the observed images of the target object (i.e. the object to which a model will be fitted) must be
 properly prepared for use with <tt>FitSKIRT</tt>. This procedure is presented in the corresponding tutorial offered
-at this web site (see <a href="../tutorials/index.html">Tutorials</a>).
+at this web site (see <a href="../version8/_tutorials.html">Tutorials</a>).
 
 The next step consists of creating a ski file for the <tt>SKIRT</tt> model that will be fitted to the target object.
 This can done through a <tt>SKIRT</tt> Q&A session, via the \c MakeUp graphical wizard, or by manually adjusting an

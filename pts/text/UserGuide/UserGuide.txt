@@ -12,6 +12,6 @@ It includes the following topics:
 
 Also check out the tutorials:
 
-- <a href="../tutorials/index.html">Tutorials</a>
+- <a href="../version8/_tutorials.html">Tutorials</a>
 
 */

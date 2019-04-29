@@ -11,7 +11,7 @@ The <tt>PTS</tt> documentation is structured as follows:
 <b>Part I: Guides -- overall guidance and tutorials.</b>
 
   - The \ref InstallationGuide describes how to install PTS on your computer.
-  - The <a href="../tutorials/index.html">Tutorials</a> introduce certain aspects of <tt>PTS</tt> to new users.
+  - The <a href="../version8/_tutorials.html">Tutorials</a> introduce certain aspects of <tt>PTS</tt> to new users.
   - The \ref UserGuide explains the overall philosophy behind PTS and decribes how to use some of its components.
   - The \ref DeveloperGuide offers guidelines on how to extend or adjust PTS.
 

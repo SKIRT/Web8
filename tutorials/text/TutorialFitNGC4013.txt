@@ -24,7 +24,7 @@ have installed the <tt>SKIRT</tt> project and a FITS file viewer (preferably DS9
 
 To complete this tutorial, you need the relevant observations of NGC4013 in a form already prepared for use with
 <tt>FitSKIRT</tt>. Download the archive <tt>tutorial_NGC4013_prepared.zip</tt> from the <a
-href="../downloads/index.html">SKIRT downloads page</a> and extract its contents (the files <tt>*_norm.fits</tt>) into
+href="../version8/_downloads.html">SKIRT downloads page</a> and extract its contents (the files <tt>*_norm.fits</tt>) into
 your local working directory.
 
 

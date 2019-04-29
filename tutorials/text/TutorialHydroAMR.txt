@@ -15,7 +15,7 @@ gas component and two dust components with different characteristics. The simula
 data file in a binary format specific to MPI-AMRVAC. In addition to a more generic AMR import format using text
 columns, <tt>SKIRT</tt> can also directly import the MPI-AMRVAC binary format.
 
-The <a href="../skirt/_concepts.html">SKIRT concepts section</a> includes a concept note that provides a more general
+The <a href="../skirt8/_concepts.html">SKIRT concepts section</a> includes a concept note that provides a more general
 overview of <tt>SKIRT</tt>'s capabilities for postprocessing (magneto-)hydrodynamical simulation results.
 
 \section TutorialHydroAmrPre Getting ready
@@ -26,7 +26,7 @@ before starting this tutorial, you should have installed the <tt>SKIRT</tt> code
 (preferably <tt>PTS</tt>), and a FITS file viewer (preferably DS9).
 
 To complete this tutorial, you need an example output file produced by the MPI-AMRVAC simulation. Download the file \c
-kh_amr.dat from the <a href="../downloads/index.html">SKIRT downloads page</a> and put it into your local working
+kh_amr.dat from the <a href="../version8/_downloads.html">SKIRT downloads page</a> and put it into your local working
 directory.
 
 \section TutorialHydroAmrSki Creating the ski file

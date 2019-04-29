@@ -13,11 +13,11 @@ and viewing angles. The \c SKIRT team participated in this benchmark effort.
 \section GordonRefs References and downloads
 
 <TABLE>
-<TR><TH>Publication</TH>  <TD>Gordon et al. 2017 (in press)</a></TD>
+<TR><TH>Publication</TH>  <TD>Gordon et al. 2017 <a href="http://adsabs.harvard.edu/abs/2017A%26A...603A.114G">[ADS]</a></TD>
 <TR><TH>Web site</TH>  <TD>http://ipag.osug.fr/RT13/RTTRUST/BM1.php</TD>
-<TR><TH>Ski file</TH>  <TD><a href="../skifiles/gordon.ski">gordon.ski</a></TD>
-<TR><TH>Wavelength grid</TH>  <TD><a href="../skifiles/gordon_input_wavelengths.dat">gordon_input_wavelengths.dat</a></TD>
-<TR><TH>Input SED</TH>  <TD><a href="../skifiles/gordon_input_sed.dat">gordon_input_sed.dat</a></TD>
+<TR><TH>Ski file</TH>  <TD><a href="http://sciences.ugent.be/skirtextdat/SKIRT8/Benchmarks/gordon.ski">gordon.ski</a></TD>
+<TR><TH>Wavelength grid</TH>  <TD><a href="http://sciences.ugent.be/skirtextdat/SKIRT8/Benchmarks/gordon_input_wavelengths.dat">gordon_input_wavelengths.dat</a></TD>
+<TR><TH>Input SED</TH>  <TD><a href="http://sciences.ugent.be/skirtextdat/SKIRT8/Benchmarks/gordon_input_sed.dat">gordon_input_sed.dat</a></TD>
 </TABLE>
 
 \section GordonResults SKIRT results

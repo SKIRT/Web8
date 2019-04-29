@@ -18,7 +18,7 @@ The 'Delcatty' cluster links 160 nodes, each consisting of two 8-core sockets, b
 Intel E5-2670 (2.6 GHz Sandy Bridge architecture). Each node includes 64 GB of memory. The 'Swalot' cluster consists
 of 128 nodes, and a node consists of 2 10-core Intel E5-2660v3 sockets. The amount of memory per node is 128 GB.
 
-Download the archive <tt>tutorial_scaling.zip</tt> from the <a href="../downloads/index.html">SKIRT downloads page</a>
+Download the archive <tt>tutorial_scaling.zip</tt> from the <a href="../version8/_downloads.html">SKIRT downloads page</a>
 and extract its contents into your local working directory.
 
 \section TutorialScalingLoadingSimulations Loading the simulations

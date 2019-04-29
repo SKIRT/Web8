@@ -45,7 +45,7 @@ SimulationItem subclass to the \c SKIRT SMILE schema.
 \section DevCreateLinks Information resources
 
 A good way to start developing \c SKIRT code is to perform the development-related tutorials offered
-as part of the <a href="../tutorials/index.html">Tutorials</a> section on this web site.
+as part of the <a href="../version8/_tutorials.html">Tutorials</a> section on this web site.
 Also, there are many existing subclasses that can serve as an example.
 
 Further background and reference information is provided in the following topics:

@@ -8,7 +8,7 @@ in the \ref InstallationGuide.
 \section UserSKIRT SKIRT user guide
 
 The best way to begin using \c SKIRT is to run through the tutorials offered in the
-<a href="../tutorials/index.html">Tutorials</a> section on this web site, and then to turn back to this user guide for
+<a href="../version8/_tutorials.html">Tutorials</a> section on this web site, and then to turn back to this user guide for
 additional reference information and guidance. Also, detailed information on a specific <tt>SKIRT</tt> option and its
 effect can be found in the documentation for the C++ class implementing the option. As explained in
 \ref UserSkirtParamEdit, the relevant class name (and hence the corresponding documentation) is fairly easy to locate
@@ -16,7 +16,7 @@ even for a non-developer.
 
 The \c SKIRT user guide includes the following topics:
 
-- <a href="../tutorials/index.html">Tutorials</a>
+- <a href="../version8/_tutorials.html">Tutorials</a>
 - \subpage UserSkirtCmdLine
 - \subpage UserSkirtParamFile
 - \subpage UserSkirtMPI
@@ -25,13 +25,13 @@ The \c SKIRT user guide includes the following topics:
 \section UserFitSKIRT FitSKIRT user guide
 
 Again, the best way to begin using \c FitSKIRT is to run through the corresponding tutorials offered in the
-<a href="../tutorials/index.html">Tutorials</a> section on this web site. These tutorials explain
+<a href="../version8/_tutorials.html">Tutorials</a> section on this web site. These tutorials explain
 how to bring observed data into an appropriate format for fitting with FitSKIRT, and how to set the FitSKIRT
 parameters accordingly.
 
 This user guide offers further guidance on how to setup and use the FitSKIRT program. It includes the following topics:
 
-- <a href="../tutorials/index.html">Tutorials</a>
+- <a href="../version8/_tutorials.html">Tutorials</a>
 - \subpage UserFitSkirtUsage
 - \subpage UserFitSkirtHPC
 

@@ -16,12 +16,12 @@ the scattering and polarization properties can be calculated using Mie theory.
 <TABLE>
 <TR><TH>Publication</TH>  <TD>Pinte et al. 2009 <a href="http://adsabs.harvard.edu/abs/2009A%26A...498..967P">[ADS]</a></TD>
 <TR><TH>Web site</TH>  <TD>http://ipag.osug.fr/~pintec/benchmark</TD>
-<TR><TH>Ski file</TH>  <TD><a href="../skifiles/pinte.ski">pinte.ski</a></TD>
+<TR><TH>Ski file</TH>  <TD><a href="http://sciences.ugent.be/skirtextdat/SKIRT8/Benchmarks/pinte.ski">pinte.ski</a></TD>
 </TABLE>
 
 \section PinteResults SKIRT results
 
-The figure below (taken from Peest et al. 2017 <a href="https://arxiv.org/abs/1702.07354">[ArXiv]</a>) shows
+The figure below (taken from Peest et al. 2017 <a href="http://adsabs.harvard.edu/abs/2017A%26A...601A..92P">[ADS]</a>) shows
 polarization results produced by \c SKIRT for a disk with an edge-on optical depth of \f$\tau=10^6\f$, at the
 inclinations \f$69.5^\circ\f$ (top half) and \f$87.1^\circ\f$ (bottom half). On the left are the linear polarization
 degree maps produced by \c SKIRT. The dust grain size is the same as the wavelength (1 μm), creating the intricate

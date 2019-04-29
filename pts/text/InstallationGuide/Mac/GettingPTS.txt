@@ -41,7 +41,7 @@ changes were made to the repository from which you cloned it, use:
 If you plan to make code contributions, you should create an account at <a href="https://github.com">GitHub.com</a>,
 fork the <a href="https://github.com/SKIRT/PTS">PTS repository</a> and then link this forked repository to your local
 <tt>PTS</tt> repository. This allows you to push your modifications to your own fork and initiate a pull request when
-you want to contribute the changes to the project. Refer to the <a href="../skirt/_dev_git.html">Working with git</a>
+you want to contribute the changes to the project. Refer to the <a href="../skirt8/_dev_git.html">Working with git</a>
 topic of the <tt>SKIRT</tt> documentation for more information.
 
 \section InstallMacPrivate Using the private PTS code
@@ -90,7 +90,7 @@ instructions below.
 If you plan to make code contributions, you should fork the <a href="https://github.com/SKIRT/PTS">private PTS
 repository</a> and then link this forked repository to your local <tt>PTS</tt> repository. This allows you to push your
 modifications to your own fork and initiate a pull request when you want to contribute the changes to the project.
-Refer to the <a href="../skirt/_dev_git.html">Working with git</a> topic of the <tt>SKIRT</tt>
+Refer to the <a href="../skirt8/_dev_git.html">Working with git</a> topic of the <tt>SKIRT</tt>
 documentation for more information.
 
 */
