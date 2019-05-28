@@ -34,10 +34,11 @@ The <tt>SKIRT</tt> documentation is structured as follows:
 The reference documentation can be accessed by selecting one of the corresponding tabs in the navigation bar at the top
 of the page:
 
-  - \em Namespaces: a list of the namespaces in the <tt>SKIRT</tt> project.
-    The "Namespace Members" subtab lists all functions defined in namespaces.
-  - \em Classes: a list of all the classes in the <tt>SKIRT</tt> project.
-    The "Class Hierarchy" subtab offers inheritance diagrams for all classes in the project, and
-    the "Class Members" subtab lists all member functions defined in classes.
+  - \em Classes: a list of all the classes in the \c SKIRT code.
+    - The \em Class \em List subtab: an alphabetical list of all classes
+    - The \em Class \em Index subtab: an alphabetical index of all classes
+    - The \em Class \em Hierarchy subtab: inheritance diagrams for all classes
+  - \em Namespaces: a list of the namespaces in the \c SKIRT code.
+  - \em Macros: a list of the files defining macros in the \c SKIRT code.
 
 */
